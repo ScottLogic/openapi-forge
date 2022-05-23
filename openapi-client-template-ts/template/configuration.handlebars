@@ -1,0 +1,6 @@
+
+export default class Configuration {
+  public host: string = "{{host}}";
+  public basePath: string = "{{basePath}}";
+  public schemes: string[] = [{{#each schemes}}"{{this}}",{{/each}}];
+}

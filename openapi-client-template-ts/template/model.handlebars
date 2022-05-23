@@ -1,0 +1,11 @@
+{{#each definitions}}
+export class {{@key}} {
+  {{#each properties}}
+    {{#if description}}
+    // {{description}}
+    {{/if}}
+    public {{@key}}?: {{typeConvert this}};
+  {{/each}}
+}
+
+{{/each}}

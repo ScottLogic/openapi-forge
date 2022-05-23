@@ -1,0 +1,43 @@
+import Configuration from "./configuration";
+import {
+  {{#each definitions}}{{@key}}, {{/each}}
+} from "./model";
+import { request } from "./util";
+
+export default class Api {
+  private config: Configuration;
+
+  constructor(config: Configuration) {
+    this.config = config;
+  }
+
+  {{#each paths}}
+  {{setVar "path" @key}}
+  {{#with get}}
+    
+    {{#if summary}}
+    // {{summary}}
+    // {{description}}
+    {{#each parameters}}
+      // @param {{name}} {{description}}
+    {{/each}}
+    {{/if}}
+    async {{operationId}}(
+      {{#each parameters}}
+        {{name}}: {{typeConvert this}},
+      {{/each}}
+    ): Promise<{{typeConvert responses.200.schema}}> {
+      return request(this.config.host, this.config.basePath, "{{@root.path}}", [
+        {{#eachWhere parameters "in" "query"}}
+          ["{{name}}", {{name}}.toString()],
+        {{/eachWhere}}
+      ], [
+        {{#eachWhere parameters "in" "path"}}
+          ["{{name}}", {{name}}.toString()],
+        {{/eachWhere}}
+      ]);
+    };
+    
+  {{/with}}
+  {{/each}}
+}
