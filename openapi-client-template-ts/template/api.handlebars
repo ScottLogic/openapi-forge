@@ -1,8 +1,10 @@
 import Configuration from "./configuration";
-import {
-  {{#each definitions}}{{@key}}, {{/each}}
-} from "./model";
-import { request } from "./util";
+{{#if definitions}}
+  import {
+    {{#each definitions}}{{@key}}, {{/each}}
+  } from "./model";
+{{/if}}
+import { get, post } from "{{_options.httpVerbs}}";
 
 export default class Api {
   private config: Configuration;
@@ -27,7 +29,7 @@ export default class Api {
         {{name}}: {{typeConvert this}},
       {{/each}}
     ): Promise<{{typeConvert responses.200.schema}}> {
-      return request(this.config.host, this.config.basePath, "{{@root.path}}", [
+      return get(this.config, "{{@root.path}}", [
         {{#eachWhere parameters "in" "query"}}
           ["{{name}}", {{name}}.toString()],
         {{/eachWhere}}
@@ -40,4 +42,25 @@ export default class Api {
     
   {{/with}}
   {{/each}}
+
+  {{#each paths}}
+  {{setVar "path" @key}}
+  {{#with post}}
+    
+    {{#if summary}}
+    // {{summary}}
+    // {{description}}
+    {{#each parameters}}
+      // @param {{name}} {{description}}
+    {{/each}}
+    {{/if}}
+    async {{operationId}}(
+      value: {{typeConvert parameters.[0].schema}}
+    ): Promise<{{typeConvert parameters.[0].schema}}> {
+      return post(this.config, "{{@root.path}}", value);
+    };
+    
+  {{/with}}
+  {{/each}}
 }
+

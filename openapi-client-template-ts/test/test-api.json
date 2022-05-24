@@ -1,0 +1,28 @@
+{
+  "swagger": "2.0",
+  "host": "host.server.com",
+  "basePath": "/v2",
+  "schemes": ["https"],
+  "paths": {
+    "/test/get": {
+      "get": {
+        "operationId": "testGetMethod",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": { "description": "Invalid status value" }
+        }
+      }
+    }
+  }
+}
