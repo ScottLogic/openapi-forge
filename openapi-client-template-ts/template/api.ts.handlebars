@@ -4,7 +4,7 @@ import Configuration from "./configuration";
     {{#each definitions}}{{@key}}, {{/each}}
   } from "./model";
 {{/if}}
-import { get, post } from "{{_options.httpVerbs}}";
+import { get, post } from "./httpVerbs";
 
 export default class Api {
   private config: Configuration;

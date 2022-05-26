@@ -19,8 +19,7 @@
             "schema": {
               "type": "string"
             }
-          },
-          "400": { "description": "Invalid status value" }
+          }
         }
       }
     }

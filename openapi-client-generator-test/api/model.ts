@@ -3,12 +3,10 @@ export class ApiResponse {
   public type?: string;
   public message?: string;
 }
-
 export class Category {
   public id?: number;
   public name?: string;
 }
-
 export class Pet {
   public id?: number;
   public category?: Category;
@@ -18,12 +16,10 @@ export class Pet {
   // pet status in the store
   public status?: string;
 }
-
 export class Tag {
   public id?: number;
   public name?: string;
 }
-
 export class Order {
   public id?: number;
   public petId?: number;
@@ -33,7 +29,6 @@ export class Order {
   public status?: string;
   public complete?: boolean;
 }
-
 export class User {
   public id?: number;
   public username?: string;

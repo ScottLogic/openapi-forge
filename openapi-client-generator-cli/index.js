@@ -10,12 +10,17 @@ program
   .argument("<schema>", "OpenAPI schema")
   .argument("<template>", "Path to the template project")
   .option(
+    "-e, --exclude <glob>",
+    "A glob pattern that excludes files from the output",
+    ""
+  )
+  .option(
     "-o, --output <path>",
     "The path where the generated client API is located",
     "."
   )
   .action((schema, template, options) => {
-    generate(schema, template, options.output);
+    generate(schema, template, options);
   });
 
 program.parse();

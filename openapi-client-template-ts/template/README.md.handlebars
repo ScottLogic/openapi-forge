@@ -1,0 +1,21 @@
+# {{info.title}} TypeScript Client Library
+
+This is an auto-generated client library for the {{info.title}} API, via the `openapi-client-template-ts` template.
+
+## Usage example 
+
+{{#each paths}}{{#with get}}{{#unless @root.apiMethod}}{{setVar "apiMethod" this}}{{/unless}}{{/with}}{{/each}}
+
+```
+import Api from "./api";
+import Configuration from "./configuration";
+import { Pet } from "./api/model";
+
+const config = new Configuration();
+// set any environment specific configuration here
+const api = new Api(config);
+
+api.{{apiMethod.operationId}}(...).then((data) => {
+   console.log(data.map(s => s.name));
+});
+```

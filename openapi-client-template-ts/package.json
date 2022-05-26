@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test:generate": "node node_modules/openapi-client-generator-cli/index.js generate ./test/test-api.json . -o test/api --httpVerbs='../mock/httpVerbs' --exclude='httpVerbs.ts'",
-    "test": "jest"
+    "test:generate": "node node_modules/openapi-client-generator-cli/index.js generate ./test/test-api.json . -o test/api  --exclude='httpVerbs.ts'",
+    "test:execute": "jest",
+    "test": "npm run test:generate && npm run test:execute"
   },
   "author": "",
   "license": "ISC",
