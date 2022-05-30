@@ -8,7 +8,7 @@ export async function get(
   pathParams: [string, string][]
 ): Promise<any> {
   for (const pathParam of pathParams) {
-    path = path.replace(`{${pathParam[0]}}`, pathParam[1]);
+    path = path.replace(`{${pathParam[0]}}`, encodeURIComponent(pathParam[1]));
   }
 
   const url =

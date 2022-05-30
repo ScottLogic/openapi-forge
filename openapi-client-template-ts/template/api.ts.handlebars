@@ -25,16 +25,19 @@ export default class Api {
     {{/each}}
     {{/if}}
     async {{operationId}}(
-      {{#each parameters}}
+      {{#eachWhere parameters "$this.required"}}
         {{name}}: {{typeConvert this}},
-      {{/each}}
+      {{/eachWhere}}
+      {{#eachWhere parameters "!$this.required"}}
+        {{name}}?: {{typeConvert this}},
+      {{/eachWhere}}
     ): Promise<{{typeConvert responses.200.schema}}> {
       return get(this.config, "{{@root.path}}", [
-        {{#eachWhere parameters "in" "query"}}
+        {{#eachWhere parameters "$this.in == 'query'"}} 
           ["{{name}}", {{name}}.toString()],
         {{/eachWhere}}
       ], [
-        {{#eachWhere parameters "in" "path"}}
+        {{#eachWhere parameters "$this.in == 'path'"}}
           ["{{name}}", {{name}}.toString()],
         {{/eachWhere}}
       ]);

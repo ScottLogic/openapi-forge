@@ -4,7 +4,7 @@ export class {{@key}} {
     {{#if description}}
     // {{description}}
     {{/if}}
-    public {{@key}}?: {{typeConvert this}};
+    public {{@key}}{{#ifNotContains ../required @key}}?{{/ifNotContains}}: {{typeConvert this}};
   {{/each}}
 }
 {{/each}}

@@ -22,6 +22,222 @@
           }
         }
       }
+    },
+    "/test/{test}/pathParameters": {
+      "get": {
+        "operationId": "testPathParameters",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "path",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/test/requiredParameters": {
+      "get": {
+        "operationId": "testRequiredParameters",
+        "parameters": [
+          {
+            "name": "optionalValue",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "requiredValue",
+            "in": "query",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/test/dataTypes": {
+      "get": {
+        "operationId": "testDataTypes",
+        "parameters": [
+          {
+            "name": "value1",
+            "in": "query",
+            "type": "integer"
+          },
+          {
+            "name": "value2",
+            "in": "query",
+            "type": "long"
+          },
+          {
+            "name": "value3",
+            "in": "query",
+            "type": "float"
+          },
+          {
+            "name": "value4",
+            "in": "query",
+            "type": "double"
+          },
+          {
+            "name": "value5",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "value6",
+            "in": "query",
+            "type": "byte"
+          },
+          {
+            "name": "value7",
+            "in": "query",
+            "type": "binary"
+          },
+          {
+            "name": "value8",
+            "in": "query",
+            "type": "boolean"
+          },
+          {
+            "name": "value9",
+            "in": "query",
+            "type": "date"
+          },
+          {
+            "name": "value10",
+            "in": "query",
+            "type": "dateTime"
+          },
+          {
+            "name": "value11",
+            "in": "query",
+            "type": "password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/test/csvCollectionParams": {
+      "get": {
+        "operationId": "testCsvCollectionParams",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/test/objectDataTypes": {
+      "get": {
+        "operationId": "testObjectDataTypes",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "$ref": "#/definitions/ObjectResponse"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/test/responsePrimitive": {
+      "get": {
+        "operationId": "testResponsePrimitive",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/test/responseObject": {
+      "get": {
+        "operationId": "testResponseObject",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ObjectResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ObjectResponse": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "value": { "type": "string" }
+      }
+    },
+    "ObjectWithRequired": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" }
+      },
+      "required": ["value"]
+    },
+    "ChildObject": {
+      "type": "object",
+      "properties": {}
+    },
+    "ParentObject": {
+      "type": "object",
+      "properties": {
+        "child": { "$ref": "#/definitions/ChildObject" }
+      }
+    },
+    "SubClassObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" }
+      }
+    },
+    "SuperClassObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" }
+      }
     }
   }
 }

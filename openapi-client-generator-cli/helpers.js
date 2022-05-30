@@ -19,7 +19,8 @@ function createFrame(object) {
   return frame;
 }
 
-function eachWhere(context, prop, value, options) {
+// TODO tidy this up, it was just cut and paste coded!
+function eachWhere(context, expression, options) {
   let fn = options.fn,
     inverse = options.inverse,
     i = 0,
@@ -53,8 +54,11 @@ function eachWhere(context, prop, value, options) {
   if (context && typeof context === "object") {
     if (Array.isArray(context)) {
       for (let j = context.length; i < j; i++) {
-        if (i in context && context[i][prop] === value) {
-          execIteration(i, i, i === context.length - 1);
+        if (i in context) {
+          let $this = context[i];
+          if (eval(expression)) {
+            execIteration(i, i, i === context.length - 1);
+          }
         }
       }
     }
@@ -67,8 +71,22 @@ function eachWhere(context, prop, value, options) {
   return ret;
 }
 
+function ifContains(collection, value, options) {
+  return collection && collection.includes(value)
+    ? options.fn(this)
+    : options.inverse(this);
+}
+
+function ifNotContains(collection, value, options) {
+  return collection && collection.includes(value)
+    ? options.inverse(this)
+    : options.fn(this);
+}
+
 module.exports = {
   setVar,
   eachWhere,
-  ifEquals
-}
+  ifEquals,
+  ifContains,
+  ifNotContains,
+};
