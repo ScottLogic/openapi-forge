@@ -1,6 +1,6 @@
-# Swagger Petstore TypeScript Client Library
+# Swagger Petstore - OpenAPI 3.0 TypeScript Client Library
 
-This is an auto-generated client library for the Swagger Petstore API, via the `openapi-client-template-ts` template.
+This is an auto-generated client library for the Swagger Petstore - OpenAPI 3.0 API, via the `openapi-client-template-ts` template.
 
 ## Usage example 
 

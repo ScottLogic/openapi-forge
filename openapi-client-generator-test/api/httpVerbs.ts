@@ -8,15 +8,23 @@ export async function get(
   pathParams: [string, string][]
 ): Promise<any> {
   for (const pathParam of pathParams) {
-    path = path.replace(`{${pathParam[0]}}`, pathParam[1]);
+    path = path.replace(`{${pathParam[0]}}`, encodeURIComponent(pathParam[1]));
   }
 
   const url =
-    `https://${config.host}${config.basePath}${path}` +
+    config.basePath +
+    config.servers[0] +
+    path +
     (query.length > 0 ? "?" + new URLSearchParams(query) : "");
+
+  console.log(url);
 
   const response = await fetch(url, {
     method: "get",
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    },
   });
 
   return await response.json();
@@ -27,7 +35,7 @@ export async function post(
   path: string,
   value: any
 ): Promise<any> {
-  const url = `https://${config.host}${config.basePath}${path}`;
+  const url = `https://${config.basePath}${path}`;
 
   const response = await fetch(url, {
     method: "post",

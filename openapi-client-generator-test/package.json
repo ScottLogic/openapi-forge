@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "generate-api": "node node_modules/openapi-client-generator-cli/index.js generate ./petstore.json ./node_modules/openapi-client-template-ts -o api",
-    "start": "ts-node index.ts"
+    "start": "npm run generate-api && ts-node index.ts"
   },
   "author": "",
   "license": "ISC",

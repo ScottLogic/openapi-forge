@@ -1,8 +1,6 @@
 {
-  "swagger": "2.0",
-  "host": "host.server.com",
-  "basePath": "/v2",
-  "schemes": ["https"],
+  "swagger": "3.0.2",
+  "servers": [{ "url": "/api/v3" }],
   "paths": {
     "/test/get": {
       "get": {
@@ -11,13 +9,19 @@
           {
             "name": "value",
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "schema": {
-              "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -30,13 +34,52 @@
           {
             "name": "value",
             "in": "path",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test/testDefaultParam": {
+      "get": {
+        "operationId": "testDefaultParam",
+        "parameters": [
+          {
+            "name": "paramOne",
+            "in": "query",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "paramTwo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "valTwo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -49,19 +92,27 @@
           {
             "name": "optionalValue",
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "requiredValue",
             "in": "query",
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "schema": {
-              "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -74,63 +125,89 @@
           {
             "name": "value1",
             "in": "query",
-            "type": "integer"
+            "schema": {
+              "type": "integer"
+            }
           },
           {
             "name": "value2",
             "in": "query",
-            "type": "long"
+            "schema": {
+              "type": "long"
+            }
           },
           {
             "name": "value3",
             "in": "query",
-            "type": "float"
+            "schema": {
+              "type": "float"
+            }
           },
           {
             "name": "value4",
             "in": "query",
-            "type": "double"
+            "schema": {
+              "type": "double"
+            }
           },
           {
             "name": "value5",
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "value6",
             "in": "query",
-            "type": "byte"
+            "schema": {
+              "type": "byte"
+            }
           },
           {
             "name": "value7",
             "in": "query",
-            "type": "binary"
+            "schema": {
+              "type": "binary"
+            }
           },
           {
             "name": "value8",
             "in": "query",
-            "type": "boolean"
+            "schema": {
+              "type": "boolean"
+            }
           },
           {
             "name": "value9",
             "in": "query",
-            "type": "date"
+            "schema": {
+              "type": "date"
+            }
           },
           {
             "name": "value10",
             "in": "query",
-            "type": "dateTime"
+            "schema": {
+              "type": "dateTime"
+            }
           },
           {
             "name": "value11",
             "in": "query",
-            "type": "password"
+            "schema": {
+              "type": "password"
+            }
           }
         ],
         "responses": {
           "200": {
-            "schema": {
-              "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -143,16 +220,22 @@
           {
             "name": "value",
             "in": "query",
-            "type": "array",
-            "items": {
-              "type": "string"
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "schema": {
-              "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -165,13 +248,20 @@
           {
             "name": "value",
             "in": "query",
-            "$ref": "#/definitions/ObjectResponse"
+            "schema": {
+              "$ref": "#/definitions/ObjectResponse"
+            }
+            
           }
         ],
         "responses": {
           "200": {
-            "schema": {
-              "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -182,8 +272,12 @@
         "operationId": "testResponsePrimitive",
         "responses": {
           "200": {
-            "schema": {
-              "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -194,49 +288,55 @@
         "operationId": "testResponseObject",
         "responses": {
           "200": {
-            "schema": {
-              "$ref": "#/definitions/ObjectResponse"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectResponse"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions": {
-    "ObjectResponse": {
-      "type": "object",
-      "properties": {
-        "id": { "type": "integer" },
-        "value": { "type": "string" }
-      }
-    },
-    "ObjectWithRequired": {
-      "type": "object",
-      "properties": {
-        "value": { "type": "string" }
+  "components": {
+    "schemas": {
+      "ObjectResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "value": { "type": "string" }
+        }
       },
-      "required": ["value"]
-    },
-    "ChildObject": {
-      "type": "object",
-      "properties": {}
-    },
-    "ParentObject": {
-      "type": "object",
-      "properties": {
-        "child": { "$ref": "#/definitions/ChildObject" }
-      }
-    },
-    "SubClassObject": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" }
-      }
-    },
-    "SuperClassObject": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" }
+      "ObjectWithRequired": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "string" }
+        },
+        "required": ["value"]
+      },
+      "ChildObject": {
+        "type": "object",
+        "properties": {}
+      },
+      "ParentObject": {
+        "type": "object",
+        "properties": {
+          "child": { "$ref": "#/definitions/ChildObject" }
+        }
+      },
+      "SubClassObject": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        }
+      },
+      "SuperClassObject": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        }
       }
     }
   }

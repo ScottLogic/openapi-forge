@@ -83,10 +83,15 @@ function ifNotContains(collection, value, options) {
     : options.fn(this);
 }
 
+function json(context) {
+  return JSON.stringify(context);
+}
+
 module.exports = {
   setVar,
   eachWhere,
   ifEquals,
   ifContains,
   ifNotContains,
+  json
 };

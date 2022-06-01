@@ -1,11 +1,13 @@
 import Configuration from "./configuration";
-{{#if definitions}}
+{{#if components.schemas}}
   import {
-    {{#each definitions}}{{@key}}, {{/each}}
+    {{#each components.schemas}}{{@key}}, {{/each}}
   } from "./model";
 {{/if}}
 import { get, post } from "./httpVerbs";
 
+// {{info.title}}
+{{!-- // {{info.description}} --}}
 export default class Api {
   private config: Configuration;
 
@@ -17,26 +19,32 @@ export default class Api {
   {{setVar "path" @key}}
   {{#with get}}
     
-    {{#if summary}}
-    // {{summary}}
-    // {{description}}
+    {{#if summary}}// {{summary}}{{/if}}
+    {{#if description}}// {{description}}{{/if}}
     {{#each parameters}}
       // @param {{name}} {{description}}
     {{/each}}
-    {{/if}}
     async {{operationId}}(
+      {{!-- move required params to the front --}}
       {{#eachWhere parameters "$this.required"}}
-        {{name}}: {{typeConvert this}},
+        {{name}}: {{typeConvert schema}},
       {{/eachWhere}}
-      {{#eachWhere parameters "!$this.required"}}
-        {{name}}?: {{typeConvert this}},
+      {{!-- next add params with default values --}}
+      {{#eachWhere parameters "!$this.required && $this.schema.default"}}
+        {{name}}: {{typeConvert schema}}{{#if schema.default}} = "{{schema.default}}"{{/if}},
       {{/eachWhere}}
-    ): Promise<{{typeConvert responses.200.schema}}> {
-      return get(this.config, "{{@root.path}}", [
-        {{#eachWhere parameters "$this.in == 'query'"}} 
-          ["{{name}}", {{name}}.toString()],
-        {{/eachWhere}}
-      ], [
+      {{!-- finally, all optional params --}}
+      {{#eachWhere parameters "!$this.required && !$this.schema.default"}}
+        {{name}}?: {{typeConvert schema}},
+      {{/eachWhere}}
+    ): Promise<{{#with (lookup responses.200.content 'application/json')}}{{typeConvert schema}}{{/with}}> {
+      let queryParams: [string, string][] = [];
+      {{#eachWhere parameters "$this.in == 'query'"}} 
+      if ({{name}} !== undefined) {
+        queryParams.push(["{{name}}", {{name}}.toString()]);
+      }
+      {{/eachWhere}}
+      return get(this.config, "{{@root.path}}", queryParams, [
         {{#eachWhere parameters "$this.in == 'path'"}}
           ["{{name}}", {{name}}.toString()],
         {{/eachWhere}}
@@ -50,16 +58,20 @@ export default class Api {
   {{setVar "path" @key}}
   {{#with post}}
     
-    {{#if summary}}
-    // {{summary}}
-    // {{description}}
+    {{#if summary}}// {{summary}}{{/if}}
+    {{#if description}}// {{description}}{{/if}}
     {{#each parameters}}
       // @param {{name}} {{description}}
     {{/each}}
-    {{/if}}
     async {{operationId}}(
-      value: {{typeConvert parameters.[0].schema}}
-    ): Promise<{{typeConvert parameters.[0].schema}}> {
+      value: {{#with (lookup requestBody.content 'application/json')}}{{typeConvert schema}}{{/with}}
+    ): Promise<
+      {{#if responses.200.content}}
+        {{#with (lookup responses.200.content 'application/json')}}{{typeConvert schema}}{{/with}}
+      {{else}}
+        {{#with (lookup responses.default.content 'application/json')}}{{typeConvert schema}}{{/with}}
+      {{/if}}
+      > {
       return post(this.config, "{{@root.path}}", value);
     };
     
