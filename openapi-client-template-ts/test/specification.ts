@@ -24,7 +24,7 @@ describe("data types", () => {
   });
 
   //github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#data-types
-  https: test("schema / object data types", async () => {
+  test("schema / object data types", async () => {
     api.testObjectDataTypes(new ObjectResponse());
   });
 });

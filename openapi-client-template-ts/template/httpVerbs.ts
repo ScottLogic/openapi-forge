@@ -17,8 +17,6 @@ export async function get(
     path +
     (query.length > 0 ? "?" + new URLSearchParams(query) : "");
 
-  console.log(url);
-
   const response = await fetch(url, {
     method: "get",
     headers: {
@@ -35,7 +33,7 @@ export async function post(
   path: string,
   value: any
 ): Promise<any> {
-  const url = `https://${config.basePath}${path}`;
+  const url = config.basePath + config.servers[0] + path;
 
   const response = await fetch(url, {
     method: "post",

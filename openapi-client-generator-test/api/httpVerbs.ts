@@ -35,7 +35,7 @@ export async function post(
   path: string,
   value: any
 ): Promise<any> {
-  const url = `https://${config.basePath}${path}`;
+  const url = config.basePath + config.servers[0] + path;
 
   const response = await fetch(url, {
     method: "post",
