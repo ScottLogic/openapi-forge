@@ -4,7 +4,7 @@ import Configuration from "./configuration";
     {{#each components.schemas}}{{@key}}, {{/each}}
   } from "./model";
 {{/if}}
-import { get, post } from "./httpVerbs";
+import { request } from "./httpVerbs";
 
 // {{info.title}}
 {{!-- // {{info.description}} --}}
@@ -17,7 +17,7 @@ export default class Api {
 
   {{#each paths}}
   {{setVar "path" @key}}
-  {{#with get}}
+  {{#each this}}
     
     {{#if summary}}// {{summary}}{{/if}}
     {{#if description}}// {{description}}{{/if}}
@@ -28,24 +28,24 @@ export default class Api {
       {{#each _sortedParameters}}
         {{name}}{{#if _optional}}?{{/if}}: {{typeConvert schema}}{{#if schema.default}} = "{{schema.default}}"{{/if}},
       {{/each}}
-    ): Promise<{{#with (lookup responses.200.content 'application/json')}}{{typeConvert schema}}{{/with}}> {
-      let queryParams: [string, string][] = [];
-      {{#eachWhere parameters "$this.in == 'query'"}} 
+    ): Promise<{{#if _response.schema}}{{typeConvert _response.schema}}{{else}}null{{/if}}> {
+      let params: [string, any][] = [];
+      {{#each _sortedParameters}} 
       if ({{name}} !== undefined) {
-        queryParams.push(["{{name}}", {{name}}.toString()]);
+        params.push(["{{name}}", {{name}}]);
       }
-      {{/eachWhere}}
-      return get(this.config, "{{@root.path}}", queryParams, [
+      {{/each}}
+      return request(this.config, "{{@root.path}}", "{{@key}}", params, [
         {{#eachWhere parameters "$this.in == 'path'"}}
           ["{{name}}", {{name}}.toString()],
         {{/eachWhere}}
       ]);
     };
-    
-  {{/with}}
+
+  {{/each}}  
   {{/each}}
 
-  {{#each paths}}
+  {{!-- {{#each paths}}
   {{setVar "path" @key}}
   {{#with post}}
     
@@ -67,6 +67,6 @@ export default class Api {
     };
     
   {{/with}}
-  {{/each}}
+  {{/each}} --}}
 }
 

@@ -54,8 +54,37 @@ const sortPathParameters = (schema) => {
   });
 };
 
+const addRequestBodyToParams = (schema) => {
+  iterateVerbs(schema, (verb) => {
+    if (verb.requestBody) {
+      const param = verb.requestBody.content["application/json"];
+      param.name = "body";
+      param.in = "query";
+      if (verb._sortedParameters) {
+        verb._sortedParameters.push(param);
+      } else {
+        verb._sortedParameters = [param];
+      }
+    }
+  });
+};
+
+const resolveResponse = (schema) => {
+  iterateVerbs(schema, (verb) => {
+    if (verb.responses["200"]) {
+      verb._response = verb.responses["200"].content["application/json"];
+    } else if (verb.responses["default"] && verb.responses["default"].content) {
+      verb._response = verb.responses["default"].content["application/json"];
+    } else {
+      verb._response = null;
+    }
+  });
+};
+
 module.exports = {
   requiredSchemaObjectProperties,
   optionalPathProperties,
   sortPathParameters,
+  addRequestBodyToParams,
+  resolveResponse
 };

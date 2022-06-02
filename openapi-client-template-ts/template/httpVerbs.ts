@@ -1,44 +1,40 @@
 import fetch from "node-fetch";
 import Configuration from "./configuration";
 
-export async function get(
+export async function request(
   config: Configuration,
   path: string,
-  query: [string, string][],
+  method: string,
+  params: [string, any][],
   pathParams: [string, string][]
 ): Promise<any> {
   for (const pathParam of pathParams) {
     path = path.replace(`{${pathParam[0]}}`, encodeURIComponent(pathParam[1]));
   }
 
-  const url =
+  let url =
     config.basePath +
     config.servers[0] +
-    path +
-    (query.length > 0 ? "?" + new URLSearchParams(query) : "");
+    path;
+
+  if (method === "get" && params.length > 0) {
+    url += "?" + new URLSearchParams(params);
+  }
+
+  // TODO: tidy this up a bit ...
+  let body;
+  let kv = params.find(([key, _]) => key === "body");
+  if (kv) {
+    body = JSON.stringify(kv[1]);
+  }
 
   const response = await fetch(url, {
-    method: "get",
+    method,
+    body,
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
-  });
-
-  return await response.json();
-}
-
-export async function post(
-  config: Configuration,
-  path: string,
-  value: any
-): Promise<any> {
-  const url = config.basePath + config.servers[0] + path;
-
-  const response = await fetch(url, {
-    method: "post",
-    body: JSON.stringify(value),
-    headers: { "Content-Type": "application/json", accept: "application/json" },
   });
 
   return await response.json();
