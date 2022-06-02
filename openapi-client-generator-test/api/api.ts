@@ -33,7 +33,7 @@ export default class Api {
   // Finds Pets by tags
   // Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
   // @param tags Tags to filter by
-  async findPetsByTags(tags?: string[]): Promise<Pet[]> {
+  async findPetsByTags(tags: string[]): Promise<Pet[]> {
     let queryParams: [string, string][] = [];
     if (tags !== undefined) {
       queryParams.push(["tags", tags.toString()]);
@@ -65,7 +65,7 @@ export default class Api {
 
   // @param username The user name for login
   // @param password The password for login in clear text
-  async loginUser(username?: string, password?: string): Promise<string> {
+  async loginUser(username: string, password: string): Promise<string> {
     let queryParams: [string, string][] = [];
     if (username !== undefined) {
       queryParams.push(["username", username.toString()]);

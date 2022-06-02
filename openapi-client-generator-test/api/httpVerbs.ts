@@ -17,8 +17,6 @@ export async function get(
     path +
     (query.length > 0 ? "?" + new URLSearchParams(query) : "");
 
-  console.log(url);
-
   const response = await fetch(url, {
     method: "get",
     headers: {

@@ -25,18 +25,9 @@ export default class Api {
       // @param {{name}} {{description}}
     {{/each}}
     async {{operationId}}(
-      {{!-- move required params to the front --}}
-      {{#eachWhere parameters "$this.required"}}
-        {{name}}: {{typeConvert schema}},
-      {{/eachWhere}}
-      {{!-- next add params with default values --}}
-      {{#eachWhere parameters "!$this.required && $this.schema.default"}}
-        {{name}}: {{typeConvert schema}}{{#if schema.default}} = "{{schema.default}}"{{/if}},
-      {{/eachWhere}}
-      {{!-- finally, all optional params --}}
-      {{#eachWhere parameters "!$this.required && !$this.schema.default"}}
-        {{name}}?: {{typeConvert schema}},
-      {{/eachWhere}}
+      {{#each _sortedParameters}}
+        {{name}}{{#if _optional}}?{{/if}}: {{typeConvert schema}}{{#if schema.default}} = "{{schema.default}}"{{/if}},
+      {{/each}}
     ): Promise<{{#with (lookup responses.200.content 'application/json')}}{{typeConvert schema}}{{/with}}> {
       let queryParams: [string, string][] = [];
       {{#eachWhere parameters "$this.in == 'query'"}} 
@@ -66,7 +57,7 @@ export default class Api {
     async {{operationId}}(
       value: {{#with (lookup requestBody.content 'application/json')}}{{typeConvert schema}}{{/with}}
     ): Promise<
-      {{#if responses.200.content}}
+      {{#if responses.200}}
         {{#with (lookup responses.200.content 'application/json')}}{{typeConvert schema}}{{/with}}
       {{else}}
         {{#with (lookup responses.default.content 'application/json')}}{{typeConvert schema}}{{/with}}

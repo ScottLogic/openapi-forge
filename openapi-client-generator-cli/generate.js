@@ -1,6 +1,7 @@
 const fs = require("fs");
 const Handlebars = require("handlebars");
 const helpers = require("./helpers");
+const transformers = require("./transformers");
 const prettier = require("prettier");
 const path = require("path");
 const minimatch = require("minimatch");
@@ -15,7 +16,11 @@ function generate(schemaPath, templateProject, options) {
 
   // load the OpenAPI schema
   const schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"));
-  schema._options = options;
+
+  // transform
+  Object.values(transformers).forEach((transformer) => {
+    transformer(schema);
+  });
 
   // load any template helpers
   const helpers = fs.readdirSync(helpersPath);
