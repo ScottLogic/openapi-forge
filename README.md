@@ -2,6 +2,36 @@
 
 ⚒️ Effortlessly create OpenAPI clients from the fiery furnace of our forge 
 
+## Quick start
+
+This project is still inactive development, these steps will be simplified and streamlined soon.
+
+Install this project globally:
+
+~~~
+$ npm install --global
+~~~
+
+This will allow you to use it via the `openapi-forge` command.
+
+Next, download a client template:
+
+~~~
+$ git clone https://github.com/ColinEberhardt/openapi-forge-typescript.git
+~~~
+
+Download or locate a suitable OpenAPI specification (v3):
+
+~~~
+$ wget https://petstore3.swagger.io/api/v3/openapi.json
+~~~
+
+Forge your client api ...
+
+~~~
+$ openapi-forge forge openapi.json ./openapi-forge-typescript -o api
+~~~
+
 
 ## TODO
  - better error reporting from CLI tool

@@ -22,13 +22,17 @@ const iterateVerbs = (schema, fn) => {
   }
 };
 
-// if a path parameter is not required and does't have a default,
-// it is considered optional
-const optionalPathProperties = (schema) => {
+// if a parameter is not required and does't have a default,
+// and isn't a path parameter, it is considered optional
+const optionalProperties = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.parameters) {
       verb.parameters.forEach((param) => {
-        if (!param.required && !param.schema.default) {
+        if (
+          !param.required &&
+          !param.schema.default &&
+          param.in !== "path"
+        ) {
           param._optional = true;
         }
       });
@@ -41,7 +45,7 @@ const optionalPathProperties = (schema) => {
 const sortPathParameters = (schema) => {
   const paramScore = (param) => {
     if (param.required) return 2;
-    if (param.default) return 1;
+    if (param.schema.default) return 1;
     return 0;
   };
 
@@ -83,8 +87,8 @@ const resolveResponse = (schema) => {
 
 module.exports = {
   requiredSchemaObjectProperties,
-  optionalPathProperties,
+  optionalProperties,
   sortPathParameters,
   addRequestBodyToParams,
-  resolveResponse
+  resolveResponse,
 };
