@@ -29,16 +29,14 @@ export default class Api {
         {{name}}{{#if _optional}}?{{/if}}: {{typeConvert schema}}{{#if schema.default}} = "{{schema.default}}"{{/if}},
       {{/each}}
     ): Promise<{{#if _response.schema}}{{typeConvert _response.schema}}{{else}}null{{/if}}> {
-      let params: [string, any][] = [];
-      {{#each _sortedParameters}} 
-      if ({{name}} !== undefined) {
-        params.push(["{{name}}", {{name}}]);
-      }
-      {{/each}}
-      return request(this.config, "{{@root.path}}", "{{@key}}", params, [
-        {{#eachWhere parameters "$this.in == 'path'"}}
-          ["{{name}}", {{name}}.toString()],
-        {{/eachWhere}}
+      return request(this.config, "{{@root.path}}", "{{@key}}", [
+        {{#each _sortedParameters}}
+          {
+            name: "{{name}}",
+            value: {{name}},
+            type: "{{in}}"
+          },
+        {{/each}}
       ]);
     };
 

@@ -1,9 +1,16 @@
 import Configuration from "./api/configuration";
 import Api from "./api/api";
 import { ChildObject, ObjectResponse, ParentObject } from "./api/model";
+import { Parameter } from "./api/httpVerbs";
 
 const config = new Configuration();
 const api = new Api(config);
+
+interface RequestParams {
+  path: string;
+  method: string;
+  params: Parameter[];
+}
 
 describe("data types", () => {
   //github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#data-types
@@ -57,20 +64,48 @@ describe("Open API Document", () => {
           api.testRequiredParameters("required", "optional");
         });
         test("path parameters", async () => {
-          const results = JSON.parse(await api.testPathParameters("foo"));
+          const results = JSON.parse(
+            await api.testPathParameters("foo")
+          ) as RequestParams;
           expect(results.path).toBe("/test/{test}/pathParameters");
-          expect(results.pathParams).toEqual([["value", "foo"]]);
-          expect(results.query).toEqual([]);
+          expect(results.params).toEqual([
+            {
+              name: "value",
+              value: "foo",
+              type: "path",
+            },
+          ]);
+          expect(results.method).toBe("get");
         });
         test("query parameters", async () => {
-          const results = JSON.parse(await api.testGetMethod("foo"));
+          const results = JSON.parse(
+            await api.testGetMethod("foo")
+          ) as RequestParams;
           expect(results.path).toBe("/test/get");
-          expect(results.query).toEqual([["value", "foo"]]);
-          expect(results.pathParams).toEqual([]);
+          expect(results.params).toEqual([
+            {
+              name: "value",
+              value: "foo",
+              type: "query",
+            },
+          ]);
+          expect(results.method).toBe("get");
         });
         test("parameter default values", async () => {
-          const results = JSON.parse(await api.testDefaultParam());
-          expect(results.query).toEqual([["paramTwo", "valTwo"]]);
+          const results = JSON.parse(
+            await api.testDefaultParam()
+          ) as RequestParams;
+          expect(results.params).toEqual([
+            {
+              name: "paramOne",
+              type: "query",
+            },
+            {
+              name: "paramTwo",
+              value: "valTwo",
+              type: "query",
+            },
+          ]);
         });
         test.skip("header parameters", async () => {
           // TODO
@@ -88,8 +123,14 @@ describe("Open API Document", () => {
             test("defaults to CSV", async () => {
               const results = JSON.parse(
                 await api.testCsvCollectionParams(["one", "two"])
-              );
-              expect(results.query).toEqual([["value", "one,two"]]);
+              ) as RequestParams;
+              expect(results.params).toEqual([
+                {
+                  name: "value",
+                  value: ["one", "two"],
+                  type: "query",
+                },
+              ]);
             });
             test.skip("supports SSV", async () => {
               // TODO
@@ -120,10 +161,18 @@ describe("Open API Document", () => {
 
     describe("HTTP verbs", () => {
       test("get", async () => {
-        const results = JSON.parse(await api.testGetMethod("foo"));
+        const results = JSON.parse(
+          await api.testGetMethod("foo")
+        ) as RequestParams;
         expect(results.path).toBe("/test/get");
-        expect(results.query).toEqual([["value", "foo"]]);
-        expect(results.pathParams).toEqual([]);
+        expect(results.params).toEqual([
+          {
+            name: "value",
+            value: "foo",
+            type: "query",
+          },
+        ]);
+        expect(results.method).toBe("get");
       });
 
       test.skip("put", () => {});

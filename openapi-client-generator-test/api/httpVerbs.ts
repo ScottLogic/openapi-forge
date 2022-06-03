@@ -1,29 +1,53 @@
 import fetch from "node-fetch";
 import Configuration from "./configuration";
 
+interface Parameter {
+  name: string;
+  value: any;
+  type: string;
+}
+
+interface Headers {
+  [index: string]: string;
+}
+
 export async function request(
   config: Configuration,
   path: string,
   method: string,
-  params: [string, any][],
-  pathParams: [string, string][]
+  params: Parameter[]
 ): Promise<any> {
-  for (const pathParam of pathParams) {
-    path = path.replace(`{${pathParam[0]}}`, encodeURIComponent(pathParam[1]));
+  for (const pathParam of params.filter((p) => p.type === "path")) {
+    path = path.replace(
+      `{${pathParam.name}}`,
+      encodeURIComponent(pathParam.value)
+    );
   }
 
   let url = config.basePath + config.servers[0] + path;
 
-  if (method === "get" && params.length > 0) {
-    url += "?" + new URLSearchParams(params);
+  const queryParams = params.filter((p) => p.type === "query");
+  if (method === "get" && queryParams.length > 0) {
+    const q: [string, string][] = queryParams.map((p) => [
+      p.name,
+      `${p.value}`,
+    ]);
+    url += "?" + new URLSearchParams(q);
   }
 
   // TODO: tidy this up a bit ...
   let body;
-  let kv = params.find(([key, _]) => key === "body");
+  let kv = params.find((p) => p.type === "body");
   if (kv) {
-    body = JSON.stringify(kv[1]);
+    body = JSON.stringify(kv.value);
   }
+
+  const additionalHeaders = params
+    .filter((p) => p.type === "header")
+    .reduce<Headers>((acc, param) => {
+      acc[param.name] = `${param.value}`;
+      return acc;
+    }, {});
 
   const response = await fetch(url, {
     method,
@@ -31,6 +55,7 @@ export async function request(
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
+      ...additionalHeaders,
     },
   });
 
