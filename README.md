@@ -23,14 +23,19 @@ $ git clone https://github.com/ColinEberhardt/openapi-forge-typescript.git
 Forge your client api ...
 
 ~~~
-$ openapi-forge forge https://petstore3.swagger.io/api/v3/openapi.json ./openapi-forge-typescript -o api
+$ openapi-forge forge
+ \ https://raw.githubusercontent.com/ColinEberhardt/openapi-forge-typescript/main/example/petstore.json
+ \ ./openapi-forge-typescript
+ \ -o api
 ~~~
 
 
 ## TODO
  - better error reporting from CLI tool
  - allow templates to be supplied via GitHub URL, npm package or file
+ - allow templates with nested folder structures
  - turn this into a proper CLI tool
  - add a verbose / debug mode
  - output generation progress
  - determine the node version requirements for the forge
+ - support XML generation

@@ -66,6 +66,8 @@ async function generate(schemaPathOrUrl, templateProject, options) {
     try {
       result = prettier.format(result, { parser: "typescript" });
     } catch {}
+
+    fs.mkdirSync(options.output, { recursive: true });
     fs.writeFileSync(
       `${options.output}/${file.replace(".handlebars", "")}`,
       result

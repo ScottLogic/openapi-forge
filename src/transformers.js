@@ -58,6 +58,8 @@ const sortPathParameters = (schema) => {
   });
 };
 
+// if a request body is provided, add this to the array of sorted
+// parameters
 const addRequestBodyToParams = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.requestBody) {
@@ -73,6 +75,7 @@ const addRequestBodyToParams = (schema) => {
   });
 };
 
+// locate a 200 response, or a default
 const resolveResponse = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.responses["200"]) {
