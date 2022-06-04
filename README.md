@@ -20,16 +20,10 @@ Next, download a client template:
 $ git clone https://github.com/ColinEberhardt/openapi-forge-typescript.git
 ~~~
 
-Download or locate a suitable OpenAPI specification (v3):
-
-~~~
-$ wget https://petstore3.swagger.io/api/v3/openapi.json
-~~~
-
 Forge your client api ...
 
 ~~~
-$ openapi-forge forge openapi.json ./openapi-forge-typescript -o api
+$ openapi-forge forge https://petstore3.swagger.io/api/v3/openapi.json ./openapi-forge-typescript -o api
 ~~~
 
 
@@ -39,3 +33,4 @@ $ openapi-forge forge openapi.json ./openapi-forge-typescript -o api
  - turn this into a proper CLI tool
  - add a verbose / debug mode
  - output generation progress
+ - determine the node version requirements for the forge

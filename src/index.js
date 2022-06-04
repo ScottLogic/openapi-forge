@@ -9,7 +9,7 @@ program.name("openapi-generator");
 program
   .command("forge")
   .description("Forge the API client from an OpenAPI specification")
-  .argument("<schema>", "OpenAPI schema")
+  .argument("<schema>", "An OpenAPI schema, either a URL or a file path")
   .argument("<template>", "Path to the template")
   .option(
     "-e, --exclude <glob>",
@@ -21,7 +21,7 @@ program
     "The path where the generated client API is located",
     "."
   )
-  .action((schema, template, options) => {
+  .action(async (schema, template, options) => {
     generate(schema, template, options);
   });
 

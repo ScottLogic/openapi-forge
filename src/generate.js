@@ -1,21 +1,36 @@
 const fs = require("fs");
+const URL = require("url").URL;
+const path = require("path");
+
 const Handlebars = require("handlebars");
+const prettier = require("prettier");
+const minimatch = require("minimatch");
+const fetch = require("node-fetch");
+
 const helpers = require("./helpers");
 const transformers = require("./transformers");
-const prettier = require("prettier");
-const path = require("path");
-const minimatch = require("minimatch");
 
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
 });
 
-function generate(schemaPath, templateProject, options) {
+async function loadSchema(schemaPathOrUrl) {
+  try {
+    // this throws if the URL is not valid
+    new URL(schemaPathOrUrl);
+    const response = await fetch(schemaPathOrUrl);
+    return await response.json();
+  } catch (err) {
+    return JSON.parse(fs.readFileSync(schemaPathOrUrl, "utf-8"));
+  }
+}
+
+async function generate(schemaPathOrUrl, templateProject, options) {
   const templatePath = templateProject + "/template";
   const helpersPath = templateProject + "/helpers";
 
   // load the OpenAPI schema
-  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"));
+  const schema = await loadSchema(schemaPathOrUrl);
 
   // transform
   Object.values(transformers).forEach((transformer) => {

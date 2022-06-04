@@ -14,7 +14,7 @@
     "commander": "^9.2.0",
     "handlebars": "^4.7.7",
     "minimatch": "^5.1.0",
-    "node-fetch": "^3.2.4",
+    "node-fetch": "^2.6.7",
     "prettier": "^2.6.2"
   }
 }
