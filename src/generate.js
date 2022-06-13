@@ -6,6 +6,7 @@ const Handlebars = require("handlebars");
 const prettier = require("prettier");
 const minimatch = require("minimatch");
 const fetch = require("node-fetch");
+const { parse } = require("yaml");
 
 const helpers = require("./helpers");
 const transformers = require("./transformers");
@@ -15,13 +16,25 @@ Object.keys(helpers).forEach((helperName) => {
 });
 
 async function loadSchema(schemaPathOrUrl) {
+  const isYml =
+    schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
   try {
     // this throws if the URL is not valid
     new URL(schemaPathOrUrl);
     const response = await fetch(schemaPathOrUrl);
-    return await response.json();
+    if (isYml) {
+      const responseText = await response.text();
+      return parse(responseText);
+    } else {
+      return await response.json();
+    }
   } catch (err) {
-    return JSON.parse(fs.readFileSync(schemaPathOrUrl, "utf-8"));
+    const file = fs.readFileSync(schemaPathOrUrl, "utf-8");
+    if (isYml) {
+      return parse(file);
+    } else {
+      return JSON.parse(file);
+    }
   }
 }
 
