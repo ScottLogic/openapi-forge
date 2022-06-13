@@ -1,7 +1,7 @@
 // moved required properties from the array at the object level to
 // each individual property
 const requiredSchemaObjectProperties = (schema) => {
-  if (schema.components.schemas) {
+  if (schema.components && schema.components.schemas) {
     for (const model of Object.values(schema.components.schemas)) {
       if (model.required) {
         model.required.forEach((prop) => {
@@ -28,7 +28,11 @@ const optionalProperties = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.parameters) {
       verb.parameters.forEach((param) => {
-        if (!param.required && !param.schema.default && param.in !== "path") {
+        if (
+          !param.required &&
+          !(param.schema && param.schema.default) &&
+          param.in !== "path"
+        ) {
           param._optional = true;
         }
       });
@@ -41,7 +45,7 @@ const optionalProperties = (schema) => {
 const sortPathParameters = (schema) => {
   const paramScore = (param) => {
     if (param.required) return 2;
-    if (param.schema.default) return 1;
+    if (param.schema && param.schema.default) return 1;
     return 0;
   };
 
@@ -86,8 +90,23 @@ const resolveResponse = (schema) => {
   });
 };
 
+// if a parameter is expressed as a reference, replace it with the actual
+const resolveReferencedParameters = (schema) => {
+  iterateVerbs(schema, (verb) => {
+    if (verb.parameters) {
+      verb.parameters.forEach((param) => {
+        if (param.$ref) {
+          const ref = param.$ref.split("/").pop();
+          Object.assign(param, schema.components.parameters[ref]);
+        }
+      });
+    }
+  });
+};
+
 module.exports = {
   requiredSchemaObjectProperties,
+  resolveReferencedParameters,
   optionalProperties,
   sortPathParameters,
   addRequestBodyToParams,
