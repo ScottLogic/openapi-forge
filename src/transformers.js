@@ -28,11 +28,7 @@ const optionalProperties = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.parameters) {
       verb.parameters.forEach((param) => {
-        if (
-          !param.required &&
-          !param.schema.default &&
-          param.in !== "path"
-        ) {
+        if (!param.required && !param.schema.default && param.in !== "path") {
           param._optional = true;
         }
       });
@@ -64,12 +60,14 @@ const addRequestBodyToParams = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.requestBody) {
       const param = verb.requestBody.content["application/json"];
-      param.name = "body";
-      param.in = "query";
-      if (verb._sortedParameters) {
-        verb._sortedParameters.push(param);
-      } else {
-        verb._sortedParameters = [param];
+      if (param) {
+        param.name = "body";
+        param.in = "query";
+        if (verb._sortedParameters) {
+          verb._sortedParameters.push(param);
+        } else {
+          verb._sortedParameters = [param];
+        }
       }
     }
   });
