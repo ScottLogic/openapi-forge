@@ -2,7 +2,7 @@
   "name": "openapi-forge",
   "version": "0.1.0",
   "description": "Effortlessly create OpenAPI clients from the fiery furnace of our forge",
-  "main": "index.js",
+  "main": "src/generate.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

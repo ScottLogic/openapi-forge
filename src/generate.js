@@ -15,6 +15,7 @@ Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
 });
 
+// loads the schema, either from a local file or from a remote URL
 async function loadSchema(schemaPathOrUrl) {
   const isYml =
     schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
@@ -38,12 +39,15 @@ async function loadSchema(schemaPathOrUrl) {
   }
 }
 
-async function generate(schemaPathOrUrl, templateProject, options) {
+async function generate(schemaLocation, templateProject, options) {
   const templatePath = templateProject + "/template";
   const helpersPath = templateProject + "/helpers";
 
   // load the OpenAPI schema
-  const schema = await loadSchema(schemaPathOrUrl);
+  const schema =
+    typeof schemaLocation === "object"
+      ? schemaLocation
+      : await loadSchema(schemaLocation);
 
   // transform
   Object.values(transformers).forEach((transformer) => {
