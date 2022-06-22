@@ -69,7 +69,7 @@ async function generate(schemaLocation, templateProject, options) {
   // iterate over all the files in the folder template
   const templates = fs.readdirSync(templatePath);
   templates.forEach((file) => {
-    if (minimatch(file, options.exclude)) {
+    if (options.exclude && minimatch(file, options.exclude)) {
       return;
     }
 
