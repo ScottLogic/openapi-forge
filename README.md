@@ -9,7 +9,7 @@
  - **Generation configuration** - if you do need to configure the generation process, the goal is to make this as simple as possible
  - **Opinionated** - we'll support just one 'official' generator per language
  - **Multi-repo** - each generator has its own repository, reducing overall traffic
- - **Extensively tested** - using the OpenAPI specification as a guide, it is our goal to test the generators extensively
+ - **Extensively tested** - this repo contains a BDD test suite that is executed against each generator to ensure that it faithfully implements the OpenAPI specification
 
 ## Quick start
 
@@ -23,7 +23,7 @@ $ npm install --global
 
 This will allow you to use it via the `openapi-forge` command.
 
-Next, download a client template:
+Next, download a client generator:
 
 ~~~
 $ git clone https://github.com/ColinEberhardt/openapi-forge-typescript.git
@@ -44,13 +44,13 @@ The following is a very high-level overview of the generation process:
 
  - load - the Forge generator loads the given OpenAPI schema
  - transform - the schema undergoes a number of transformations for the purposes of simplifying the generation process. By convention, any modified or new properties are prefixed with an undercore.
- - generate - the generation templates are implemented using the [Handlebars templating engine](https://handlebarsjs.com/). 
+ - generate - the generators are implemented using the [Handlebars templating engine](https://handlebarsjs.com/). 
 
 
 ## TODO
  - better error reporting from CLI tool
- - allow templates to be supplied via GitHub URL, npm package or file
- - allow templates with nested folder structures
+ - allow generators to be supplied via GitHub URL, npm package or file
+ - allow generators with nested folder structures
  - add a verbose / debug mode
  - output generation progress
  - determine the node version requirements for the forge
