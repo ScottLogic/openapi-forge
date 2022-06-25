@@ -54,6 +54,9 @@ async function generate(schemaLocation, templateProject, options) {
     transformer(schema);
   });
 
+  // add options to the schema, making them available to templates
+  schema._options = options;
+
   // load any template helpers
   const helpers = fs.readdirSync(helpersPath);
   helpers.forEach((helper) => {
