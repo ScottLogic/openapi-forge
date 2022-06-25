@@ -1,7 +1,7 @@
 Feature: Path parameter handling
 
   Scenario: Calling API methods that have path parameters
-    Given An API with the following specification
+    Given an API with the following specification
     """
     {
       "servers": [{ "url": "https://example.com/api/v3" }],
@@ -34,5 +34,5 @@ Feature: Path parameter handling
       }
     }
     """
-    When I call the method pathParameters with parameters "value"
-    Then The requested URL should be https://example.com/api/v3/test/value/pathParameters
+    When calling the method pathParameters with parameters "value"
+    Then the requested URL should be https://example.com/api/v3/test/value/pathParameters

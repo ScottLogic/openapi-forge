@@ -1,7 +1,7 @@
 Feature: Querystring handling
 
   Scenario: Calling API methods with a querystring
-    Given An API with the following specification
+    Given an API with the following specification
     """
     {
       "servers": [{ "url": "https://example.com/api/v3" }],
@@ -30,11 +30,11 @@ Feature: Querystring handling
       }
     }
     """
-    When I call the method sendString with parameters "cabbage"
-    Then The requested URL should be https://example.com/api/v3/test/get?value=cabbage
+    When calling the method sendString with parameters "cabbage"
+    Then the requested URL should be https://example.com/api/v3/test/get?value=cabbage
 
   Scenario: Calling API methods with a querystring omitting optional params
-    Given An API with the following specification
+    Given an API with the following specification
     """
     {
       "servers": [{ "url": "https://example.com/api/v3" }],
@@ -63,11 +63,11 @@ Feature: Querystring handling
       }
     }
     """
-    When I call the method sendString without params
-    Then The requested URL should be https://example.com/api/v3/test/get
+    When calling the method sendString without params
+    Then the requested URL should be https://example.com/api/v3/test/get
 
    Scenario: Calling API methods with required and optional params
-    Given An API with the following specification
+    Given an API with the following specification
     """
     {
       "servers": [{ "url": "https://example.com/api/v3" }],
@@ -102,13 +102,13 @@ Feature: Querystring handling
       }
     }
     """
-    When I call the method sendString with parameters "one"
-    Then The requested URL should be https://example.com/api/v3/test/required?requiredValue=one
-    When I call the method sendString with parameters "one,two"
-    Then The requested URL should be https://example.com/api/v3/test/required?requiredValue=one&optionalValue=two
+    When calling the method sendString with parameters "one"
+    Then the requested URL should be https://example.com/api/v3/test/required?requiredValue=one
+    When calling the method sendString with parameters "one,two"
+    Then the requested URL should be https://example.com/api/v3/test/required?requiredValue=one&optionalValue=two
 
   Scenario: Calling API methods with default values
-    Given An API with the following specification
+    Given an API with the following specification
     """
     {
       "servers": [{ "url": "https://example.com/api/v3" }],
@@ -153,14 +153,14 @@ Feature: Querystring handling
       }
     }
     """
-    When I call the method testDefaultParam without params
-    Then The requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=valTwo&paramThree=3.4
-    When I call the method testDefaultParam with parameters "hello"
-    Then The requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=3.4
-    When I call the method testDefaultParam with parameters "hello,56"
-    Then The requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=56
-    When I call the method testDefaultParam with parameters "hello,56,sizzle"
-    Then The requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=56&paramOne=sizzle
+    When calling the method testDefaultParam without params
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=valTwo&paramThree=3.4
+    When calling the method testDefaultParam with parameters "hello"
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=3.4
+    When calling the method testDefaultParam with parameters "hello,56"
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=56
+    When calling the method testDefaultParam with parameters "hello,56,sizzle"
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=56&paramOne=sizzle
     
 
     
