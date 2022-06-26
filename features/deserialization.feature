@@ -4,7 +4,6 @@ Feature: Model object deserialization
     Given an API with the following specification
     """
     {
-      "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
           "get": {
@@ -46,7 +45,6 @@ Feature: Model object deserialization
     Given an API with the following specification
     """
     {
-      "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
           "get": {
@@ -76,7 +74,6 @@ Feature: Model object deserialization
     Given an API with the following specification
     """
     {
-      "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
           "get": {
@@ -123,7 +120,6 @@ Feature: Model object deserialization
     Given an API with the following specification
     """
     {
-      "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
           "get": {
@@ -161,4 +157,59 @@ Feature: Model object deserialization
     Then the response should be of type DateResponse
     And the response should have a property date with value 2013-07-21T00:00:00.000Z
     And the response should have a property dateTime with value 2017-07-21T17:32:28.000Z
+
+  Scenario: the API returns an Object with additionalProperties
+    Given an API with the following specification
+    """
+    {
+      "paths": {
+        "/test/get": {
+          "get": {
+            "operationId": "getResponse",
+             "responses": {
+               "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "additionalProperties": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/test/getTwo": {
+          "get": {
+            "operationId": "getResponseTwo",
+             "responses": {
+               "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string", "format": "date-time" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method getResponse and the server responds with
+    """
+    { "cats": 35, "dogs": 22 }
+    """
+    Then the response should have a property cats with value 35
+    And the response should have a property dogs with value 22
+    When calling the method getResponseTwo and the server responds with
+    """
+    { "dateOne": "2013-07-21", "dateTwo": "2012-07-21" }
+    """
+    Then the response should have a property dateOne with value 2013-07-21T00:00:00.000Z
+    And the response should have a property dateTwo with value 2012-07-21T00:00:00.000Z
   

@@ -66,7 +66,7 @@ const addRequestBodyToParams = (schema) => {
       const param = verb.requestBody.content["application/json"];
       if (param) {
         param.name = "body";
-        param.in = "query";
+        param.in = "body";
         if (verb._sortedParameters) {
           verb._sortedParameters.push(param);
         } else {
