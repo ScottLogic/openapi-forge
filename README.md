@@ -55,4 +55,4 @@ The following is a very high-level overview of the generation process:
  - output generation progress
  - determine the node version requirements for the forge
  - support XML generation
- - support YML open api docs
+ - support grouping of methods via Tags
