@@ -90,23 +90,35 @@ const resolveResponse = (schema) => {
   });
 };
 
-// if a parameter is expressed as a reference, replace it with the actual
-const resolveReferencedParameters = (schema) => {
-  iterateVerbs(schema, (verb) => {
-    if (verb.parameters) {
-      verb.parameters.forEach((param) => {
-        if (param.$ref) {
-          const ref = param.$ref.split("/").pop();
-          Object.assign(param, schema.components.parameters[ref]);
-        }
-      });
+// where a $ref exists in the schema, it replaces this with the referenced JSON
+const resolveReferences = (schema) => {
+  recursivelyResolveReferences(schema);
+};
+
+const recursivelyResolveReferences = (root, node) => { 
+  node = node || root;
+  Object.keys(node).forEach((property) => {
+    // recurse into objects
+    const value = node[property];
+    if (typeof value === "object") {
+      recursivelyResolveReferences(root, value);
     }
+
+    // replace references
+    if (property === "$ref") {
+      const path = value.split("/").slice(1);
+      let pathLocation = root;
+      for (const part of path) {
+        pathLocation = pathLocation[part];
+      }
+      Object.assign(node, pathLocation);
+    } 
   });
 };
 
 module.exports = {
   requiredSchemaObjectProperties,
-  resolveReferencedParameters,
+  resolveReferences,
   optionalProperties,
   sortPathParameters,
   addRequestBodyToParams,
