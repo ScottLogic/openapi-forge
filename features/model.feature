@@ -43,7 +43,6 @@ Feature: Model object generation
     And ObjectResponse should have a required property named id of type number
     And ObjectResponse should have an optional property named value of type string
 
-
   Scenario: Object references
     When generating an API from the following specification 
     """
