@@ -21,6 +21,10 @@ program
     "The path where the generated client API is located",
     "."
   )
+  .option(
+    "-s, --skipValidation",
+    "Skip schema validation"
+  )
   .action(async (schema, template, options) => {
     generate(schema, template, options);
   });

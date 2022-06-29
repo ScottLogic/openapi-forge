@@ -11,6 +11,7 @@ const { parse } = require("yaml");
 const helpers = require("./helpers");
 const transformers = require("./transformers");
 
+
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
 });
@@ -39,6 +40,27 @@ async function loadSchema(schemaPathOrUrl) {
   }
 }
 
+const schemaValidationUrl = 'https://validator.swagger.io/validator/debug';
+async function isValidSchema(schema) {
+  const response = await fetch(schemaValidationUrl, {
+    method: 'post',
+    body: JSON.stringify(schema),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  });
+  const data = await response.json();
+  if (data.schemaValidationMessages && data.schemaValidationMessages.length > 0) {
+    for (const error of data.schemaValidationMessages) {
+      console.log(error);
+    }
+    return false;
+  }
+
+  return true;
+}
+
 async function generate(schemaLocation, templateProject, options) {
   const templatePath = templateProject + "/template";
   const helpersPath = templateProject + "/helpers";
@@ -48,6 +70,12 @@ async function generate(schemaLocation, templateProject, options) {
     typeof schemaLocation === "object"
       ? schemaLocation
       : await loadSchema(schemaLocation);
+
+  // validate OpenAPI schema
+  if (!options.skipValidation && !(await isValidSchema(schema))) {
+    console.error(`Schema failed validation (${schemaValidationUrl}). See errors above.`);
+    return;
+  }
 
   // transform
   Object.values(transformers).forEach((transformer) => {
@@ -85,7 +113,7 @@ async function generate(schemaLocation, templateProject, options) {
     // try to prettify the result
     try {
       result = prettier.format(result, { parser: "typescript" });
-    } catch {}
+    } catch { }
 
     fs.mkdirSync(options.output, { recursive: true });
     fs.writeFileSync(

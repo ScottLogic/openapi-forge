@@ -45,8 +45,8 @@ const optionalProperties = (schema) => {
 const sortPathParameters = (schema) => {
   const paramScore = (param) => {
     if (param.required) return 2;
-    if (param.schema && param.schema.default) return 1;
-    return 0;
+    if (param.schema && param.schema.default !== undefined) return 0;
+    return 1;
   };
 
   iterateVerbs(schema, (verb) => {
@@ -77,13 +77,16 @@ const addRequestBodyToParams = (schema) => {
   });
 };
 
-// locate a 200 response, or a default
+// locate a 2XX response, or a default
 const resolveResponse = (schema) => {
   iterateVerbs(schema, (verb) => {
-    if (verb.responses["200"]) {
-      verb._response = verb.responses["200"].content["application/json"];
-    } else if (verb.responses["default"] && verb.responses["default"].content) {
-      verb._response = verb.responses["default"].content["application/json"];
+
+    const successOrDefaultResponses = Object.entries(verb.responses)
+      .filter(responseKvp => responseKvp[0].match(/^(2\d{2}|default)$/))
+      .sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0);
+
+    if (successOrDefaultResponses.length > 0 && successOrDefaultResponses[0][1].content) {
+      verb._response = successOrDefaultResponses[0][1].content["application/json"];
     } else {
       verb._response = null;
     }
