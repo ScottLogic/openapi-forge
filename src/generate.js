@@ -10,7 +10,7 @@ const { parse } = require("yaml");
 
 const helpers = require("./helpers");
 const transformers = require("./transformers");
-
+const SwaggerParser = require("@apidevtools/swagger-parser");
 
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
@@ -40,23 +40,14 @@ async function loadSchema(schemaPathOrUrl) {
   }
 }
 
-const schemaValidationUrl = 'https://validator.swagger.io/validator/debug';
 async function isValidSchema(schema) {
-  const response = await fetch(schemaValidationUrl, {
-    method: 'post',
-    body: JSON.stringify(schema),
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    }
-  });
-  const data = await response.json();
-  if (data.schemaValidationMessages && data.schemaValidationMessages.length > 0) {
-    for (const error of data.schemaValidationMessages) {
-      console.log(error);
-    }
-    return false;
+  try {
+    await SwaggerParser.validate(schema);
   }
+  catch (err) {
+    console.error(err);
+    return false;
+  };
 
   return true;
 }
@@ -72,7 +63,7 @@ async function generate(schemaLocation, templateProject, options) {
 
   // validate OpenAPI schema
   if (!options.skipValidation && !(await isValidSchema(schema))) {
-    console.error(`Schema failed validation (${schemaValidationUrl}). See errors above.`);
+    console.error(`Schema failed validation. See errors above.`);
     return;
   }
 
