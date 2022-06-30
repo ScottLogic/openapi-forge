@@ -63,7 +63,6 @@ async function isValidSchema(schema) {
 
 async function generate(schemaLocation, templateProject, options) {
   const templatePath = templateProject + "/template";
-  const helpersPath = templateProject + "/helpers";
 
   // load the OpenAPI schema
   const schema =
@@ -85,17 +84,15 @@ async function generate(schemaLocation, templateProject, options) {
   // add options to the schema, making them available to templates
   schema._options = options;
 
-  // load any template helpers
-  const helpers = fs.readdirSync(helpersPath);
-  helpers.forEach((helper) => {
-    const helperPath = path.join(
-      path.resolve("."),
-      templateProject,
-      "/helpers",
-      helper
-    );
-    Handlebars.registerHelper(helper.slice(0, -3), require(helperPath));
-  });
+  const handlebarsLoader = (pathToLoad, registrationMethod) => {
+    const items = fs.readdirSync(pathToLoad);
+    items.forEach((item) => {
+      const itemPath = path.join(path.resolve("."), pathToLoad, item);
+      Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
+    });
+  };
+  handlebarsLoader(templateProject + "/helpers", "registerHelper");
+  handlebarsLoader(templateProject + "/partials", "registerPartial");
 
   // iterate over all the files in the folder template
   const templates = fs.readdirSync(templatePath);

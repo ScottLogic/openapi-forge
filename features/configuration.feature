@@ -1,6 +1,6 @@
-Feature: Server configuration
+Feature: Confihguration options
 
-  Scenario: the API returns an Object response
+  Scenario: When there are multiple servers, the user can select which configuration to use
     Given an API with the following specification
     """
     {
