@@ -90,12 +90,48 @@ const resolveResponse = (schema) => {
   });
 };
 
+// where objects are used in parameters directly, rather than via reference,
+// construct a referenced object to support the generation of the required model object
+const createInlineObjects = (schema) => {
+  const inlineObjects = {};
+  let index = 1;
+
+  const maybeInlineType = (propSchema) => {
+    if (
+      propSchema.type === "object" &&
+      !propSchema.$ref &&
+      !propSchema.additionalProperties
+    ) {
+      const name = `InlineObject${index}`;
+      index++;
+      inlineObjects[name] = propSchema;
+      propSchema.$ref = `#/components/inlineObjects/${name}`;
+    }
+  };
+
+  // locate any parameters or responses that include inline objects, and pull
+  // out their schema
+  iterateVerbs(schema, (verb) => {
+    if (verb._sortedParameters) {
+      verb._sortedParameters.forEach((param) => {
+        maybeInlineType(param.schema);
+      });
+    }
+    maybeInlineType(verb._response.schema);
+  });
+
+  if (!schema.components) {
+    schema.components = {};
+  }
+  schema.components["inlineObjects"] = inlineObjects;
+};
+
 // where a $ref exists in the schema, it replaces this with the referenced JSON
 const resolveReferences = (schema) => {
   recursivelyResolveReferences(schema);
 };
 
-const recursivelyResolveReferences = (root, node) => { 
+const recursivelyResolveReferences = (root, node) => {
   node = node || root;
   Object.keys(node).forEach((property) => {
     // recurse into objects
@@ -112,7 +148,7 @@ const recursivelyResolveReferences = (root, node) => {
         pathLocation = pathLocation[part];
       }
       Object.assign(node, pathLocation);
-    } 
+    }
   });
 };
 
@@ -123,4 +159,5 @@ module.exports = {
   sortPathParameters,
   addRequestBodyToParams,
   resolveResponse,
+  createInlineObjects,
 };
