@@ -1,6 +1,6 @@
 ## OpenAPI Forge
 
-⚒️ Effortlessly create OpenAPI clients from the fiery furnace of our forge 
+⚒️🔥  Effortlessly create OpenAPI clients from the fiery furnace of our forge 
 
 ## Design principles
 
@@ -13,23 +13,23 @@
 
 ## Quick start
 
-This project is still inactive development, these steps will be simplified and streamlined soon.
+This project is still in active development, these steps will be simplified and streamlined soon.
 
-Install this project globally:
+Clone this repository, and install globally:
 
 ~~~
 $ npm install --global
 ~~~
 
-This will allow you to use it via the `openapi-forge` command.
+This will give you access to the `openapi-forge` command.
 
-Next, download a client generator:
+Next, download a client generator, for example this one is for TypeScript
 
 ~~~
-$ git clone https://github.com/ColinEberhardt/openapi-forge-typescript.git
+$ git clone https://github.com/ScottLogic/openapi-forge-typescript.git
 ~~~
 
-Forge your client api ...
+Forge your client API ...
 
 ~~~
 $ openapi-forge forge
@@ -38,10 +38,84 @@ $ openapi-forge forge
  \ -o api
 ~~~
 
-## High-level generation process
+The above command forges a client API for the 'petstore' API, downloaded via the given URL. It uses the `openapi-forge-typescript` generator, which creates the TypeScript API, with the results saves in a folder called `api`.
+
+If you take a look within the `api` folder you'll find that a number of files have been generated. The exact structure depends on the generator you use, with the detail available in the respective README file. 
+
+~~~
+% cd api
+% ls
+ README.md
+ api.ts
+ configuration.ts
+ model.ts
+ nodeFetch.ts
+ request.ts
+ serializer.ts
+ util.ts
+~~~
+
+The two most interesting files in the above are `model.ts` which has a number of TypeScript classes generated from the various data types in the schema, and `api.ts` which provides a method for each path within the API. 
+
+The following is a very simple example of how you might use this generated API:
+
+~~~
+import Api from "./api/api";
+import Configuration from "./api/configuration";
+import { Pet } from "./api/model";
+import { transport } from "./api/nodeFetch"
+
+// configure the API, in this instance we are using the node-fetch library for HTTP requests
+const config = new Configuration(transport);
+config.basePath = "https://petstore3.swagger.io";
+
+// create an API instance from this configuration
+const api = new Api(config);
+
+// make a request
+api.findPetsByStatus("available").then((data: Pet[]) => {
+  // note the typed response
+  console.log("Pet names...");
+  console.log(data.map(pet => pet.name));
+});
+~~~
+
+## Generators
+
+The Forge currently provides the following generators. Each provide documentation regarding the API they generate and its usage:
+
+ - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
+ - C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp (in development)
+
+## User Guide
+
+The CLI tool provided by this repository is the primary interface for the Forge:
+
+~~~
+% openapi-forge help forge
+Usage: openapi-generator forge [options] <schema> <template>
+
+Forge the API client from an OpenAPI specification
+
+Arguments:
+  schema                An OpenAPI schema, either a URL or a file path
+  template              Path to the template
+
+Options:
+  -e, --exclude <glob>  A glob pattern that excludes files from the output (default: "")
+  -o, --output <path>   The path where the generated client API is located (default: ".")
+  -s, --skipValidation  Skip schema validation
+  -h, --help            display help for command
+~~~
+
+TODO: Elaborate
+
+## Developer guide
 
 The following is a very high-level overview of the generation process:
 
  - load - the Forge generator loads the given OpenAPI schema
  - transform - the schema undergoes a number of transformations for the purposes of simplifying the generation process. By convention, any modified or new properties are prefixed with an undercore.
  - generate - the generators are implemented using the [Handlebars templating engine](https://handlebarsjs.com/). 
+
+TODO: Elaborate, how to test generators etc ...
