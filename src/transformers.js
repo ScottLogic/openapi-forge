@@ -120,7 +120,9 @@ const createInlineObjects = (schema) => {
         maybeInlineType(param.schema);
       });
     }
-    maybeInlineType(verb._response.schema);
+    if (verb._response) {
+      maybeInlineType(verb._response.schema);
+    }
   });
 
   if (!schema.components) {
