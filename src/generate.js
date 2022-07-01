@@ -10,6 +10,7 @@ const { parse } = require("yaml");
 
 const helpers = require("./helpers");
 const transformers = require("./transformers");
+const SwaggerParser = require("@apidevtools/swagger-parser");
 
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
@@ -39,6 +40,18 @@ async function loadSchema(schemaPathOrUrl) {
   }
 }
 
+async function isValidSchema(schema) {
+  try {
+    await SwaggerParser.validate(schema);
+  }
+  catch (err) {
+    console.error(err);
+    return false;
+  };
+
+  return true;
+}
+
 async function generate(schemaLocation, templateProject, options) {
   const templatePath = templateProject + "/template";
 
@@ -47,6 +60,12 @@ async function generate(schemaLocation, templateProject, options) {
     typeof schemaLocation === "object"
       ? schemaLocation
       : await loadSchema(schemaLocation);
+
+  // validate OpenAPI schema
+  if (!options.skipValidation && !(await isValidSchema(schema))) {
+    console.error(`Schema failed validation. See errors above.`);
+    return;
+  }
 
   // transform
   Object.values(transformers).forEach((transformer) => {
@@ -82,7 +101,7 @@ async function generate(schemaLocation, templateProject, options) {
     // try to prettify the result
     try {
       result = prettier.format(result, { parser: "typescript" });
-    } catch {}
+    } catch { }
 
     fs.mkdirSync(options.output, { recursive: true });
     fs.writeFileSync(
