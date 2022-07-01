@@ -62,7 +62,7 @@ async function generate(schemaLocation, templateProject, options) {
       : await loadSchema(schemaLocation);
 
   // validate OpenAPI schema
-  if (!options.skipValidation && !(await isValidSchema(schema))) {
+  if (!options.skipValidation && !(await isValidSchema(JSON.parse(JSON.stringify(schema))))) {
     console.error(`Schema failed validation. See errors above.`);
     return;
   }
