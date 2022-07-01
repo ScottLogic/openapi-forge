@@ -156,11 +156,11 @@ Feature: Querystring handling
     When calling the method testDefaultParam without params
     Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=valTwo&paramThree=3.4
     When calling the method testDefaultParam with parameters "hello"
-    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=3.4
-    When calling the method testDefaultParam with parameters "hello,56"
-    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=56
-    When calling the method testDefaultParam with parameters "hello,56,sizzle"
-    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=hello&paramThree=56&paramOne=sizzle
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=valTwo&paramThree=3.4&paramOne=hello
+    When calling the method testDefaultParam with parameters "hello,sizzle"
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=sizzle&paramThree=3.4&paramOne=hello
+    When calling the method testDefaultParam with parameters "hello,sizzle,56"
+    Then the requested URL should be https://example.com/api/v3/test/testDefaultParam?paramTwo=sizzle&paramThree=56&paramOne=hello
     
 
     
