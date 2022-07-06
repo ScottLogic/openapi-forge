@@ -166,19 +166,21 @@ const parameterSerializationOptions = (schema) => {
           return;
         }
         if (param.explode !== undefined && param.style !== undefined) {
-          return;
-        }
-        switch (param.in) {
-          case "path":
-          case "header":
-            param.style = "simple";
-            param.explode = false;
-            break;
-          case "cookie":
-          case "query":
-            param.style = "form";
-            param.explode = true;
-            break;
+          param._explode = param.explode;
+          param._style = param.style;
+        } else {
+          switch (param.in) {
+            case "path":
+            case "header":
+              param._style = "simple";
+              param._explode = false;
+              break;
+            case "cookie":
+            case "query":
+              param._style = "form";
+              param._explode = true;
+              break;
+          }
         }
       });
     }
