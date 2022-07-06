@@ -1,4 +1,3 @@
-
 Feature: Handles inlin / anonymous objects, i.e. those that are not defined in the components/schemas section
 # NOTE: The purpose of this test case is to ensure the generator creates the 'inlines' objects. This
 # test doesn't validate the various encoding rules
@@ -49,7 +48,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/testBody": {
-          "get": {
+          "post": {
             "operationId": "testBody",
             "requestBody": {
               "content": {
