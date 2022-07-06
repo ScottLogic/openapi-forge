@@ -50,7 +50,8 @@ Feature: Path parameter handling
               {
                 "name": "value",
                 "in": "path",
-                "schema": { "type": "array", "items": {"type": "string" } }
+                "schema": { "type": "array", 
+                            "items": { "type": "string" } }
               }
             ],
             "responses": {
@@ -67,7 +68,7 @@ Feature: Path parameter handling
       }
     }
     """
-    When calling the method sendString with parameters "cabbage,carrots"
+    When calling the method sendStringArray with parameters "cabbage,carrots"
     Then the requested URL should be https://example.com/api/v3/test/vegetables/cabbage,carrots
 
   Scenario: Calling API methods with a path object parameter 
@@ -78,7 +79,7 @@ Feature: Path parameter handling
       "paths": {
         "/test/values/{value}": {
           "get": {
-            "operationId": "sendStringArray",
+            "operationId": "sendValueObject",
             "parameters": [
               {
                 "name": "value",
@@ -105,5 +106,5 @@ Feature: Path parameter handling
       }
     }
     """
-    When calling the method sendString with parameters "{'id': 7, 'type': 'test'}"
+    When calling the method sendValueObject with parameter "{'id': 7, 'type': 'test'}"
     Then the requested URL should be https://example.com/api/v3/test/values/id,7,type,test

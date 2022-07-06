@@ -175,7 +175,9 @@ Feature: Querystring handling
               {
                 "name": "value",
                 "in": "query",
-                "schema": { "type": "array", "items": {"type": "string" } }
+                "schema": { "type": "array", 
+                            "items": { "type": "string" } 
+                          }
               }
             ],
             "responses": {
@@ -192,7 +194,7 @@ Feature: Querystring handling
       }
     }
     """
-    When calling the method sendString with parameters "cabbage,carrots"
+    When calling the method sendStringArray with parameters "cabbage,carrots"
     Then the requested URL should be https://example.com/api/v3/test/get?value=cabbage&value=carrots
 
   Scenario: Calling API methods with a query object parameter 
@@ -203,7 +205,7 @@ Feature: Querystring handling
       "paths": {
         "/test/values": {
           "get": {
-            "operationId": "sendStringArray",
+            "operationId": "sendValueObject",
             "parameters": [
               {
                 "name": "value",
@@ -230,5 +232,5 @@ Feature: Querystring handling
       }
     }
     """
-    When calling the method sendString with parameters "{'id': 7, 'type': 'test'}"
+    When calling the method sendValueObject with parameter "{'id': 7, 'type': 'test'}"
     Then the requested URL should be https://example.com/api/v3/test/values?id=7&type=test
