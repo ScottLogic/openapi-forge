@@ -8,7 +8,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
     {
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
-        "/test/testBody": {
+        "/test": {
           "get": {
             "operationId": "getTest",
             "parameters": [
@@ -37,9 +37,8 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
       }
     }
     """
-    When calling the method getTest with parameters "{'value':'test'}"
-    Then the requested URL should be https://example.com/api/v3/test/testBody?test=%7B%27value%27%3A%27test%27%7D
-    # NOTE, this is the URL encoded form of {'value':'test'}
+    When calling the method getTest with parameters "{ 'value':'test test'}"
+    Then the requested URL should be https://example.com/api/v3/test?value=test%20test
 
   Scenario: Creates inline objects for request bodies
     Given an API with the following specification

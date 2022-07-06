@@ -36,3 +36,75 @@ Feature: Path parameter handling
     """
     When calling the method pathParameters with parameters "value"
     Then the requested URL should be https://example.com/api/v3/test/value/pathParameters
+
+  Scenario: Calling API methods with a path array parameter 
+    Given an API with the following specification
+    """
+    {
+      "servers": [{ "url": "https://example.com/api/v3" }],
+      "paths": {
+        "/test/vegetables/{value}": {
+          "get": {
+            "operationId": "sendStringArray",
+            "parameters": [
+              {
+                "name": "value",
+                "in": "path",
+                "schema": { "type": "array", 
+                            "items": { "type": "string" } }
+              }
+            ],
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method sendStringArray with parameters "cabbage,carrots"
+    Then the requested URL should be https://example.com/api/v3/test/vegetables/cabbage,carrots
+
+  Scenario: Calling API methods with a path object parameter 
+    Given an API with the following specification
+    """
+    {
+      "servers": [{ "url": "https://example.com/api/v3" }],
+      "paths": {
+        "/test/values/{value}": {
+          "get": {
+            "operationId": "sendValueObject",
+            "parameters": [
+              {
+                "name": "value",
+                "in": "path",
+                "schema": {                   
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "int" }
+                    "type": { "type": "string" }
+                  }
+              }
+            ],
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method sendValueObject with parameter "{'id': 7, 'type': 'test'}"
+    Then the requested URL should be https://example.com/api/v3/test/values/id,7,type,test

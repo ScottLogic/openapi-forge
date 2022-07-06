@@ -157,10 +157,41 @@ const recursivelyResolveReferences = (root, node) => {
   });
 };
 
+// adds parameter serialization style if missing
+const parameterSerializationOptions = (schema) => {
+  iterateVerbs(schema, (verb) => {
+    if (verb.parameters) {
+      verb.parameters.forEach((param) => {
+        if (param.content) {
+          return;
+        }
+        if (param.explode !== undefined && param.style !== undefined) {
+          param._explode = param.explode;
+          param._style = param.style;
+        } else {
+          switch (param.in) {
+            case "path":
+            case "header":
+              param._style = "simple";
+              param._explode = false;
+              break;
+            case "cookie":
+            case "query":
+              param._style = "form";
+              param._explode = true;
+              break;
+          }
+        }
+      });
+    }
+  });
+};
+
 module.exports = {
   requiredSchemaObjectProperties,
   resolveReferences,
   optionalProperties,
+  parameterSerializationOptions,
   sortPathParameters,
   addRequestBodyToParams,
   resolveResponse,
