@@ -158,7 +158,7 @@ const recursivelyResolveReferences = (root, node) => {
 };
 
 // adds parameter serialization style if missing
-const setParameterSerializationOptions = (schema) => {
+const parameterSerializationOptions = (schema) => {
   iterateVerbs(schema, (verb) => {
     if (verb.parameters) {
       verb.parameters.forEach((param) => {
@@ -189,7 +189,7 @@ module.exports = {
   requiredSchemaObjectProperties,
   resolveReferences,
   optionalProperties,
-  setParameterSerializationOptions,
+  parameterSerializationOptions,
   sortPathParameters,
   addRequestBodyToParams,
   resolveResponse,
