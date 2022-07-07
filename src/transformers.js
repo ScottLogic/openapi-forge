@@ -30,7 +30,7 @@ const optionalProperties = (schema) => {
       verb.parameters.forEach((param) => {
         if (
           !param.required &&
-          !(param.schema && param.schema.default !== undefined) &&
+          (param.schema && param.schema.default === undefined) &&
           param.in !== "path"
         ) {
           param._optional = true;
