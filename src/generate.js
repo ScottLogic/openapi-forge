@@ -59,8 +59,8 @@ function cloneSchema(schema) {
   return JSON.parse(JSON.stringify(schema));
 }
 
-async function generate(schemaLocation, templateProject, options) {
-  const templatePath = templateProject + "/template";
+async function generate(schemaLocation, generatorPath, options) {
+  const generatorTemplatesPath = generatorPath + "/template";
 
   // load the OpenAPI schema
   const schema =
@@ -88,17 +88,20 @@ async function generate(schemaLocation, templateProject, options) {
       Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
     });
   };
-  handlebarsLoader(templateProject + "/helpers", "registerHelper");
-  handlebarsLoader(templateProject + "/partials", "registerPartial");
+  handlebarsLoader(generatorPath + "/helpers", "registerHelper");
+  handlebarsLoader(generatorPath + "/partials", "registerPartial");
 
   // iterate over all the files in the folder template
-  const templates = fs.readdirSync(templatePath);
+  const templates = fs.readdirSync(generatorTemplatesPath);
   templates.forEach((file) => {
     if (options.exclude && minimatch(file, options.exclude)) {
       return;
     }
 
-    const source = fs.readFileSync(`${templatePath}/${file}`, "utf-8");
+    const source = fs.readFileSync(
+      `${generatorTemplatesPath}/${file}`,
+      "utf-8"
+    );
 
     // TODO: we should only pass files with the extension "handlebars" through the Handlebars engine
     const template = Handlebars.compile(source);
