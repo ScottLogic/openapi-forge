@@ -16,38 +16,38 @@ Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
 });
 
+function isUrl(maybeUrl) {
+  try {
+    new URL(maybeUrl);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 // loads the schema, either from a local file or from a remote URL
 async function loadSchema(schemaPathOrUrl) {
   const isYml =
     schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
-  try {
-    // this throws if the URL is not valid
-    new URL(schemaPathOrUrl);
-    const response = await fetch(schemaPathOrUrl);
-    if (isYml) {
-      const responseText = await response.text();
-      return parse(responseText);
-    } else {
-      return await response.json();
-    }
-  } catch (err) {
-    const file = fs.readFileSync(schemaPathOrUrl, "utf-8");
-    if (isYml) {
-      return parse(file);
-    } else {
-      return JSON.parse(file);
-    }
-  }
+  const schema = isUrl(schemaPathOrUrl)
+    ? await fetch(schemaPathOrUrl).then((d) => {
+        if (d.status === 200) {
+          return d.text();
+        } else {
+          throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
+        }
+      })
+    : fs.readFileSync(schemaPathOrUrl, "utf-8");
+  return isYml ? parse(schema) : JSON.parse(schema);
 }
 
 async function isValidSchema(schema) {
   try {
     await SwaggerParser.validate(schema);
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
     return false;
-  };
+  }
 
   return true;
 }
@@ -62,7 +62,10 @@ async function generate(schemaLocation, templateProject, options) {
       : await loadSchema(schemaLocation);
 
   // validate OpenAPI schema
-  if (!options.skipValidation && !(await isValidSchema(JSON.parse(JSON.stringify(schema))))) {
+  if (
+    !options.skipValidation &&
+    !(await isValidSchema(JSON.parse(JSON.stringify(schema))))
+  ) {
     console.error(`Schema failed validation. See errors above.`);
     return;
   }
@@ -101,7 +104,7 @@ async function generate(schemaLocation, templateProject, options) {
     // try to prettify the result
     try {
       result = prettier.format(result, { parser: "typescript" });
-    } catch { }
+    } catch {}
 
     fs.mkdirSync(options.output, { recursive: true });
     fs.writeFileSync(
