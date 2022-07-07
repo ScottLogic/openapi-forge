@@ -213,7 +213,7 @@ Feature: Querystring handling
                 "schema": {                   
                   "type": "object",
                   "properties": {
-                    "id": { "type": "int" },
+                    "id": { "type": "integer" },
                     "type": { "type": "string" }
                   }
                 }
