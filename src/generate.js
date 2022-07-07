@@ -1,11 +1,13 @@
 const fs = require("fs");
 const URL = require("url").URL;
 const path = require("path");
+const os = require("os");
 
 const Handlebars = require("handlebars");
 const prettier = require("prettier");
 const minimatch = require("minimatch");
 const fetch = require("node-fetch");
+const shell = require("shelljs");
 const { parse } = require("yaml");
 
 const helpers = require("./helpers");
@@ -73,77 +75,102 @@ function validateGenerator(generatorPath) {
   }
 }
 
-async function generate(schemaLocation, generatorPath, options) {
-  validateGenerator(generatorPath);
+async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
+  let temporaryFolder;
+  try {
+    let generatorPath = generatorUrlOrPath;
 
-  const generatorTemplatesPath = generatorPath + "/template";
-
-  // load the OpenAPI schema
-  const schema =
-    typeof schemaLocation === "object"
-      ? schemaLocation
-      : await loadSchema(schemaLocation);
-
-  // validate OpenAPI schema
-  if (!options.skipValidation && !(await isValidSchema(schema))) {
-    return;
-  }
-
-  // transform
-  Object.values(transformers).forEach((transformer) => {
-    transformer(schema);
-  });
-
-  // add options to the schema, making them available to templates
-  schema._options = options;
-
-  const handlebarsLoader = (pathToLoad, registrationMethod) => {
-    if (fs.existsSync(pathToLoad)) {
-      const items = fs.readdirSync(pathToLoad);
-      items.forEach((item) => {
-        const itemPath = path.join(path.resolve("."), pathToLoad, item);
-        Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
-      });
+    
+    if (isUrl(generatorUrlOrPath)) {
+      // if the generator is specified as a git URL, clone it into a temporary directory
+      const generatorUrl = generatorUrlOrPath;
+      if (generatorUrl.endsWith(".git")) {
+        generatorPath = temporaryFolder = fs.mkdtempSync(
+          path.join(os.tmpdir(), "generator")
+        );
+        console.log(`Cloning generator from ${generatorUrl}`);
+        shell.exec(`git clone ${generatorUrl} ${generatorPath}`);
+      } else {
+        throw new Error(
+          `Generator URL ${generatorUrl} does not end with ".git", check that the URL points to a valid generator`
+        );
+      }
+    } else {
+      generatorPath = path.resolve(generatorUrlOrPath);
     }
-  };
-  handlebarsLoader(generatorPath + "/helpers", "registerHelper");
-  handlebarsLoader(generatorPath + "/partials", "registerPartial");
 
-  // create the output folder
-  fs.mkdirSync(options.output, { recursive: true });
+    validateGenerator(generatorPath);
 
-  // iterate over all the files in the template folder
-  const templates = fs.readdirSync(generatorTemplatesPath);
-  templates.forEach((file) => {
-    if (options.exclude && minimatch(file, options.exclude)) {
+    // load the OpenAPI schema
+    const schema =
+      typeof schemaPathOrUrl === "object"
+        ? schemaPathOrUrl
+        : await loadSchema(schemaPathOrUrl);
+
+    // validate OpenAPI schema
+    if (!options.skipValidation && !(await isValidSchema(schema))) {
       return;
     }
 
-    const source = fs.readFileSync(
-      `${generatorTemplatesPath}/${file}`,
-      "utf-8"
-    );
+    // transform
+    Object.values(transformers).forEach((transformer) => {
+      transformer(schema);
+    });
 
-    if (file.endsWith("handlebars")) {
-      // run the handlebars template
-      const template = Handlebars.compile(source);
-      let result = template(schema);
-      try {
-        result = prettier.format(result, { parser: "typescript" });
-      } catch {}
+    // add options to the schema, making them available to templates
+    schema._options = options;
 
-      fs.writeFileSync(
-        `${options.output}/${file.replace(".handlebars", "")}`,
-        result
+    const handlebarsLoader = (pathToLoad, registrationMethod) => {
+      if (fs.existsSync(pathToLoad)) {
+        const items = fs.readdirSync(pathToLoad);
+        items.forEach((item) => {
+          const itemPath = path.join(pathToLoad, item);
+          Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
+        });
+      }
+    };
+    handlebarsLoader(generatorPath + "/helpers", "registerHelper");
+    handlebarsLoader(generatorPath + "/partials", "registerPartial");
+
+    // create the output folder
+    fs.mkdirSync(options.output, { recursive: true });
+
+    // iterate over all the files in the template folder
+    const generatorTemplatesPath = generatorPath + "/template";
+    const templates = fs.readdirSync(generatorTemplatesPath);
+    templates.forEach((file) => {
+      if (options.exclude && minimatch(file, options.exclude)) {
+        return;
+      }
+
+      const source = fs.readFileSync(
+        `${generatorTemplatesPath}/${file}`,
+        "utf-8"
       );
-    } else {
-      // for other files, simply copy them to the output folder
-      fs.writeFileSync(
-        `${options.output}/${file}`,
-        source
-      );
+
+      if (file.endsWith("handlebars")) {
+        // run the handlebars template
+        const template = Handlebars.compile(source);
+        let result = template(schema);
+        try {
+          result = prettier.format(result, { parser: "typescript" });
+        } catch {}
+
+        fs.writeFileSync(
+          `${options.output}/${file.replace(".handlebars", "")}`,
+          result
+        );
+      } else {
+        // for other files, simply copy them to the output folder
+        fs.writeFileSync(`${options.output}/${file}`, source);
+      }
+    });
+  } finally {
+    if (temporaryFolder) {
+      console.log(`Removing temporary folder ${temporaryFolder}`);
+      fs.rmSync(temporaryFolder, { recursive: true });
     }
-  });
+  }
 }
 
 module.exports = generate;

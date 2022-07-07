@@ -21,20 +21,14 @@ Clone this repository, and install globally:
 $ npm install --global
 ~~~
 
-This will give you access to the `openapi-forge` command.
+This will give you access to the `openapi-forge` command. 
 
-Next, download a client generator, for example this one is for TypeScript
-
-~~~
-$ git clone https://github.com/ScottLogic/openapi-forge-typescript.git
-~~~
-
-Forge your client API ...
+Now you can forge your client API ...
 
 ~~~
 $ openapi-forge forge
  \ https://petstore3.swagger.io/api/v3/openapi.json
- \ ./openapi-forge-typescript
+ \ https://github.com/ScottLogic/openapi-forge-typescript.git
  \ -o api
 ~~~
 
@@ -92,18 +86,19 @@ The Forge currently provides the following generators. Each provide documentatio
 The CLI tool provided by this repository is the primary interface for the Forge:
 
 ~~~
-% openapi-forge help forge
-Usage: openapi-generator forge [options] <schema> <template>
+% openapi-forge help forge                                                    
+Usage: openapi-generator forge [options] <schema> <generator>
 
-Forge the API client from an OpenAPI specification
+Forge the API client from an OpenAPI specification. This command takes an
+OpenAPI schema, and uses the given generator to create a client library.
 
 Arguments:
   schema                An OpenAPI schema, either a URL or a file path
-  template              Path to the template
+  generator             Path, or git URL, to the language-specific generator
 
 Options:
-  -e, --exclude <glob>  A glob pattern that excludes files from the output (default: "")
-  -o, --output <path>   The path where the generated client API is located (default: ".")
+  -e, --exclude <glob>  A glob pattern that excludes files from the generator in the output (default: "")
+  -o, --output <path>   The path where the generated client API will be written (default: ".")
   -s, --skipValidation  Skip schema validation
   -h, --help            display help for command
 ~~~

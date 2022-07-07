@@ -8,9 +8,9 @@ program.name("openapi-generator");
 
 program
   .command("forge")
-  .description("Forge the API client from an OpenAPI specification. This command takes an OpenAPI scheme, and uses the given generator to create a client library.")
+  .description("Forge the API client from an OpenAPI specification. This command takes an OpenAPI schems, and uses the given generator to create a client library.")
   .argument("<schema>", "An OpenAPI schema, either a URL or a file path")
-  .argument("<generator>", "Path to the language-specific generator")
+  .argument("<generator>", "Path, or git URL, to the language-specific generator")
   .option(
     "-e, --exclude <glob>",
     "A glob pattern that excludes files from the generator in the output",
