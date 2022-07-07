@@ -59,7 +59,23 @@ function cloneSchema(schema) {
   return JSON.parse(JSON.stringify(schema));
 }
 
+function validateGenerator(generatorPath) {
+  if (!fs.existsSync(generatorPath)) {
+    throw new Error(
+      `Generator path ${generatorPath} does not exist, check that the path points to a valid generator`
+    );
+  }
+
+  if (!fs.existsSync(`${generatorPath}/template`)) {
+    throw new Error(
+      `Generator path ${generatorPath} does not contain a template folder, check that the path points to a valid generator`
+    );
+  }
+}
+
 async function generate(schemaLocation, generatorPath, options) {
+  validateGenerator(generatorPath);
+
   const generatorTemplatesPath = generatorPath + "/template";
 
   // load the OpenAPI schema
@@ -82,16 +98,21 @@ async function generate(schemaLocation, generatorPath, options) {
   schema._options = options;
 
   const handlebarsLoader = (pathToLoad, registrationMethod) => {
-    const items = fs.readdirSync(pathToLoad);
-    items.forEach((item) => {
-      const itemPath = path.join(path.resolve("."), pathToLoad, item);
-      Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
-    });
+    if (fs.existsSync(pathToLoad)) {
+      const items = fs.readdirSync(pathToLoad);
+      items.forEach((item) => {
+        const itemPath = path.join(path.resolve("."), pathToLoad, item);
+        Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
+      });
+    }
   };
   handlebarsLoader(generatorPath + "/helpers", "registerHelper");
   handlebarsLoader(generatorPath + "/partials", "registerPartial");
 
-  // iterate over all the files in the folder template
+  // create the output folder
+  fs.mkdirSync(options.output, { recursive: true });
+
+  // iterate over all the files in the template folder
   const templates = fs.readdirSync(generatorTemplatesPath);
   templates.forEach((file) => {
     if (options.exclude && minimatch(file, options.exclude)) {
@@ -103,20 +124,25 @@ async function generate(schemaLocation, generatorPath, options) {
       "utf-8"
     );
 
-    // TODO: we should only pass files with the extension "handlebars" through the Handlebars engine
-    const template = Handlebars.compile(source);
-    let result = template(schema);
+    if (file.endsWith("handlebars")) {
+      // run the handlebars template
+      const template = Handlebars.compile(source);
+      let result = template(schema);
+      try {
+        result = prettier.format(result, { parser: "typescript" });
+      } catch {}
 
-    // try to prettify the result
-    try {
-      result = prettier.format(result, { parser: "typescript" });
-    } catch {}
-
-    fs.mkdirSync(options.output, { recursive: true });
-    fs.writeFileSync(
-      `${options.output}/${file.replace(".handlebars", "")}`,
-      result
-    );
+      fs.writeFileSync(
+        `${options.output}/${file.replace(".handlebars", "")}`,
+        result
+      );
+    } else {
+      // for other files, simply copy them to the output folder
+      fs.writeFileSync(
+        `${options.output}/${file}`,
+        source
+      );
+    }
   });
 }
 
