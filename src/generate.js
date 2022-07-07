@@ -43,13 +43,20 @@ async function loadSchema(schemaPathOrUrl) {
 
 async function isValidSchema(schema) {
   try {
-    await SwaggerParser.validate(schema);
-  } catch (err) {
-    console.error(err);
+    await SwaggerParser.validate(cloneSchema(schema));
+  } catch (errors) {
+    console.error("Schema validation errors:");
+    errors.forEach((error) => {
+      console.error(`${error.message} at ${error.instancePath}`);
+    });
     return false;
   }
 
   return true;
+}
+
+function cloneSchema(schema) {
+  return JSON.parse(JSON.stringify(schema));
 }
 
 async function generate(schemaLocation, templateProject, options) {
@@ -62,11 +69,7 @@ async function generate(schemaLocation, templateProject, options) {
       : await loadSchema(schemaLocation);
 
   // validate OpenAPI schema
-  if (
-    !options.skipValidation &&
-    !(await isValidSchema(JSON.parse(JSON.stringify(schema))))
-  ) {
-    console.error(`Schema failed validation. See errors above.`);
+  if (!options.skipValidation && !(await isValidSchema(schema))) {
     return;
   }
 
