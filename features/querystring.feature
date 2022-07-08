@@ -194,7 +194,7 @@ Feature: Querystring handling
       }
     }
     """
-    When calling the method sendStringArray with parameters "cabbage,carrots"
+    When calling the method sendStringArray with array "cabbage,carrots"
     Then the requested URL should be https://example.com/api/v3/test/get?value=cabbage&value=carrots
 
   Scenario: Calling API methods with a query object parameter 
@@ -233,5 +233,5 @@ Feature: Querystring handling
       }
     }
     """
-    When calling the method sendValueObject with parameter "{'id': 7, 'type': 'test'}"
+    When calling the method sendValueObject with object "{'id': 7, 'type': 'test'}"
     Then the requested URL should be https://example.com/api/v3/test/values?id=7&type=test

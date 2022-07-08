@@ -37,7 +37,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
       }
     }
     """
-    When calling the method getTest with parameters "{ 'value':'test test'}"
+    When calling the method getTest with object "{ 'value':'test test'}"
     Then the requested URL should be https://example.com/api/v3/test?value=test%20test
 
   Scenario: Creates inline objects for request bodies
@@ -75,7 +75,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
       }
     }
     """
-    When calling the method testBody with parameters "{'value':'test'}"
+    When calling the method testBody with object "{'value':'test'}"
     Then the requested URL should be https://example.com/api/v3/test/testBody
     And the request should have a body with value "{'value':'test'}"
   
