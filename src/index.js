@@ -25,6 +25,10 @@ program
     "-s, --skipValidation",
     "Skip schema validation"
   )
+  .option(
+    "-v, --verbose",
+    "Verbose output"
+  )
   .action(async (schema, template, options) => {
     generate(schema, template, options);
   });

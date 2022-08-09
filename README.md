@@ -100,6 +100,7 @@ Options:
   -e, --exclude <glob>  A glob pattern that excludes files from the generator in the output (default: "")
   -o, --output <path>   The path where the generated client API will be written (default: ".")
   -s, --skipValidation  Skip schema validation
+  -v, --verbose         Verbose output 
   -h, --help            display help for command
 ~~~
 
