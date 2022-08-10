@@ -110,7 +110,7 @@ TODO: Elaborate
 The following is a very high-level overview of the generation process:
 
  - load - the Forge generator loads the given OpenAPI schema
- - transform - the schema undergoes a number of transformations for the purposes of simplifying the generation process. By convention, any modified or new properties are prefixed with an undercore.
+ - transform - the schema undergoes a number of transformations for the purposes of simplifying the generation process. By convention, any modified or new properties are prefixed with an underscore.
  - generate - the generators are implemented using the [Handlebars templating engine](https://handlebarsjs.com/). 
 
 TODO: Elaborate, how to test generators etc ...
