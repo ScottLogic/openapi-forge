@@ -26,8 +26,9 @@ program
     "Skip schema validation"
   )
   .option(
-    "-v, --verbose",
-    "Verbose output"
+    "-l, --logLevel <level>",
+    "Sets the logging level, options are: standard (default), verbose",
+    "0"
   )
   .action(async (schema, template, options) => {
     generate(schema, template, options);

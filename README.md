@@ -97,11 +97,11 @@ Arguments:
   generator             Path, or git URL, to the language-specific generator
 
 Options:
-  -e, --exclude <glob>  A glob pattern that excludes files from the generator in the output (default: "")
-  -o, --output <path>   The path where the generated client API will be written (default: ".")
-  -s, --skipValidation  Skip schema validation
-  -v, --verbose         Verbose output 
-  -h, --help            display help for command
+  -e, --exclude <glob>    A glob pattern that excludes files from the generator in the output (default: "")
+  -o, --output <path>     The path where the generated client API will be written (default: ".")
+  -s, --skipValidation    Skip schema validation
+  -l, --logLevel <level>  Sets the logging level, options are: standard (default), verbose ('verbose', 'v' or '1') 
+  -h, --help              Display help for command
 ~~~
 
 TODO: Elaborate
