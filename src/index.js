@@ -27,7 +27,7 @@ program
   )
   .option(
     "-l, --logLevel <level>",
-    "Sets the logging level, options are: standard (default), verbose",
+    "Sets the logging level, options are: standard (default), verbose ('verbose', 'v' or '1')",
     "0"
   )
   .action(async (schema, template, options) => {
