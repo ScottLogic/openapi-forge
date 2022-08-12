@@ -38,6 +38,41 @@ function isUrl(maybeUrl) {
   }
 }
 
+function loadGenerator(generatorPathOrUrl) {
+  let generatorPath;
+  if (isUrl(generatorPathOrUrl)) {
+    // if the generator is specified as a git URL, clone it into a temporary directory
+    if (generatorPathOrUrl.endsWith(".git")) {
+      generatorPath = temporaryFolder = fs.mkdtempSync(
+        path.join(os.tmpdir(), "generator")
+      );
+      log.verbose(`Cloning generator from ${generatorPathOrUrl} to ${generatorPath}`);
+      shell.exec(`git clone ${generatorPathOrUrl} ${generatorPath}`, {silent:true});
+    } else {
+      throw new Error(
+        `Generator URL ${generatorPathOrUrl} does not end with ".git", check that the URL points to a valid generator`
+      );
+    }
+  } else {
+    //first check if there is a local generator
+    generatorPath = path.resolve(generatorPathOrUrl);
+    if (!fs.existsSync(generatorPath)) {
+      //if no local generator, assume it is npm package name.
+      log.verbose(`Checking if npm package ${generatorPathOrUrl} is installed`);
+      if (shell.exec(`npm list --depth=0 | findstr /R "+--.${generatorPathOrUrl}@[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"`, {silent:true}).code !== 0) {
+        log.verbose(`npm package ${generatorPathOrUrl} doesn't exist, installing package`);
+        if (shell.exec(`npm install ${generatorPathOrUrl}`, {silent:true}).code !== 0) {
+          throw new Error(
+            `No local generator or NPM package found using '${generatorPathOrUrl}', check that it points to a local generator or npm package`
+          );
+        }
+      }
+      generatorPath = path.resolve(`node_modules\\${generatorPathOrUrl}`);
+    }
+  }
+  return generatorPath;
+}
+
 // loads the schema, either from a local file or from a remote URL
 async function loadSchema(schemaPathOrUrl) {
   const isYml =
@@ -86,7 +121,7 @@ function validateGenerator(generatorPath) {
   }
 }
 
-async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
+async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.setLogLevel(options.logLevel);
   log.verbose("");
   log.verbose("     )                             (    (      (                           ");
@@ -104,27 +139,8 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
   let numberOfDiscoveredModels = 0;
   let numberOfDiscoveredEndpoints = 0;
   try {
-    let generatorPath = generatorUrlOrPath;
-
-    if (isUrl(generatorUrlOrPath)) {
-      // if the generator is specified as a git URL, clone it into a temporary directory
-      const generatorUrl = generatorUrlOrPath;
-      if (generatorUrl.endsWith(".git")) {
-        generatorPath = temporaryFolder = fs.mkdtempSync(
-          path.join(os.tmpdir(), "generator")
-        );
-        log.verbose(`Creating temporary folder '${generatorPath}'`);
-        log.standard(`Cloning generator from '${generatorUrl}'`);
-        shell.exec(`git clone ${generatorUrl} ${generatorPath}`, {silent:true});
-      } else {
-        throw new Error(
-          `Generator URL '${generatorUrl}' does not end with ".git", check that the URL points to a valid generator`
-        );
-      }
-    } else {
-      generatorPath = path.resolve(generatorUrlOrPath);
-    }
-
+    log.standard(`Loading generator from '${generatorPathOrUrl}'`);
+    const generatorPath = loadGenerator(generatorPathOrUrl);
     log.standard("Validating generator");
     validateGenerator(generatorPath);
 

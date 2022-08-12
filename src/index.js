@@ -10,7 +10,7 @@ program
   .command("forge")
   .description("Forge the API client from an OpenAPI specification. This command takes an OpenAPI schema, and uses the given generator to create a client library.")
   .argument("<schema>", "An OpenAPI schema, either a URL or a file path")
-  .argument("<generator>", "Path, or git URL, to the language-specific generator")
+  .argument("<generator>", "Git URL, file path or NPM package of a language-specific generator")
   .option(
     "-e, --exclude <glob>",
     "A glob pattern that excludes files from the generator in the output",
