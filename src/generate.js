@@ -11,8 +11,19 @@ const shell = require("shelljs");
 const { parse } = require("yaml");
 
 const helpers = require("./helpers");
+const log = require("./log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
+
+// Command line output styling
+const blackForeground = "\x1b[30m";
+const brightYellowForeground = "\x1b[93m";
+const brightCyanForeground = "\x1b[96m";
+const redBackground = "\x1b[41m";
+const brightGreenBackground = "\x1b[102m";
+const resetStyling = "\x1b[0m";
+
+const divider = "\n---------------------------------------------------\n";
 
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
@@ -76,11 +87,25 @@ function validateGenerator(generatorPath) {
 }
 
 async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
+  log.setLogLevel(options.logLevel);
+  log.verbose("");
+  log.verbose("     )                             (    (      (                           ");
+  log.verbose("  ( /(                      (      )\\ ) )\\ )   )\\ )                        ");
+  log.verbose("  )\\())           (         )\\    (()/((()/(  (()/(      (    (  (     (   ");
+  log.verbose(" ((_)\\   `  )    ))\\  (  ((((_)(   /(_))/(_))  /(_)) (   )(   )\\))(   ))\\  ");
+  log.verbose("   ((_)  /(/(   /((_) )\\ ))\\ _ )\\ (_)) (_))   (_))_| )\\ (()\\ ((_))\\  /((_) ");
+  log.verbose("  / _ \\ ((_)_\\ (_))  _(_/((_)_\\(_)| _ \\|_ _|  | |_  ((_) ((_) (()(_)(_))   ");
+  log.verbose(" | (_) || '_ \\)/ -_)| ' \\))/ _ \\  |  _/ | |   | __|/ _ \\| '_|/ _` | / -_)  ");
+  log.verbose("  \\___/ | .__/ \\___||_||_|/_/ \\_\\ |_|  |___|  |_|  \\___/|_|  \\__, | \\___|  ");
+  log.verbose("        |_|                                                  |___/         ");
+  log.verbose("");
   let temporaryFolder;
+  let exception = null;
+  let numberOfDiscoveredModels = 0;
+  let numberOfDiscoveredEndpoints = 0;
   try {
     let generatorPath = generatorUrlOrPath;
 
-    
     if (isUrl(generatorUrlOrPath)) {
       // if the generator is specified as a git URL, clone it into a temporary directory
       const generatorUrl = generatorUrlOrPath;
@@ -88,31 +113,44 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
         generatorPath = temporaryFolder = fs.mkdtempSync(
           path.join(os.tmpdir(), "generator")
         );
-        console.log(`Cloning generator from ${generatorUrl}`);
-        shell.exec(`git clone ${generatorUrl} ${generatorPath}`);
+        log.verbose(`Creating temporary folder '${generatorPath}'`);
+        log.standard(`Cloning generator from '${generatorUrl}'`);
+        shell.exec(`git clone ${generatorUrl} ${generatorPath}`, {silent:true});
       } else {
         throw new Error(
-          `Generator URL ${generatorUrl} does not end with ".git", check that the URL points to a valid generator`
+          `Generator URL '${generatorUrl}' does not end with ".git", check that the URL points to a valid generator`
         );
       }
     } else {
       generatorPath = path.resolve(generatorUrlOrPath);
     }
 
+    log.standard("Validating generator");
     validateGenerator(generatorPath);
 
     // load the OpenAPI schema
+    log.standard(`Loading schema from '${schemaPathOrUrl}'`);
     const schema =
       typeof schemaPathOrUrl === "object"
         ? schemaPathOrUrl
         : await loadSchema(schemaPathOrUrl);
-
+    
     // validate OpenAPI schema
-    if (!options.skipValidation && !(await isValidSchema(schema))) {
-      return;
+    if(!options.skipValidation) {
+      log.standard("Validating schema");
+      if(!(await isValidSchema(schema))) {
+        return;
+      }
     }
 
+    numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
+    log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
+
+    numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
+    log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints`);
+
     // transform
+    log.verbose("Transforming schema");
     Object.values(transformers).forEach((transformer) => {
       transformer(schema);
     });
@@ -129,20 +167,31 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
         });
       }
     };
+
+    log.verbose("Loading templates");
     handlebarsLoader(generatorPath + "/helpers", "registerHelper");
     handlebarsLoader(generatorPath + "/partials", "registerPartial");
 
     // create the output folder
-    fs.mkdirSync(options.output, { recursive: true });
+    const outputFolder = path.resolve(options.output);
+    if (!fs.existsSync(outputFolder)){
+      const pathString = fs.mkdirSync(outputFolder, { recursive: true });
+      log.verbose(`Creating output folder '${pathString}'`);
+    } else {
+      log.verbose(`Output folder already exists '${outputFolder}'`);
+    }
 
     // iterate over all the files in the template folder
     const generatorTemplatesPath = generatorPath + "/template";
     const templates = fs.readdirSync(generatorTemplatesPath);
+    log.verbose("");
+    log.standard(`Iterating over ${brightCyanForeground}${templates.length}${resetStyling} files`);
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;
       }
-
+      log.verbose(`\n${brightYellowForeground}${file}${resetStyling}`);
+      log.verbose("Reading");
       const source = fs.readFileSync(
         `${generatorTemplatesPath}/${file}`,
         "utf-8"
@@ -151,25 +200,52 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
       if (file.endsWith("handlebars")) {
         // run the handlebars template
         const template = Handlebars.compile(source);
+        log.verbose("Populating template");
         let result = template(schema);
         try {
+          log.verbose("Formatting");
           result = prettier.format(result, { parser: "typescript" });
         } catch {}
 
+        log.verbose("Writing to output location");
         fs.writeFileSync(
-          `${options.output}/${file.replace(".handlebars", "")}`,
+          `${outputFolder}/${file.replace(".handlebars", "")}`,
           result
         );
       } else {
+        log.verbose("Copying to output location");
         // for other files, simply copy them to the output folder
-        fs.writeFileSync(`${options.output}/${file}`, source);
+        fs.writeFileSync(`${outputFolder}/${file}`, source);
       }
     });
+    log.verbose("\nIteration complete\n");
+
+  } catch(e) {
+    exception = e;
   } finally {
     if (temporaryFolder) {
-      console.log(`Removing temporary folder ${temporaryFolder}`);
+      log.verbose(`Removing temporary folder ${temporaryFolder}`);
       fs.rmSync(temporaryFolder, { recursive: true });
     }
+  }
+  if (exception === null) {
+    log.standard(`${divider}`);
+    log.standard(`            API generation ${brightGreenBackground}${blackForeground} SUCCESSFUL ${resetStyling}`);
+    log.standard(`${divider}`);
+    log.standard(" Your API has been forged from the fiery furnace:");
+    log.standard(` ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models have been molded`);
+    log.standard(` ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints have been cast`);
+    log.standard(`${divider}`);
+  } else {
+    log.standard(`${divider}`);
+    log.standard(`              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
+    log.standard(`${divider}`);
+    if(log.getLogLevel() === log.logLevels.standard) {
+      log.standard(`${exception.message}`);
+    } else {
+      log.verbose(`${exception.stack}`);
+    }
+    log.standard(`${divider}`);
   }
 }
 
