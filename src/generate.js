@@ -59,7 +59,9 @@ function loadGenerator(generatorPathOrUrl) {
     if (!fs.existsSync(generatorPath)) {
       //if no local generator, assume it is npm package name.
       log.verbose(`Checking if npm package ${generatorPathOrUrl} is installed`);
-      if (shell.exec(`npm list --depth=0 | findstr /R "+--.${generatorPathOrUrl}@[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"`, {silent:true}).code !== 0) {
+      const currentPath = process.cwd();
+      shell.cd(__dirname, {silent:true});
+      if (!shell.exec(`npm list --depth=0`, {silent:true}).stdout.match(new RegExp(`^\\+--.${generatorPathOrUrl}@\\d+\.\\d+\.\\d+$`, 'm'))) {
         log.verbose(`npm package ${generatorPathOrUrl} doesn't exist, installing package`);
         if (shell.exec(`npm install ${generatorPathOrUrl}`, {silent:true}).code !== 0) {
           throw new Error(
@@ -67,7 +69,8 @@ function loadGenerator(generatorPathOrUrl) {
           );
         }
       }
-      generatorPath = path.resolve(`node_modules\\${generatorPathOrUrl}`);
+      generatorPath = path.resolve(`..\\node_modules\\${generatorPathOrUrl}`);
+      shell.cd(currentPath, {silent:true});
     }
   }
   return generatorPath;
