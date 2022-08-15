@@ -15,9 +15,10 @@
 
 This project is still in active development, these steps will be simplified and streamlined soon.
 
-Clone this repository, and install globally:
+Clone this repository, and install locally then globally:
 
 ~~~
+$ npm install
 $ npm install --global
 ~~~
 
