@@ -38,20 +38,23 @@ function isUrl(maybeUrl) {
   }
 }
 
-// loads the schema, either from a local file or from a remote URL
-async function loadSchema(schemaPathOrUrl) {
-  const isYml =
-    schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
-  const schema = isUrl(schemaPathOrUrl)
-    ? await fetch(schemaPathOrUrl).then((d) => {
-        if (d.status === 200) {
-          return d.text();
-        } else {
-          throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
-        }
-      })
-    : fs.readFileSync(schemaPathOrUrl, "utf-8");
-  return isYml ? parse(schema) : JSON.parse(schema);
+// cannot distinguish what version of OpenAPI is schema. Therefore convert all schemas.
+async function loadAndConvertSchema(schemaPathOrUrl) {
+  let response;
+  if(isUrl(schemaPathOrUrl)) {
+    response = await fetch(`https://converter.swagger.io/api/convert?url=${encodeURIComponent(schemaPathOrUrl)}`, {
+      method: 'GET',
+      headers: {Accept: 'application/json'}
+    });
+  } else {
+    response = await fetch('https://converter.swagger.io/api/convert', {
+	    method: 'POST',
+	    body: fs.readFileSync(schemaPathOrUrl, "utf-8"),
+	    headers: {'Content-Type': 'application/json'}
+    });
+  }
+  if(response.status !== 200) throw new Error(`Failed to convert schema.`);
+  return await response.json();
 }
 
 async function isValidSchema(schema) {
@@ -133,7 +136,7 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
     const schema =
       typeof schemaPathOrUrl === "object"
         ? schemaPathOrUrl
-        : await loadSchema(schemaPathOrUrl);
+        : await loadAndConvertSchema(schemaPathOrUrl);
     
     // validate OpenAPI schema
     if(!options.skipValidation) {
