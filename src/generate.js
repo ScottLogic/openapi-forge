@@ -137,7 +137,7 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
         : await loadSchema(schemaPathOrUrl);
 
     //Check if schema is v2, if so convert it to v3
-      if((schema.swagger !== null) && (schema.swagger === "2.0")) {
+    if(schema.swagger === "2.0") {
       log.verbose("Converting schema");
       schema = await converter.convertObj(schema, {direct: true});
     }
