@@ -14,6 +14,7 @@ const helpers = require("./helpers");
 const log = require("./log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
+const converter = require("swagger2openapi");
 
 // Command line output styling
 const blackForeground = "\x1b[30m";
@@ -38,23 +39,25 @@ function isUrl(maybeUrl) {
   }
 }
 
-// cannot distinguish what version of OpenAPI is schema. Therefore convert all schemas.
-async function loadAndConvertSchema(schemaPathOrUrl) {
-  let response;
-  if(isUrl(schemaPathOrUrl)) {
-    response = await fetch(`https://converter.swagger.io/api/convert?url=${encodeURIComponent(schemaPathOrUrl)}`, {
-      method: 'GET',
-      headers: {Accept: 'application/json'}
-    });
-  } else {
-    response = await fetch('https://converter.swagger.io/api/convert', {
-	    method: 'POST',
-	    body: fs.readFileSync(schemaPathOrUrl, "utf-8"),
-	    headers: {'Content-Type': 'application/json'}
-    });
-  }
-  if(response.status !== 200) throw new Error(`Failed to convert schema.`);
-  return await response.json();
+// loads the schema, either from a local file or from a remote URL
+async function loadSchema(schemaPathOrUrl) {
+  const isYml =
+    schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
+  const schema = isUrl(schemaPathOrUrl)
+    ? await fetch(schemaPathOrUrl).then((d) => {
+        if (d.status === 200) {
+          return d.text();
+        } else {
+          throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
+        }
+      })
+    : fs.readFileSync(schemaPathOrUrl, "utf-8");
+  return isYml ? parse(schema) : JSON.parse(schema);
+}
+
+function convertSchema(schema) {
+
+  return;
 }
 
 async function isValidSchema(schema) {
@@ -133,11 +136,17 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
 
     // load the OpenAPI schema
     log.standard(`Loading schema from '${schemaPathOrUrl}'`);
-    const schema =
+    let schema =
       typeof schemaPathOrUrl === "object"
         ? schemaPathOrUrl
-        : await loadAndConvertSchema(schemaPathOrUrl);
-    
+        : await loadSchema(schemaPathOrUrl);
+
+    //Check if schema is v2, if so convert it to v3
+      if((schema.swagger !== null) && (schema.swagger === "2.0")) {
+      log.verbose("Converting schema");
+      schema = await converter.convertObj(schema, {direct: true});
+    }
+
     // validate OpenAPI schema
     if(!options.skipValidation) {
       log.standard("Validating schema");
@@ -145,7 +154,7 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
         return;
       }
     }
-
+    
     numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
     log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
 
