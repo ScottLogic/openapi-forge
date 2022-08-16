@@ -133,7 +133,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
           log.verbose(`npm package ${generatorPathOrUrl} doesn't exist, installing package`);
           if (shell.exec(`npm install ${generatorPathOrUrl}`, {silent:true}).code !== 0) {
             throw new Error(
-              `No local generator or NPM package found using '${generatorPathOrUrl}', check that it points to a local generator or npm package`
+              `No local generator or npm package found using '${generatorPathOrUrl}', check that it points to a local generator or npm package`
             );
           }
         }
@@ -141,7 +141,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         shell.cd(currentPath, {silent:true});
       }
     }
-    
+
     log.standard("Validating generator");
     validateGenerator(generatorPath);
 
@@ -247,7 +247,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     if(npmPackage) {
       const currentPath = process.cwd();
       shell.cd(__dirname, {silent:true});
-      log.verbose(`Removing NPM package ${generatorPathOrUrl}`);
+      log.verbose(`Removing npm package ${generatorPathOrUrl}`);
       shell.exec(`npm uninstall ${generatorPathOrUrl}`, {silent:true});
       shell.cd(currentPath, {silent:true});
     }

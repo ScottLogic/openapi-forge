@@ -94,7 +94,7 @@ OpenAPI schema, and uses the given generator to create a client library.
 
 Arguments:
   schema                An OpenAPI schema, either a URL or a file path
-  generator             Git URL, file path or NPM package of a language-specific generator
+  generator             Git URL, file path or npm package of a language-specific generator
 
 Options:
   -e, --exclude <glob>    A glob pattern that excludes files from the generator in the output (default: "")
@@ -106,7 +106,7 @@ Options:
 
 **Generator Hierarchy**
 
-If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder and finally if no local generator is found it looks for an NPM package and installs it if it does not exist.
+If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder and finally if no local generator is found it looks for an npm package and installs it if it does not exist.
 
 TODO: Elaborate
 
