@@ -55,11 +55,6 @@ async function loadSchema(schemaPathOrUrl) {
   return isYml ? parse(schema) : JSON.parse(schema);
 }
 
-function convertSchema(schema) {
-
-  return;
-}
-
 async function isValidSchema(schema) {
   try {
     await SwaggerParser.validate(cloneSchema(schema));
