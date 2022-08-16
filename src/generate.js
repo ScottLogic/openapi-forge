@@ -141,6 +141,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         shell.cd(currentPath, {silent:true});
       }
     }
+    
     log.standard("Validating generator");
     validateGenerator(generatorPath);
 
