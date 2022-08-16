@@ -86,7 +86,7 @@ function validateGenerator(generatorPath) {
   }
 }
 
-async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
+async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.setLogLevel(options.logLevel);
   log.verbose("");
   log.verbose("     )                             (    (      (                           ");
@@ -100,29 +100,46 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
   log.verbose("        |_|                                                  |___/         ");
   log.verbose("");
   let temporaryFolder;
+  let npmPackage = false;
   let exception = null;
   let numberOfDiscoveredModels = 0;
   let numberOfDiscoveredEndpoints = 0;
   try {
-    let generatorPath = generatorUrlOrPath;
-
-    if (isUrl(generatorUrlOrPath)) {
+    log.standard(`Loading generator from '${generatorPathOrUrl}'`);
+    let generatorPath;
+    if (isUrl(generatorPathOrUrl)) {
       // if the generator is specified as a git URL, clone it into a temporary directory
-      const generatorUrl = generatorUrlOrPath;
-      if (generatorUrl.endsWith(".git")) {
+      if (generatorPathOrUrl.endsWith(".git")) {
         generatorPath = temporaryFolder = fs.mkdtempSync(
           path.join(os.tmpdir(), "generator")
         );
-        log.verbose(`Creating temporary folder '${generatorPath}'`);
-        log.standard(`Cloning generator from '${generatorUrl}'`);
-        shell.exec(`git clone ${generatorUrl} ${generatorPath}`, {silent:true});
+        log.verbose(`Cloning generator from ${generatorPathOrUrl} to ${generatorPath}`);
+        shell.exec(`git clone ${generatorPathOrUrl} ${generatorPath}`, {silent:true});
       } else {
         throw new Error(
-          `Generator URL '${generatorUrl}' does not end with ".git", check that the URL points to a valid generator`
+          `Generator URL ${generatorPathOrUrl} does not end with ".git", check that the URL points to a valid generator`
         );
       }
     } else {
-      generatorPath = path.resolve(generatorUrlOrPath);
+      //first check if there is a local generator
+      generatorPath = path.resolve(generatorPathOrUrl);
+      if (!fs.existsSync(generatorPath)) {
+        //if no local generator, assume it is npm package name.
+        log.verbose(`Checking if npm package ${generatorPathOrUrl} is installed`);
+        const currentPath = process.cwd();
+        shell.cd(__dirname, {silent:true});
+        if (!shell.exec(`npm list --depth=0`, {silent:true}).stdout.match(new RegExp(`^\\+--.${generatorPathOrUrl}@\\d+\.\\d+\.\\d+$`, 'm'))) {
+          npmPackage = true;
+          log.verbose(`npm package ${generatorPathOrUrl} doesn't exist, installing package`);
+          if (shell.exec(`npm install ${generatorPathOrUrl}`, {silent:true}).code !== 0) {
+            throw new Error(
+              `No local generator or npm package found using '${generatorPathOrUrl}', check that it points to a local generator or npm package`
+            );
+          }
+        }
+        generatorPath = path.resolve(`..\\node_modules\\${generatorPathOrUrl}`);
+        shell.cd(currentPath, {silent:true});
+      }
     }
 
     log.standard("Validating generator");
@@ -226,6 +243,13 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
     if (temporaryFolder) {
       log.verbose(`Removing temporary folder ${temporaryFolder}`);
       fs.rmSync(temporaryFolder, { recursive: true });
+    }
+    if(npmPackage) {
+      const currentPath = process.cwd();
+      shell.cd(__dirname, {silent:true});
+      log.verbose(`Removing npm package ${generatorPathOrUrl}`);
+      shell.exec(`npm uninstall ${generatorPathOrUrl}`, {silent:true});
+      shell.cd(currentPath, {silent:true});
     }
   }
   if (exception === null) {
