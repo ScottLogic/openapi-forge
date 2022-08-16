@@ -149,7 +149,7 @@ async function generate(schemaPathOrUrl, generatorUrlOrPath, options) {
         return;
       }
     }
-    
+
     numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
     log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
 
