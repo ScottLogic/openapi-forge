@@ -132,131 +132,33 @@ const createInlineObjects = (schema) => {
 };
 
 // where a $ref exists in the schema, it replaces this with the referenced JSON
-const resolveReferences = (schema) => {
-  recursivelyResolveReferences(schema);
-};
-
-let counter = 0;
-
-const recursivelyResolveReferences = (root, node) => {
-  node = node || root;
-  Object.keys(node).forEach((property) => {
-    //console.log("---------------------------------------------")
-    //console.log(node);
-    // recurse into objects
-    const value = node[property];
-    if (typeof value === "object") {
-      recursivelyResolveReferences(root, value);
-    }
-
-    // replace references
-    if (property === "$ref") {
-      const path = value.split("/").slice(1);
-      let pathLocation = root;
-      for (const part of path) {
-        pathLocation = pathLocation[part];
-      }
-
-      //console.log("----node appended---")
-      console.log(counter++);
-      //const ogNode = JSON.parse(JSON.stringify(node));
-      Object.assign(node, pathLocation);
-      //const newNode = JSON.parse(JSON.stringify(node));
-
-      //  if(ogNode == newNode){
-      //    let i = 2;
-      //  }
-    }
-  });
-};
-
-const recursivelyResolveReferences3 = (root, node) => {
-  node = node || root;
-  previousPosition = 0;
-  nestedNodes = [];
-
-  for(i=0;i < Object.keys(node).length;i++){
-    node = node || root;
-    // recurse into objects
-    const value = node[Object.keys(node)[i]];
-
-    if (typeof value === "object") {
-      previousPosition = i;
-      i = -1;
-      nestedNodes.push(node);
-      node = value;
-      continue;
-    }
-
-    // replace references
-    if (Object.keys(node)[i] === "$ref") {
-      const path = value.split("/").slice(1);
-      let pathLocation = root;
-      for (const part of path) {
-        pathLocation = pathLocation[part];
-      }
-
-      //console.log(counter++);
-      Object.assign(node, pathLocation);
-    }
-
-    let length = Object.keys(node).length;
-
-    if (i === Object.keys(node).length - 1) {
-      node = nestedNodes.at(-1);
-      nestedNodes.slice(0, -1);
-      i = previousPosition;
-    }
-  }
-};
-
-const recursivelyResolveReferences1 = (root, node) => {
+const resolveReferences = (root, node) => {
   node = node || root;
   let queue = [root];
 
-  while(queue.length){
+  while (queue.length) {
     let node = queue.shift();
 
     Object.keys(node).forEach((property) => {
-      
-    // recurse into objects
-    const value = node[property];
+      const value = node[property];
+      if (value !== null && typeof value === "object") {
+        queue.push(value);
+        return;
+      }
 
-    if(value == null){
-      let y = 1;
-    }
+      // replace references
+      else if (property === "$ref") {
+        const path = value.split("/").slice(1);
+        let pathLocation = root;
+        for (const part of path) {
+          pathLocation = pathLocation[part];
+        }
 
-    if (value !== null && typeof value === "object") {
-      queue.push(value);
-      return;
-      //recursivelyResolveReferences(root, value);
-    }
-
-    // replace references
-    else if (property === "$ref") {
-      const path = value.split("/").slice(1);
-      let pathLocation = root;
-      for (const part of path) {
-        pathLocation = pathLocation[part];
-      } 
-
-      
-      
-      //const ogNode = JSON.parse(JSON.stringify(node));
-      Object.assign(node, pathLocation);
-      console.log("--------------------------")
-      console.log(node);
-      //const newNode = JSON.parse(JSON.stringify(node));
-
-      //  if(ogNode == newNode){
-      //    let i = 2;
-      //  }
-    }
-  });
+        Object.assign(node, pathLocation);
+      }
+    });
   }
 }
-
-
 
 // adds parameter serialization style if missing
 const parameterSerializationOptions = (schema) => {
