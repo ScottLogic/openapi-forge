@@ -15,9 +15,10 @@
 
 This project is still in active development, these steps will be simplified and streamlined soon.
 
-Clone this repository, and install globally:
+Clone this repository, and install locally then globally:
 
 ~~~
+$ npm install
 $ npm install --global
 ~~~
 
@@ -94,7 +95,7 @@ OpenAPI schema, and uses the given generator to create a client library.
 
 Arguments:
   schema                An OpenAPI schema, either a URL or a file path
-  generator             Path, or git URL, to the language-specific generator
+  generator             Git URL, file path or npm package of a language-specific generator
 
 Options:
   -e, --exclude <glob>    A glob pattern that excludes files from the generator in the output (default: "")
@@ -103,6 +104,10 @@ Options:
   -l, --logLevel <level>  Sets the logging level, options are: standard (default), verbose ('verbose', 'v' or '1') 
   -h, --help              Display help for command
 ~~~
+
+**Generator Hierarchy**
+
+If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder and finally if no local generator is found it looks for an npm package and installs it if it does not exist.
 
 TODO: Elaborate
 
