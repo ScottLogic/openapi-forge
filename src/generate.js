@@ -14,6 +14,7 @@ const helpers = require("./helpers");
 const log = require("./log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
+const converter = require("swagger2openapi");
 
 // Command line output styling
 const blackForeground = "\x1b[30m";
@@ -147,11 +148,17 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     // load the OpenAPI schema
     log.standard(`Loading schema from '${schemaPathOrUrl}'`);
-    const schema =
+    let schema =
       typeof schemaPathOrUrl === "object"
         ? schemaPathOrUrl
         : await loadSchema(schemaPathOrUrl);
-    
+
+    //Check if schema is v2, if so convert it to v3
+    if(schema.swagger === "2.0") {
+      log.verbose("Converting schema");
+      schema = await converter.convertObj(schema, {direct: true});
+    }
+
     // validate OpenAPI schema
     if(!options.skipValidation) {
       log.standard("Validating schema");
