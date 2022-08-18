@@ -59,12 +59,25 @@ async function isValidSchema(schema) {
     await SwaggerParser.validate(cloneSchema(schema));
   } catch (errors) {
     console.error("Schema validation errors:");
-    errors.forEach((error) => {
-      console.error(`${error.message} at ${error.instancePath}`);
-    });
+    let errorMessage;
+    if(errors.length !== undefined) {
+      errors.forEach((error) => {
+        errorMessage = error.message;
+        if(error.instancePath != undefined) {
+          errorMessage +=  `at ${error.instancePath}`
+        }
+        console.error(errorMessage);
+      });
+    } else {
+      errorMessage = errors.message;
+      if(errors.instancePath !== undefined) {
+        errorMessage +=  `at ${errors.instancePath}`
+      }
+      console.error(errorMessage);
+    }
     return false;
   }
-
+  
   return true;
 }
 
