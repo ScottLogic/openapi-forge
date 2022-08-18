@@ -62,7 +62,7 @@ async function isValidSchema(schema) {
     console.error("Schema validation errors:");
     const errorArray = Array.isArray(errors) ? errors : [errors];
       errorArray.forEach((error) => {
-        errorMessage = error.message;
+        let errorMessage = error.message;
         if(error.instancePath !== undefined) errorMessage +=  `at ${error.instancePath}`
         console.error(errorMessage);
       });
