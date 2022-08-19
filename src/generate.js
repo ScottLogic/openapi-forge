@@ -172,11 +172,15 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       }
     }
 
-    numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
-    log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
+    if ((schema != null) && (schema.components != null) && (schema.components.schemas != null) ) {
+      numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
+      log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
+    }
 
-    numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
-    log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints`);
+    if ((schema != null) && (schema.paths != null)) {
+      numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
+      log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints`);
+    }
 
     // transform
     log.verbose("Transforming schema");
