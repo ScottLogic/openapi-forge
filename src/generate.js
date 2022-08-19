@@ -59,13 +59,18 @@ async function isValidSchema(schema) {
   try {
     await SwaggerParser.validate(cloneSchema(schema));
   } catch (errors) {
-    console.error("Schema validation errors:");
-    errors.forEach((error) => {
-      console.error(`${error.message} at ${error.instancePath}`);
+    log.standard(`${divider}`);
+    log.standard(`            Schema validation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
+    log.standard(`${divider}`);
+    const errorArray = Array.isArray(errors) ? errors : [errors];
+    errorArray.forEach((error) => {
+      let errorMessage = error.message;
+      if(error.instancePath !== undefined) errorMessage +=  `at ${error.instancePath}`
+      console.error(errorMessage);
     });
+    log.standard(`${divider}`);
     return false;
   }
-
   return true;
 }
 
