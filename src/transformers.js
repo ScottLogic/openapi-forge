@@ -132,30 +132,33 @@ const createInlineObjects = (schema) => {
 };
 
 // where a $ref exists in the schema, it replaces this with the referenced JSON
-const resolveReferences = (schema) => {
-  recursivelyResolveReferences(schema);
-};
-
-const recursivelyResolveReferences = (root, node) => {
+const resolveReferences = (root, node) => {
   node = node || root;
-  Object.keys(node).forEach((property) => {
-    // recurse into objects
-    const value = node[property];
-    if (typeof value === "object") {
-      recursivelyResolveReferences(root, value);
-    }
+  let queue = [root];
 
-    // replace references
-    if (property === "$ref") {
-      const path = value.split("/").slice(1);
-      let pathLocation = root;
-      for (const part of path) {
-        pathLocation = pathLocation[part];
+  while (queue.length) {
+    let node = queue.shift();
+
+    Object.keys(node).forEach((property) => {
+      const value = node[property];
+      if (value !== null && typeof value === "object") {
+        queue.push(value);
+        return;
       }
-      Object.assign(node, pathLocation);
-    }
-  });
-};
+
+      // replace references
+      else if (property === "$ref") {
+        const path = value.split("/").slice(1);
+        let pathLocation = root;
+        for (const part of path) {
+          pathLocation = pathLocation[part];
+        }
+
+        Object.assign(node, pathLocation);
+      }
+    });
+  }
+}
 
 // adds parameter serialization style if missing
 const parameterSerializationOptions = (schema) => {
