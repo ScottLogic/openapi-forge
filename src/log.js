@@ -1,8 +1,9 @@
-let logLevel = 0;
+let logLevel = 1;
 
 const logLevels = {
-    standard: 0,
-    verbose: 1
+    quiet: 0,
+    standard: 1,
+    verbose: 2
 }
 
 function getLogLevel() {
@@ -10,12 +11,14 @@ function getLogLevel() {
 }
 
 function setLogLevel(level) {
-    if((level === '1') || (level === 'v') || (level === 'verbose')) logLevel = logLevels.verbose;
+    if((level === '0') || (level === 'q') || (level === 'quiet')) logLevel = logLevels.quiet;
+    if((level === '1') || (level === 's') || (level === 'standard')) logLevel = logLevels.standard;
+    if((level === '2') || (level === 'v') || (level === 'verbose')) logLevel = logLevels.verbose;
     return;
 }
 
 function standard(msg) {
-    console.log(msg);
+    if (logLevel >= logLevels.standard) console.log(msg);
     return;
 }
 

@@ -27,8 +27,8 @@ program
   )
   .option(
     "-l, --logLevel <level>",
-    "Sets the logging level, options are: standard (default), verbose ('verbose', 'v' or '1')",
-    "0"
+    "Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')",
+    "1"
   )
   .action(async (schema, template, options) => {
     generate(schema, template, options);

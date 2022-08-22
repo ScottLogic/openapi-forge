@@ -101,7 +101,7 @@ Options:
   -e, --exclude <glob>    A glob pattern that excludes files from the generator in the output (default: "")
   -o, --output <path>     The path where the generated client API will be written (default: ".")
   -s, --skipValidation    Skip schema validation
-  -l, --logLevel <level>  Sets the logging level, options are: standard (default), verbose ('verbose', 'v' or '1') 
+  -l, --logLevel <level>  Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')
   -h, --help              Display help for command
 ~~~
 
