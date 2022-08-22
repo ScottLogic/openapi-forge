@@ -172,12 +172,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       }
     }
 
-    if ((schema != null) && (schema.components != null) && (schema.components.schemas != null) ) {
+    if (schema && schema.components && schema.components.schemas) {
       numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
       log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
     }
 
-    if ((schema != null) && (schema.paths != null)) {
+    if (schema && schema.paths) {
       numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
       log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints`);
     }
