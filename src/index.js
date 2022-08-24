@@ -2,6 +2,7 @@
 
 const { Command } = require("commander");
 const generate = require("./generate");
+const testGenerators = require("./testGenerators");
 const program = new Command();
 
 program.name("openapi-generator");
@@ -32,6 +33,33 @@ program
   )
   .action(async (schema, template, options) => {
     generate(schema, template, options);
+  });
+
+  program
+  .command("test-generators")
+  .description("Test language specific generators.")
+  .option(
+    "-g, --generators <gens>",
+    "Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are: c (CSharp), t (TypeScript)", //h (PHP), p (Python), j (Java), s (JavaScript)
+    "ct"
+  )
+  // .option(
+  //   "-c, --csharp <csharpPath>",
+  //   "Sets the location of the CSharp generator. Default is the directory containing openapi-forge",
+  //   "../../openapi-forge-csharp"
+  // )
+  .option(
+    "-t, --typescript <typescriptPath>",
+    "Sets the location of the TypeScript generator. Default is a directory called 'openapi-forge-typescript' in the same location as openapi-forge",
+     "../../openapi-forge-typescript"
+  )
+  .option(
+    "-l, --logLevel <level>",
+    "Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')",
+    "1"
+  )
+  .action(async (options) => {
+    testGenerators(options);
   });
 
 program.parse();
