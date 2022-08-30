@@ -17,6 +17,18 @@ function setLogLevel(level) {
     return;
 }
 
+function isQuiet() {
+    return (logLevel === logLevels.quiet) ? true : false;
+}
+
+function isStandard() {
+    return (logLevel === logLevels.standard) ? true : false;
+}
+
+function isVerbose() {
+    return (logLevel === logLevels.verbose) ? true : false;
+}
+
 function standard(msg) {
     if (logLevel >= logLevels.standard) console.log(msg);
     return;
@@ -32,6 +44,9 @@ module.exports = {
     logLevels,
     getLogLevel,
     setLogLevel,
+    isQuiet,
+    isStandard,
+    isVerbose,
     standard,
     verbose
 };

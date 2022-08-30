@@ -172,12 +172,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       }
     }
 
-    if (schema && schema.components && schema.components.schemas) {
+    if (schema?.components?.schemas) {
       numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
       log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
     }
 
-    if (schema && schema.paths) {
+    if (schema?.paths) {
       numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
       log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints`);
     }
@@ -280,7 +280,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.standard(`${divider}`);
     log.standard(`              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
     log.standard(`${divider}`);
-    if(log.getLogLevel() === log.logLevels.standard) {
+    if(log.isStandard()) {
       log.standard(`${exception.message}`);
     } else {
       log.verbose(`${exception.stack}`);
