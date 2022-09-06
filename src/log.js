@@ -1,3 +1,15 @@
+// Command line output styling
+const blackForeground = "\x1b[30m";
+const brightYellowForeground = "\x1b[93m";
+const brightCyanForeground = "\x1b[96m";
+const redBackground = "\x1b[41m";
+const brightGreenBackground = "\x1b[102m";
+const bold = "\x1b[1m"
+const underline = "\x1b[4m"
+const resetStyling = "\x1b[0m";
+
+const divider = "\n---------------------------------------------------\n";
+
 let logLevel = 1;
 
 const logLevels = {
@@ -40,6 +52,15 @@ function verbose(msg) {
 }
 
 module.exports = {
+    blackForeground,
+    brightYellowForeground,
+    brightCyanForeground,
+    redBackground,
+    brightGreenBackground,
+    bold,
+    underline,
+    resetStyling,
+    divider,
     logLevel,
     logLevels,
     getLogLevel,

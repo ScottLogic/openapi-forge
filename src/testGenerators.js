@@ -4,6 +4,7 @@ const os = require("os");
 const shell = require("shelljs");
 
 const log = require("./log");
+const { logger } = require("handlebars");
 
 function Result(scenarios, passed, skipped, undefined, failed, time) {
     this.scenarios = isNaN(scenarios) ? 0 : scenarios;
@@ -39,6 +40,7 @@ async function testGenerators(options) {
     if(typescript) {
         // Test TypeScript generator
         try {
+            log.standard(`\n${log.bold}${log.underline}TypeScript${log.resetStyling}`);
             featurePath = "../openapi-forge/features/*.feature";
             basePath = "../../../openapi-forge/src/generate";
             generatorPath = options.typescript;
@@ -85,27 +87,34 @@ async function testGenerators(options) {
             // Format the output of the testing.
             let result = stdout[stdoutLength-2].match(/^(\d+)m(\d+)\.\d+s/);
 
-            let time = "";
-            if((result[1] !== "0") && (result[1] !== "")) time = `${result[1]}m`;
-            time = `${time}${result[2]}s` 
+            if(result) {
+                let time = "";
+                if((result[1] !== "0") && (result[1] !== "")) time = `${result[1]}m`;
+                time = `${time}${result[2]}s` 
 
-            result = stdout[stdoutLength-4].match(/^(\d+)\sscenarios?\s\(((\d+)\sfailed)?(,\s)?((\d+)\sundefined)?(,\s)?((\d+)\spassed)?\)/);
-            
-            resultArray.TypeScript = new Result(parseInt(result[1]), parseInt(result[9]), 0, parseInt(result[6]), parseInt(result[3]), time);
+                result = stdout[stdoutLength-4].match(/^(\d+)\sscenarios?\s\(((\d+)\sfailed)?(,\s)?((\d+)\sundefined)?(,\s)?((\d+)\spassed)?\)/);
+                
+                resultArray.TypeScript = new Result(parseInt(result[1]), parseInt(result[9]), 0, parseInt(result[6]), parseInt(result[3]), time);
+                }
 
-            if(!temporaryFolder) {
-                log.standard("Setting paths to back to original values");
-                shell.sed("-i", /^const\sgeneratePath\s=\s".*";/, orgBasePath, "base.ts");
-                shell.cd("../../", shellOptions);
-                shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, orgFeaturePath, "cucumber.js");
+                if(!temporaryFolder) {
+                    log.standard("Setting paths to back to original values");
+                    shell.sed("-i", /^const\sgeneratePath\s=\s".*";/, orgBasePath, "base.ts");
+                    shell.cd("../../", shellOptions);
+                    shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, orgFeaturePath, "cucumber.js");
             }
             shell.cd(__dirname, shellOptions);
+            log.standard("TypeScript testing complete");
         } catch(exception) {
+            log.standard(`${log.divider}`);
+            log.standard(`              TypeScript testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
+            log.standard(`${log.divider}`);
             if(log.isStandard()) {
-                log.standard(`${exception.message}`);
-              } else {
-                log.verbose(`${exception.stack}`);
-              }
+              log.standard(`${exception.message}`);
+            } else {
+              log.verbose(`${exception.stack}`);
+            }
+            log.standard(`${log.divider}`);
         } finally {
             if (temporaryFolder) {
                 // Using cloned version, delete temporary directory
@@ -117,6 +126,7 @@ async function testGenerators(options) {
     if(csharp) {
         // Test CSharp generator
         try {
+            log.standard(`\n${log.bold}${log.underline}CSharp${log.resetStyling}`);
             featurePath = "$(ProjectDir)..\\..\\..\\openapi-forge\\features\\*.feature";
             generatorPath = options.csharp;
 
@@ -167,12 +177,17 @@ async function testGenerators(options) {
                 shell.sed("-i", /^        <FeatureFiles Include=".*" \/>/, orgFeaturePath, "FeaturesTests.csproj");
             }
             shell.cd(__dirname, shellOptions);
+            log.standard("CSharp testing complete");
         } catch(exception) {
+            log.standard(`${log.divider}`);
+            log.standard(`              CSharp testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
+            log.standard(`${log.divider}`);
             if(log.isStandard()) {
-                log.standard(`${exception.message}`);
-              } else {
-                log.verbose(`${exception.stack}`);
-              }
+              log.standard(`${exception.message}`);
+            } else {
+              log.verbose(`${exception.stack}`);
+            }
+            log.standard(`${log.divider}`);
         } finally {
             if (temporaryFolder) {
                 // Using cloned version, delete temporary directory
@@ -182,7 +197,9 @@ async function testGenerators(options) {
         }
     }
     //Present the results of the testing
-    if(!log.isQuiet()) console.table(resultArray);
+    if(Object.keys(resultArray).length) {
+        if(!log.isQuiet()) console.table(resultArray);
+    }
 }
 
 module.exports = testGenerators;
