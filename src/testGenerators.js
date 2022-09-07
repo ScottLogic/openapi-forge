@@ -73,9 +73,9 @@ async function testGenerators(options) {
 
             log.verbose("Replacing path to generate.js");
             shell.cd("features/support", shellOptions);
-            const orgBasePath = shell.grep(/^const\sgeneratePath\s=\s".*";/, "base.ts").toString().replace("\r\n", "");
-            shell.sed("-i", /^const\sgeneratePath\s=\s".*";/, `const generatePath = "${basePath}";`, "base.ts");
-            
+            const orgBasePath = shell.grep(/^const\sgenerate\s=\srequire\(".*"\);/, "base.ts").toString().replace("\r\n", "");
+            shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, `const generate = require\("${basePath}"\);`, "base.ts");
+
             log.verbose("Installing generator dependencies");
             shell.exec(`npm install`, shellOptions);
 
@@ -99,7 +99,7 @@ async function testGenerators(options) {
 
                 if(!temporaryFolder) {
                     log.standard("Setting paths to back to original values");
-                    shell.sed("-i", /^const\sgeneratePath\s=\s".*";/, orgBasePath, "base.ts");
+                    shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, orgBasePath, "base.ts");
                     shell.cd("../../", shellOptions);
                     shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, orgFeaturePath, "cucumber.js");
             }
