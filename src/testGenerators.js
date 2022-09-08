@@ -4,18 +4,7 @@ const os = require("os");
 const shell = require("shelljs");
 
 const log = require("./log");
-const { logger } = require("handlebars");
-
-function Result(scenarios, passed, skipped, undefined, failed, time) {
-    this.scenarios = isNaN(scenarios) ? 0 : scenarios;
-    this.passed = isNaN(passed) ? 0 : passed;
-    this.skipped = isNaN(skipped) ? 0 : skipped;
-    this.undefined = isNaN(undefined) ? 0 : undefined;
-    this.failed = isNaN(failed) ? 0 : failed;
-    this.time = time;
-}
-
-
+const testResultParser = require("./testResultParser");
 
 async function testGenerators(options) {
     let temporaryFolder;
@@ -66,6 +55,9 @@ async function testGenerators(options) {
                 featurePath = path.relative(generatorPath, path.join(__dirname, "../features/*.feature")).replaceAll("\\", "/");
                 basePath = path.relative(path.join(generatorPath, "features/support"), path.join(__dirname, "../src/generate")).replaceAll("\\", "/");
             }
+
+            log.standard("Replacing paths in TypeScript generator");
+
             log.verbose("Replacing path to .feature files");
             shell.cd(generatorPath, shellOptions);
             const orgFeaturePath = shell.grep(/^const\sfeaturePath\s=\s".*";/, "cucumber.js").toString().replace("\r\n", "");
@@ -82,29 +74,19 @@ async function testGenerators(options) {
             log.standard("Starting tests");
             const test = shell.exec(`npm run test`, shellOptions);
             const stdout = test.stdout.split("\n");
-            const stdoutLength = stdout.length;
-            
-            // Format the output of the testing.
-            let result = stdout[stdoutLength-2].match(/^(\d+)m(\d+)\.\d+s/);
 
-            if(result) {
-                let time = "";
-                if((result[1] !== "0") && (result[1] !== "")) time = `${result[1]}m`;
-                time = `${time}${result[2]}s` 
+            resultArray.TypeScript = testResultParser.parseTypeScript(stdout[stdout.length-2], stdout[stdout.length-4]);
 
-                result = stdout[stdoutLength-4].match(/^(\d+)\sscenarios?\s\(((\d+)\sfailed)?(,\s)?((\d+)\sundefined)?(,\s)?((\d+)\spassed)?\)/);
-                
-                resultArray.TypeScript = new Result(parseInt(result[1]), parseInt(result[9]), 0, parseInt(result[6]), parseInt(result[3]), time);
-                }
-
-                if(!temporaryFolder) {
-                    log.standard("Setting paths to back to original values");
-                    shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, orgBasePath, "base.ts");
-                    shell.cd("../../", shellOptions);
-                    shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, orgFeaturePath, "cucumber.js");
+            if(!temporaryFolder) {
+                log.standard("Setting paths to back to original values");
+                shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, orgBasePath, "base.ts");
+                shell.cd("../../", shellOptions);
+                shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, orgFeaturePath, "cucumber.js");
             }
+
             shell.cd(__dirname, shellOptions);
             log.standard("TypeScript testing complete");
+
         } catch(exception) {
             log.standard(`${log.divider}`);
             log.standard(`              TypeScript testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
@@ -152,7 +134,7 @@ async function testGenerators(options) {
                 }
             }
 
-            log.standard("Replacing paths in CSharp generator")
+            log.standard("Replacing paths in CSharp generator");
             
             log.verbose("Replacing path to .feature files");
             shell.cd(path.join(generatorPath, "tests/FeaturesTests"), shellOptions);
@@ -168,16 +150,16 @@ async function testGenerators(options) {
             // Format the output of the testing.
             const stdout = test.stdout.split("\n");
 
-            let match = stdout[stdout.length-2].match(/Failed:\s+(\d+),\sPassed:\s+(\d+),\sSkipped:\s+(\d+),\sTotal:\s+(\d+),\sDuration:\s+(.*)\s-\sFeaturesTests.dll\s\(net6\.0\)/);
-            
-            resultArray.CSharp = new Result(parseInt(match[4]), parseInt(match[2]), parseInt(match[3]), 0, parseInt(match[1]), match[5].replace(" ", ""));
-            
+            resultArray.CSharp = testResultParser.parseCSharp(stdout[stdout.length-2]);
+
             if(!temporaryFolder) {
                 log.standard("Setting paths to back to original values");
                 shell.sed("-i", /^        <FeatureFiles Include=".*" \/>/, orgFeaturePath, "FeaturesTests.csproj");
             }
+
             shell.cd(__dirname, shellOptions);
             log.standard("CSharp testing complete");
+
         } catch(exception) {
             log.standard(`${log.divider}`);
             log.standard(`              CSharp testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
