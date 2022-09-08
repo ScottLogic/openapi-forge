@@ -45,12 +45,12 @@ program
   )
   .option(
     "-c, --csharp <csharpPath>",
-    "Sets the location of the CSharp generator. Default is a directory called 'openapi-forge-csharp' in the same location as openapi-forge",
+    "Sets the location of the CSharp generator. Default is a directory named 'openapi-forge-csharp' in the same location as openapi-forge",
     "../../openapi-forge-csharp"
   )
   .option(
     "-t, --typescript <typescriptPath>",
-    "Sets the location of the TypeScript generator. Default is a directory called 'openapi-forge-typescript' in the same location as openapi-forge",
+    "Sets the location of the TypeScript generator. Default is a directory named 'openapi-forge-typescript' in the same location as openapi-forge",
      "../../openapi-forge-typescript"
   )
   .option(
