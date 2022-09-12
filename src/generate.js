@@ -16,16 +16,6 @@ const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
 const converter = require("swagger2openapi");
 
-// Command line output styling
-const blackForeground = "\x1b[30m";
-const brightYellowForeground = "\x1b[93m";
-const brightCyanForeground = "\x1b[96m";
-const redBackground = "\x1b[41m";
-const brightGreenBackground = "\x1b[102m";
-const resetStyling = "\x1b[0m";
-
-const divider = "\n---------------------------------------------------\n";
-
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
 });
@@ -59,16 +49,7 @@ async function isValidSchema(schema) {
   try {
     await SwaggerParser.validate(cloneSchema(schema));
   } catch (errors) {
-    log.standard(`${divider}`);
-    log.standard(`            Schema validation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
-    log.standard(`${divider}`);
-    const errorArray = Array.isArray(errors) ? errors : [errors];
-    errorArray.forEach((error) => {
-      let errorMessage = error.message;
-      if(error.instancePath !== undefined) errorMessage +=  `at ${error.instancePath}`
-      console.error(errorMessage);
-    });
-    log.standard(`${divider}`);
+    log.logInvalidSchema(errors);
     return false;
   }
   return true;
@@ -94,17 +75,7 @@ function validateGenerator(generatorPath) {
 
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.setLogLevel(options.logLevel);
-  log.verbose("");
-  log.verbose("     )                             (    (      (                           ");
-  log.verbose("  ( /(                      (      )\\ ) )\\ )   )\\ )                        ");
-  log.verbose("  )\\())           (         )\\    (()/((()/(  (()/(      (    (  (     (   ");
-  log.verbose(" ((_)\\   `  )    ))\\  (  ((((_)(   /(_))/(_))  /(_)) (   )(   )\\))(   ))\\  ");
-  log.verbose("   ((_)  /(/(   /((_) )\\ ))\\ _ )\\ (_)) (_))   (_))_| )\\ (()\\ ((_))\\  /((_) ");
-  log.verbose("  / _ \\ ((_)_\\ (_))  _(_/((_)_\\(_)| _ \\|_ _|  | |_  ((_) ((_) (()(_)(_))   ");
-  log.verbose(" | (_) || '_ \\)/ -_)| ' \\))/ _ \\  |  _/ | |   | __|/ _ \\| '_|/ _` | / -_)  ");
-  log.verbose("  \\___/ | .__/ \\___||_||_|/_/ \\_\\ |_|  |___|  |_|  \\___/|_|  \\__, | \\___|  ");
-  log.verbose("        |_|                                                  |___/         ");
-  log.verbose("");
+  log.logTitle();
   let temporaryFolder;
   let npmPackage = false;
   let exception = null;
@@ -174,12 +145,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     if (schema && schema.components && schema.components.schemas) {
       numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
-      log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models`);
+      log.verbose(`Discovered ${log.brightCyanForeground}${numberOfDiscoveredModels}${log.resetStyling} models`);
     }
 
     if (schema && schema.paths) {
       numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
-      log.verbose(`Discovered ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints`);
+      log.verbose(`Discovered ${log.brightCyanForeground}${numberOfDiscoveredEndpoints}${log.resetStyling} endpoints`);
     }
 
     // transform
@@ -218,12 +189,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     const generatorTemplatesPath = generatorPath + "/template";
     const templates = fs.readdirSync(generatorTemplatesPath);
     log.verbose("");
-    log.standard(`Iterating over ${brightCyanForeground}${templates.length}${resetStyling} files`);
+    log.standard(`Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`);
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;
       }
-      log.verbose(`\n${brightYellowForeground}${file}${resetStyling}`);
+      log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);
       log.verbose("Reading");
       const source = fs.readFileSync(
         `${generatorTemplatesPath}/${file}`,
@@ -269,23 +240,9 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     }
   }
   if (exception === null) {
-    log.standard(`${divider}`);
-    log.standard(`            API generation ${brightGreenBackground}${blackForeground} SUCCESSFUL ${resetStyling}`);
-    log.standard(`${divider}`);
-    log.standard(" Your API has been forged from the fiery furnace:");
-    log.standard(` ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models have been molded`);
-    log.standard(` ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints have been cast`);
-    log.standard(`${divider}`);
+    log.logSuccessfulForge(numberOfDiscoveredModels, numberOfDiscoveredEndpoints);
   } else {
-    log.standard(`${divider}`);
-    log.standard(`              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
-    log.standard(`${divider}`);
-    if(log.getLogLevel() === log.logLevels.standard) {
-      log.standard(`${exception.message}`);
-    } else {
-      log.verbose(`${exception.stack}`);
-    }
-    log.standard(`${divider}`);
+    log.logFailedForge(exception)
   }
 }
 
