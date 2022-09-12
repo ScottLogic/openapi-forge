@@ -7,6 +7,8 @@ const log = require("./log");
 const testResultParser = require("./testResultParser");
 const generatorResolver = require("./generatorResolver");
 
+let shellOptions;
+
 function checkLocalGenerator(language, languageLetter, languageString) {
     if(process.argv.includes(languageLetter) || process.argv.includes(languageString)) {
         throw new Error(
@@ -30,8 +32,8 @@ async function testGenerators(options) {
     let featurePath;
     let basePath;
     let resultArray = {};
+    shellOptions = {};
 
-    let shellOptions = {};
     log.setLogLevel(options.logLevel);
     if(!log.isVerbose()) shellOptions.silent = true;
 

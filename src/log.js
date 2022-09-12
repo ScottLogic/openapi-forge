@@ -94,7 +94,7 @@ function logFailedForge(exception) {
     standard(`${divider}`);
     standard(`              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
     standard(`${divider}`);
-    if(getLogLevel() === log.logLevels.standard) {
+    if(getLogLevel() === logLevels.standard) {
       standard(`${exception.message}`);
     } else {
       verbose(`${exception.stack}`);
@@ -104,15 +104,15 @@ function logFailedForge(exception) {
 }
 
 function logFailedTesting(language, exception) {
-    log.standard(`${log.divider}`);
-    log.standard(`              ${language} testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
-    log.standard(`${log.divider}`);
-    if(log.isStandard()) {
-        log.standard(`${exception.message}`);
+    standard(`${divider}`);
+    standard(`              ${language} testing ${redBackground}${blackForeground} FAILED ${resetStyling}`);
+    standard(`${divider}`);
+    if(isStandard()) {
+        standard(`${exception.message}`);
     } else {
-        log.verbose(`${exception.stack}`);
+        verbose(`${exception.stack}`);
     }
-    log.standard(`${log.divider}`);
+    standard(`${divider}`);
 }
 
 module.exports = {
