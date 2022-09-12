@@ -81,5 +81,6 @@ module.exports = {
     isStandard,
     isVerbose,
     standard,
-    verbose
+    verbose,
+    logFailedTesting
 };
