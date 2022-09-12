@@ -57,6 +57,5 @@ function cleanup() {
 module.exports = {
     cloneGenerator,
     installGeneratorFromNPM,
-    cleanup,
-    npmPackage
+    cleanup
 };
