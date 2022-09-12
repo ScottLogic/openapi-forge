@@ -50,16 +50,7 @@ async function isValidSchema(schema) {
   try {
     await SwaggerParser.validate(cloneSchema(schema));
   } catch (errors) {
-    log.standard(`${log.divider}`);
-    log.standard(`            Schema validation ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
-    log.standard(`${log.divider}`);
-    const errorArray = Array.isArray(errors) ? errors : [errors];
-    errorArray.forEach((error) => {
-      let errorMessage = error.message;
-      if(error.instancePath !== undefined) errorMessage +=  `at ${error.instancePath}`
-      console.error(errorMessage);
-    });
-    log.standard(`${log.divider}`);
+    log.logInvalidSchema(errors);
     return false;
   }
   return true;
@@ -85,17 +76,7 @@ function validateGenerator(generatorPath) {
 
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.setLogLevel(options.logLevel);
-  log.verbose("");
-  log.verbose("     )                             (    (      (                           ");
-  log.verbose("  ( /(                      (      )\\ ) )\\ )   )\\ )                        ");
-  log.verbose("  )\\())           (         )\\    (()/((()/(  (()/(      (    (  (     (   ");
-  log.verbose(" ((_)\\   `  )    ))\\  (  ((((_)(   /(_))/(_))  /(_)) (   )(   )\\))(   ))\\  ");
-  log.verbose("   ((_)  /(/(   /((_) )\\ ))\\ _ )\\ (_)) (_))   (_))_| )\\ (()\\ ((_))\\  /((_) ");
-  log.verbose("  / _ \\ ((_)_\\ (_))  _(_/((_)_\\(_)| _ \\|_ _|  | |_  ((_) ((_) (()(_)(_))   ");
-  log.verbose(" | (_) || '_ \\)/ -_)| ' \\))/ _ \\  |  _/ | |   | __|/ _ \\| '_|/ _` | / -_)  ");
-  log.verbose("  \\___/ | .__/ \\___||_||_|/_/ \\_\\ |_|  |___|  |_|  \\___/|_|  \\__, | \\___|  ");
-  log.verbose("        |_|                                                  |___/         ");
-  log.verbose("");
+  log.logTitle();
   let exception = null;
   let numberOfDiscoveredModels = 0;
   let numberOfDiscoveredEndpoints = 0;
@@ -224,23 +205,9 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     generatorResolver.cleanup();
   }
   if (exception === null) {
-    log.standard(`${log.divider}`);
-    log.standard(`            API generation ${log.brightGreenBackground}${log.blackForeground} SUCCESSFUL ${log.resetStyling}`);
-    log.standard(`${log.divider}`);
-    log.standard(" Your API has been forged from the fiery furnace:");
-    log.standard(` ${log.brightCyanForeground}${numberOfDiscoveredModels}${log.resetStyling} models have been molded`);
-    log.standard(` ${log.brightCyanForeground}${numberOfDiscoveredEndpoints}${log.resetStyling} endpoints have been cast`);
-    log.standard(`${log.divider}`);
+    log.logSuccessfulForge(numberOfDiscoveredModels, numberOfDiscoveredEndpoints);
   } else {
-    log.standard(`${log.divider}`);
-    log.standard(`              API generation ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
-    log.standard(`${log.divider}`);
-    if(log.isStandard()) {
-      log.standard(`${exception.message}`);
-    } else {
-      log.verbose(`${exception.stack}`);
-    }
-    log.standard(`${log.divider}`);
+    log.logFailedForge(exception)
   }
 }
 

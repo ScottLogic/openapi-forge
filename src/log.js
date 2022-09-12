@@ -51,14 +51,66 @@ function verbose(msg) {
     return;
 }
 
+function logTitle() {
+    verbose("");
+    verbose("     )                             (    (      (                           ");
+    verbose("  ( /(                      (      )\\ ) )\\ )   )\\ )                        ");
+    verbose("  )\\())           (         )\\    (()/((()/(  (()/(      (    (  (     (   ");
+    verbose(" ((_)\\   `  )    ))\\  (  ((((_)(   /(_))/(_))  /(_)) (   )(   )\\))(   ))\\  ");
+    verbose("   ((_)  /(/(   /((_) )\\ ))\\ _ )\\ (_)) (_))   (_))_| )\\ (()\\ ((_))\\  /((_) ");
+    verbose("  / _ \\ ((_)_\\ (_))  _(_/((_)_\\(_)| _ \\|_ _|  | |_  ((_) ((_) (()(_)(_))   ");
+    verbose(" | (_) || '_ \\)/ -_)| ' \\))/ _ \\  |  _/ | |   | __|/ _ \\| '_|/ _` | / -_)  ");
+    verbose("  \\___/ | .__/ \\___||_||_|/_/ \\_\\ |_|  |___|  |_|  \\___/|_|  \\__, | \\___|  ");
+    verbose("        |_|                                                  |___/         ");
+    verbose("");
+    return;
+}
+
+function logInvalidSchema(errors) {
+    standard(`${divider}`);
+    standard(`            Schema validation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
+    standard(`${divider}`);
+    const errorArray = Array.isArray(errors) ? errors : [errors];
+    errorArray.forEach((error) => {
+      let errorMessage = error.message;
+      if(error.instancePath !== undefined) errorMessage +=  `at ${error.instancePath}`
+      console.error(errorMessage);
+    });
+    standard(`${divider}`);
+}
+
+function logSuccessfulForge(numberOfDiscoveredModels, numberOfDiscoveredEndpoints) {
+    standard(`${divider}`);
+    standard(`            API generation ${brightGreenBackground}${blackForeground} SUCCESSFUL ${resetStyling}`);
+    standard(`${divider}`);
+    standard(" Your API has been forged from the fiery furnace:");
+    standard(` ${brightCyanForeground}${numberOfDiscoveredModels}${resetStyling} models have been molded`);
+    standard(` ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints have been cast`);
+    standard(`${divider}`);
+    return;
+}
+
+function logFailedForge(exception) {
+    standard(`${divider}`);
+    standard(`              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
+    standard(`${divider}`);
+    if(getLogLevel() === log.logLevels.standard) {
+      standard(`${exception.message}`);
+    } else {
+      verbose(`${exception.stack}`);
+    }
+    standard(`${divider}`);
+    return;
+}
+
 function logFailedTesting(language, exception) {
     log.standard(`${log.divider}`);
     log.standard(`              ${language} testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
     log.standard(`${log.divider}`);
     if(log.isStandard()) {
-      log.standard(`${exception.message}`);
+        log.standard(`${exception.message}`);
     } else {
-      log.verbose(`${exception.stack}`);
+        log.verbose(`${exception.stack}`);
     }
     log.standard(`${log.divider}`);
 }
@@ -82,5 +134,10 @@ module.exports = {
     isVerbose,
     standard,
     verbose,
+    logFailedTesting,
+    logTitle,
+    logInvalidSchema,
+    logSuccessfulForge,
+    logFailedForge,
     logFailedTesting
 };
