@@ -5,6 +5,24 @@ const shell = require("shelljs");
 
 const log = require("./log");
 const testResultParser = require("./testResultParser");
+const generatorResolver = require("./generatorResolver");
+
+function checkLocalGenerator(language, languageLetter, languageString) {
+    if(process.argv.includes(languageLetter) || process.argv.includes(languageString)) {
+        throw new Error(
+            `No local ${language} generator found at ${generatorPath}.`
+        );
+    }
+}
+
+function setupAndStartTests() {
+    log.verbose("Installing generator dependencies");
+    shell.exec(`npm install`, shellOptions);
+
+    log.standard("Starting tests");
+    const test = shell.exec(`npm run test`, shellOptions);
+    return test.stdout.split("\n");
+}
 
 async function testGenerators(options) {
     let temporaryFolder;
@@ -39,17 +57,11 @@ async function testGenerators(options) {
             // Check for local Typescript generator.
             if (!fs.existsSync(generatorPath)) {
                 log.verbose("Cannot find TypeScript generator");
-                if(process.argv.includes("-t") || process.argv.includes("--typescript")) {
-                    throw new Error(
-                        `No local language generator found at ${generatorPath}.`
-                    );
-                }
+
+                checkLocalGenerator("TypeScript", "-t", "--typescript");
+
                 // Local generator does not exist, clone from GitHub to temporary location
-                generatorPath = temporaryFolder = fs.mkdtempSync(
-                    path.join(os.tmpdir(), "generator")
-                );
-                log.verbose(`Cloning generator from https://github.com/ScottLogic/openapi-forge-typescript.git to ${generatorPath}`);
-                shell.exec(`git clone https://github.com/ScottLogic/openapi-forge-typescript.git ${generatorPath}`, shellOptions);
+                generatorPath = generatorResolver.cloneGenerator("https://github.com/ScottLogic/openapi-forge-typescript.git");
 
                 // Get original paths
                 featurePath = path.relative(generatorPath, path.join(__dirname, "../features/*.feature")).replaceAll("\\", "/");
@@ -68,12 +80,7 @@ async function testGenerators(options) {
             const orgBasePath = shell.grep(/^const\sgenerate\s=\srequire\(".*"\);/, "base.ts").toString().replace("\r\n", "");
             shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, `const generate = require\("${basePath}"\);`, "base.ts");
 
-            log.verbose("Installing generator dependencies");
-            shell.exec(`npm install`, shellOptions);
-
-            log.standard("Starting tests");
-            const test = shell.exec(`npm run test`, shellOptions);
-            const stdout = test.stdout.split("\n");
+            const stdout = setupAndStartTests();
 
             resultArray.TypeScript = testResultParser.parseTypeScript(stdout[stdout.length-2], stdout[stdout.length-4]);
 
@@ -88,21 +95,9 @@ async function testGenerators(options) {
             log.standard("TypeScript testing complete");
 
         } catch(exception) {
-            log.standard(`${log.divider}`);
-            log.standard(`              TypeScript testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
-            log.standard(`${log.divider}`);
-            if(log.isStandard()) {
-              log.standard(`${exception.message}`);
-            } else {
-              log.verbose(`${exception.stack}`);
-            }
-            log.standard(`${log.divider}`);
+            log.logFailedTesting("TypeScript", exception);
         } finally {
-            if (temporaryFolder) {
-                // Using cloned version, delete temporary directory
-                fs.rmSync(temporaryFolder, { recursive: true });
-                temporaryFolder = null;
-            }
+            generatorResolver.cleanup();
         }
     }
     if(csharp) {
@@ -117,16 +112,13 @@ async function testGenerators(options) {
             // Check for local CSharp generator.
             if (!fs.existsSync(generatorPath)) {
                 log.verbose("Cannot find CSharp generator");
-                if(process.argv.includes("-c") || process.argv.includes("--csharp")) {
-                    throw new Error(
-                        `No local language generator found at ${generatorPath}.`
-                    );
-                }
+
+                checkLocalGenerator("CSharp", "-c", "--csharp");
+
                 // Local generator does not exist, clone from GitHub to temporary location
-                generatorPath = temporaryFolder = fs.mkdtempSync(
-                    path.join(os.tmpdir(), "generator")
-                );
-                shell.exec(`git clone https://github.com/ScottLogic/openapi-forge-csharp.git ${generatorPath}`, shellOptions);
+                generatorPath = generatorResolver.cloneGenerator("https://github.com/ScottLogic/openapi-forge-csharp.git");
+
+                // get original paths
                 featurePath = "$(ProjectDir)" + path.relative(path.join(generatorPath, "tests/FeaturesTests"), path.join(__dirname, "..\\features\\*.feature"));
             } else {
                 if (fs.existsSync(path.join(generatorPath, "tests/FeaturesTests/bin"))) {
@@ -141,14 +133,7 @@ async function testGenerators(options) {
             const orgFeaturePath = shell.grep(/^        <FeatureFiles Include=".*" \/>/, "FeaturesTests.csproj").toString().replace("\r\n", "");
             shell.sed("-i", /^        <FeatureFiles Include=".*" \/>/, `        <FeatureFiles Include="${featurePath}" />`, "FeaturesTests.csproj");
            
-            log.verbose("Installing generator dependencies");
-            shell.exec(`npm install`, shellOptions);
-
-            log.standard("Starting tests");
-            const test = shell.exec(`npm run test`, shellOptions);
-
-            // Format the output of the testing.
-            const stdout = test.stdout.split("\n");
+            const stdout = setupAndStartTests();
 
             resultArray.CSharp = testResultParser.parseCSharp(stdout[stdout.length-2]);
 
@@ -161,21 +146,9 @@ async function testGenerators(options) {
             log.standard("CSharp testing complete");
 
         } catch(exception) {
-            log.standard(`${log.divider}`);
-            log.standard(`              CSharp testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
-            log.standard(`${log.divider}`);
-            if(log.isStandard()) {
-              log.standard(`${exception.message}`);
-            } else {
-              log.verbose(`${exception.stack}`);
-            }
-            log.standard(`${log.divider}`);
+            log.logFailedTesting("CSharp", exception);
         } finally {
-            if (temporaryFolder) {
-                // Using cloned version, delete temporary directory
-                fs.rmSync(temporaryFolder, { recursive: true });
-                temporaryFolder = null;
-            }
+            generatorResolver.cleanup();
         }
     }
     //Present the results of the testing

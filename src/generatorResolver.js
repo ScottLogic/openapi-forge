@@ -44,6 +44,7 @@ function cleanup() {
     if (temporaryFolder) {
         log.verbose(`Removing temporary folder ${temporaryFolder}`);
         fs.rmSync(temporaryFolder, { recursive: true });
+        temporaryFolder = null;
       }
       if(npmPackage) {
         const currentPath = process.cwd();
@@ -51,6 +52,7 @@ function cleanup() {
         log.verbose(`Removing npm package ${npmPackage}`);
         shell.exec(`npm uninstall ${npmPackage}`, {silent:true});
         shell.cd(currentPath, {silent:true});
+        npmPackage = null;
       }
 }
 

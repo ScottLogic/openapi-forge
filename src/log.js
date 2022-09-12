@@ -24,8 +24,8 @@ function getLogLevel() {
 
 function setLogLevel(level) {
     if((level === '0') || (level === 'q') || (level === 'quiet')) logLevel = logLevels.quiet;
-    if((level === '1') || (level === 's') || (level === 'standard')) logLevel = logLevels.standard;
-    if((level === '2') || (level === 'v') || (level === 'verbose')) logLevel = logLevels.verbose;
+    else if((level === '1') || (level === 's') || (level === 'standard')) logLevel = logLevels.standard;
+    else if((level === '2') || (level === 'v') || (level === 'verbose')) logLevel = logLevels.verbose;
     return;
 }
 
@@ -49,6 +49,18 @@ function standard(msg) {
 function verbose(msg) {
     if (logLevel >= logLevels.verbose) console.log(msg);
     return;
+}
+
+function logFailedTesting(language, exception) {
+    log.standard(`${log.divider}`);
+    log.standard(`              ${language} testing ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
+    log.standard(`${log.divider}`);
+    if(log.isStandard()) {
+      log.standard(`${exception.message}`);
+    } else {
+      log.verbose(`${exception.stack}`);
+    }
+    log.standard(`${log.divider}`);
 }
 
 module.exports = {
