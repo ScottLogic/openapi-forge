@@ -1,3 +1,5 @@
+//TODO: Once generators are published to npm use package instead of github repo. command 'npm install {packageName} -g --prefix {packageInstallLocation}' and then remember to uninstall at the end of testing generator.
+
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
@@ -7,97 +9,82 @@ const log = require("./log");
 const testResultParser = require("./testResultParser");
 const generatorResolver = require("./generatorResolver");
 
-let shellOptions;
-
-function checkLocalGenerator(language, languageLetter, languageString) {
-    if(process.argv.includes(languageLetter) || process.argv.includes(languageString)) {
-        throw new Error(
-            `No local ${language} generator found at ${generatorPath}.`
-        );
-    }
+const typescriptData = {
+    languageString: "TypeScript",
+    languageLetter: "t",
+    generatorURL: "https://github.com/ScottLogic/openapi-forge-typescript.git"
 }
 
-function setupAndStartTests() {
-    log.verbose("Installing generator dependencies");
-    shell.exec(`npm install`, shellOptions);
+const csharpData = {
+    languageString: "CSharp",
+    languageLetter: "c",
+    generatorURL: "https://github.com/jhowlett-scottLogic/openapi-forge-csharp.git:1169047f9864f95504b4c9ac857c3ca9c2ad487c"
+    // generatorURL: "https://github.com/ScottLogic/openapi-forge-csharp.git"
+}
+
+function setupAndStartTests(generatorPath, arg1, arg2) {
+    shell.cd(generatorPath, log.shellOptions);
 
     log.standard("Starting tests");
-    const test = shell.exec(`npm run test`, shellOptions);
+    const test = shell.exec(`npm run test ${arg1} ${arg2}`, log.shellOptions);
+
+    shell.cd(__dirname, log.shellOptions);
     return test.stdout.split("\n");
 }
 
+function getGenerator(languageData, generatorOption) {
+    log.standard(`\n${log.bold}${log.underline}${languageData.languageString}${log.resetStyling}`);
+    let generatorPath = generatorOption;
+
+    log.standard(`Loading ${languageData.languageString} generator from '${generatorPath}'`);
+
+    // Check for local Typescript generator.
+    if (!fs.existsSync(generatorPath)) {
+        log.verbose(`Cannot find ${languageData.languageString} generator`);
+
+        if(process.argv.includes(`-${languageData.languageLetter}`) || process.argv.includes(`--${languageData.languageString.toLowerCase()}`)) {
+            throw new Error(
+                `No local ${languageData.languageString} generator found at ${generatorPath}.`
+            );
+        }
+
+        // Local generator does not exist, clone from GitHub to temporary location
+        generatorPath = generatorResolver.cloneGenerator(languageData.generatorURL, true);
+    }
+    return generatorPath;
+}
+
 async function testGenerators(options) {
-    let temporaryFolder;
     let generatorPath;
-    let featurePath;
-    let basePath;
     let resultArray = {};
-    shellOptions = {};
 
     log.setLogLevel(options.logLevel);
-    if(!log.isVerbose()) shellOptions.silent = true;
 
-    const typescript = options.generators.includes("t");
-    const csharp = options.generators.includes("c");
+    const typescript = options.generators.includes(typescriptData.languageLetter);
+    const csharp = options.generators.includes(csharpData.languageLetter);
     if(!typescript && !csharp) {
         throw new Error(
             `No language to test. Please provide a language that you would like to test.`
         );
     }
 
-    shell.cd(__dirname, shellOptions);
+    shell.cd(__dirname, log.shellOptions);
     if(typescript) {
         // Test TypeScript generator
         try {
-            log.standard(`\n${log.bold}${log.underline}TypeScript${log.resetStyling}`);
-            featurePath = "../openapi-forge/features/*.feature";
-            basePath = "../../../openapi-forge/src/generate";
-            generatorPath = options.typescript;
+            generatorPath = getGenerator(typescriptData, options.typescript);
 
-            log.standard(`Loading TypeScript generator from '${generatorPath}'`);
+            const featurePath = path.relative(generatorPath, path.join(__dirname, "../features/*.feature")).replaceAll("\\", "/");
+            const basePath = path.relative(path.join(generatorPath, "features/support"), path.join(__dirname, "../src/generate")).replaceAll("\\", "/");
 
-            // Check for local Typescript generator.
-            if (!fs.existsSync(generatorPath)) {
-                log.verbose("Cannot find TypeScript generator");
-
-                checkLocalGenerator("TypeScript", "-t", "--typescript");
-
-                // Local generator does not exist, clone from GitHub to temporary location
-                generatorPath = generatorResolver.cloneGenerator("https://github.com/ScottLogic/openapi-forge-typescript.git");
-
-                // Get original paths
-                featurePath = path.relative(generatorPath, path.join(__dirname, "../features/*.feature")).replaceAll("\\", "/");
-                basePath = path.relative(path.join(generatorPath, "features/support"), path.join(__dirname, "../src/generate")).replaceAll("\\", "/");
-            }
-
-            log.standard("Replacing paths in TypeScript generator");
-
-            log.verbose("Replacing path to .feature files");
-            shell.cd(generatorPath, shellOptions);
-            const orgFeaturePath = shell.grep(/^const\sfeaturePath\s=\s".*";/, "cucumber.js").toString().replace("\r\n", "");
-            shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, `const featurePath = "${featurePath}";`, "cucumber.js");
-
-            log.verbose("Replacing path to generate.js");
-            shell.cd("features/support", shellOptions);
-            const orgBasePath = shell.grep(/^const\sgenerate\s=\srequire\(".*"\);/, "base.ts").toString().replace("\r\n", "");
-            shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, `const generate = require\("${basePath}"\);`, "base.ts");
-
-            const stdout = setupAndStartTests();
+            const stdout = setupAndStartTests(generatorPath, featurePath, basePath);
 
             resultArray.TypeScript = testResultParser.parseTypeScript(stdout[stdout.length-2], stdout[stdout.length-4]);
 
-            if(!temporaryFolder) {
-                log.standard("Setting paths to back to original values");
-                shell.sed("-i", /^const\sgenerate\s=\srequire\(".*"\);/, orgBasePath, "base.ts");
-                shell.cd("../../", shellOptions);
-                shell.sed("-i", /^const\sfeaturePath\s=\s".*";/, orgFeaturePath, "cucumber.js");
-            }
-
-            shell.cd(__dirname, shellOptions);
-            log.standard("TypeScript testing complete");
+            log.standard(`${typescriptData.languageString} testing complete`);
 
         } catch(exception) {
-            log.logFailedTesting("TypeScript", exception);
+            log.logFailedTesting(typescriptData.languageString, exception);
         } finally {
             generatorResolver.cleanup();
         }
@@ -105,50 +92,18 @@ async function testGenerators(options) {
     if(csharp) {
         // Test CSharp generator
         try {
-            log.standard(`\n${log.bold}${log.underline}CSharp${log.resetStyling}`);
-            featurePath = "$(ProjectDir)..\\..\\..\\openapi-forge\\features\\*.feature";
-            generatorPath = options.csharp;
+            generatorPath = getGenerator(csharpData, options.csharp);
 
-            log.standard(`Loading CSharp generator from '${generatorPath}'`);
+            const featurePath = path.relative(path.join(generatorPath, "tests/FeaturesTests"), path.join(__dirname, "..\\features\\*.feature"));
 
-            // Check for local CSharp generator.
-            if (!fs.existsSync(generatorPath)) {
-                log.verbose("Cannot find CSharp generator");
-
-                checkLocalGenerator("CSharp", "-c", "--csharp");
-
-                // Local generator does not exist, clone from GitHub to temporary location
-                generatorPath = generatorResolver.cloneGenerator("https://github.com/ScottLogic/openapi-forge-csharp.git");
-
-                // get original paths
-                featurePath = "$(ProjectDir)" + path.relative(path.join(generatorPath, "tests/FeaturesTests"), path.join(__dirname, "..\\features\\*.feature"));
-            } else {
-                if (fs.existsSync(path.join(generatorPath, "tests/FeaturesTests/bin"))) {
-                    fs.rmSync(path.join(generatorPath, "tests/FeaturesTests/bin"), { recursive: true, force: true });
-                }
-            }
-
-            log.standard("Replacing paths in CSharp generator");
-            
-            log.verbose("Replacing path to .feature files");
-            shell.cd(path.join(generatorPath, "tests/FeaturesTests"), shellOptions);
-            const orgFeaturePath = shell.grep(/^        <FeatureFiles Include=".*" \/>/, "FeaturesTests.csproj").toString().replace("\r\n", "");
-            shell.sed("-i", /^        <FeatureFiles Include=".*" \/>/, `        <FeatureFiles Include="${featurePath}" />`, "FeaturesTests.csproj");
-           
-            const stdout = setupAndStartTests();
+            const stdout = setupAndStartTests(generatorPath, featurePath, "");
 
             resultArray.CSharp = testResultParser.parseCSharp(stdout[stdout.length-2]);
 
-            if(!temporaryFolder) {
-                log.standard("Setting paths to back to original values");
-                shell.sed("-i", /^        <FeatureFiles Include=".*" \/>/, orgFeaturePath, "FeaturesTests.csproj");
-            }
-
-            shell.cd(__dirname, shellOptions);
-            log.standard("CSharp testing complete");
+            log.standard(`${csharpData.languageString} testing complete`);
 
         } catch(exception) {
-            log.logFailedTesting("CSharp", exception);
+            log.logFailedTesting(csharpData.languageString, exception);
         } finally {
             generatorResolver.cleanup();
         }

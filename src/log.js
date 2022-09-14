@@ -11,6 +11,7 @@ const resetStyling = "\x1b[0m";
 const divider = "\n---------------------------------------------------\n";
 
 let logLevel = 1;
+let shellOptions = {};
 
 const logLevels = {
     quiet: 0,
@@ -23,10 +24,22 @@ function getLogLevel() {
 }
 
 function setLogLevel(level) {
-    if((level === '0') || (level === 'q') || (level === 'quiet')) logLevel = logLevels.quiet;
-    else if((level === '1') || (level === 's') || (level === 'standard')) logLevel = logLevels.standard;
-    else if((level === '2') || (level === 'v') || (level === 'verbose')) logLevel = logLevels.verbose;
+    if((level === '0') || (level === 'q') || (level === 'quiet')) {
+        logLevel = logLevels.quiet;
+        setSilentShell();
+    }
+    else if((level === '1') || (level === 's') || (level === 'standard')) {
+        logLevel = logLevels.standard;
+        setSilentShell();
+    }
+    else if((level === '2') || (level === 'v') || (level === 'verbose')) {
+        logLevel = logLevels.verbose;
+    }
     return;
+}
+
+function setSilentShell() {
+    shellOptions.silent = true;
 }
 
 function isQuiet() {
@@ -127,6 +140,7 @@ module.exports = {
     divider,
     logLevel,
     logLevels,
+    shellOptions,
     getLogLevel,
     setLogLevel,
     isQuiet,

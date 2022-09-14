@@ -7,7 +7,6 @@ const Handlebars = require("handlebars");
 const prettier = require("prettier");
 const minimatch = require("minimatch");
 const fetch = require("node-fetch");
-const shell = require("shelljs");
 const { parse } = require("yaml");
 
 const generatorResolver = require("./generatorResolver");
@@ -84,7 +83,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
     let generatorPath;
     if (isUrl(generatorPathOrUrl)) {
-      generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl);
+      generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
     } else {
       //first check if there is a local generator
       generatorPath = path.resolve(generatorPathOrUrl);
