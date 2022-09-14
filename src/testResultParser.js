@@ -26,7 +26,7 @@ function parseTypeScript(durationLine, resultLine) {
         if((durationMatch[1] !== "0") && (durationMatch[1] !== "")) time = `${durationMatch[1]}m`;
         time = `${time}${durationMatch[2]}s`;
 
-        // Extract the results of the testing from stdout.
+        // Extract the results of the testing from stdout. In stdout is a count of tests and their outcomes.
         const resultMatch = resultLine.match(/^(\d+)\sscenarios?\s\(((\d+)\sfailed)?(,\s)?((\d+)\sundefined)?(,\s)?((\d+)\spassed)?\)/);
         if(resultMatch) {
             result = new Result(parseTestResultNumber(resultMatch[1]), parseTestResultNumber(resultMatch[9]), 0, parseTestResultNumber(resultMatch[6]), parseTestResultNumber(resultMatch[3]), time);
@@ -45,7 +45,7 @@ function parseTypeScript(durationLine, resultLine) {
 
 function parseCSharp(resultLine) {
 
-    // Extract the results of the testing from stdout.
+    // Extract the results of the testing from stdout. In stdout is a count of tests and their outcomes. Also included is the test duration.
     const resultMatch = resultLine.match(/Failed:\s+(\d+),\sPassed:\s+(\d+),\sSkipped:\s+(\d+),\sTotal:\s+(\d+),\sDuration:\s+(.*)\s-\sFeaturesTests.dll\s\(net6\.0\)/);
         
     let result;
