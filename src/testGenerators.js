@@ -18,8 +18,7 @@ const typescriptData = {
 const csharpData = {
     languageString: "CSharp",
     languageLetter: "c",
-    generatorURL: "https://github.com/jhowlett-scottLogic/openapi-forge-csharp.git:1169047f9864f95504b4c9ac857c3ca9c2ad487c"
-    // generatorURL: "https://github.com/ScottLogic/openapi-forge-csharp.git"
+    generatorURL: "https://github.com/ScottLogic/openapi-forge-csharp.git"
 }
 
 function setupAndStartTests(generatorPath, arg1, arg2) {
@@ -34,11 +33,11 @@ function setupAndStartTests(generatorPath, arg1, arg2) {
 
 function getGenerator(languageData, generatorOption) {
     log.standard(`\n${log.bold}${log.underline}${languageData.languageString}${log.resetStyling}`);
-    let generatorPath = generatorOption;
+    let generatorPath = path.resolve(path.join("../../../", generatorOption));
 
     log.standard(`Loading ${languageData.languageString} generator from '${generatorPath}'`);
 
-    // Check for local Typescript generator.
+    // Check for local generator.
     if (!fs.existsSync(generatorPath)) {
         log.verbose(`Cannot find ${languageData.languageString} generator`);
 
@@ -55,7 +54,6 @@ function getGenerator(languageData, generatorOption) {
 }
 
 async function testGenerators(options) {
-    let generatorPath;
     let resultArray = {};
 
     log.setLogLevel(options.logLevel);
@@ -72,7 +70,7 @@ async function testGenerators(options) {
     if(typescript) {
         // Test TypeScript generator
         try {
-            generatorPath = getGenerator(typescriptData, options.typescript);
+            const generatorPath = getGenerator(typescriptData, options.typescript);
 
             const featurePath = path.relative(generatorPath, path.join(__dirname, "../features/*.feature")).replaceAll("\\", "/");
             const basePath = path.relative(path.join(generatorPath, "features/support"), path.join(__dirname, "../src/generate")).replaceAll("\\", "/");
@@ -92,7 +90,7 @@ async function testGenerators(options) {
     if(csharp) {
         // Test CSharp generator
         try {
-            generatorPath = getGenerator(csharpData, options.csharp);
+            const generatorPath = getGenerator(csharpData, options.csharp);
 
             const featurePath = path.relative(path.join(generatorPath, "tests/FeaturesTests"), path.join(__dirname, "..\\features\\*.feature"));
 
