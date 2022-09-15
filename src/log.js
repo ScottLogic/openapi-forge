@@ -1,15 +1,17 @@
-
 // Command line output styling
 const blackForeground = "\x1b[30m";
 const brightYellowForeground = "\x1b[93m";
 const brightCyanForeground = "\x1b[96m";
 const redBackground = "\x1b[41m";
 const brightGreenBackground = "\x1b[102m";
+const bold = "\x1b[1m"
+const underline = "\x1b[4m"
 const resetStyling = "\x1b[0m";
 
 const divider = "\n---------------------------------------------------\n";
 
 let logLevel = 1;
+let shellOptions = {};
 
 const logLevels = {
     quiet: 0,
@@ -22,10 +24,34 @@ function getLogLevel() {
 }
 
 function setLogLevel(level) {
-    if((level === '0') || (level === 'q') || (level === 'quiet')) logLevel = logLevels.quiet;
-    if((level === '1') || (level === 's') || (level === 'standard')) logLevel = logLevels.standard;
-    if((level === '2') || (level === 'v') || (level === 'verbose')) logLevel = logLevels.verbose;
+    if((level === '0') || (level === 'q') || (level === 'quiet')) {
+        logLevel = logLevels.quiet;
+        setSilentShell();
+    }
+    else if((level === '1') || (level === 's') || (level === 'standard')) {
+        logLevel = logLevels.standard;
+        setSilentShell();
+    }
+    else if((level === '2') || (level === 'v') || (level === 'verbose')) {
+        logLevel = logLevels.verbose;
+    }
     return;
+}
+
+function setSilentShell() {
+    shellOptions.silent = true;
+}
+
+function isQuiet() {
+    return (logLevel === logLevels.quiet) ? true : false;
+}
+
+function isStandard() {
+    return (logLevel === logLevels.standard) ? true : false;
+}
+
+function isVerbose() {
+    return (logLevel === logLevels.verbose) ? true : false;
 }
 
 function standard(msg) {
@@ -81,7 +107,7 @@ function logFailedForge(exception) {
     standard(`${divider}`);
     standard(`              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`);
     standard(`${divider}`);
-    if(getLogLevel() === log.logLevels.standard) {
+    if(getLogLevel() === logLevels.standard) {
       standard(`${exception.message}`);
     } else {
       verbose(`${exception.stack}`);
@@ -90,22 +116,42 @@ function logFailedForge(exception) {
     return;
 }
 
+function logFailedTesting(language, exception) {
+    standard(`${divider}`);
+    standard(`              ${language} testing ${redBackground}${blackForeground} FAILED ${resetStyling}`);
+    standard(`${divider}`);
+    if(isStandard()) {
+        standard(`${exception.message}`);
+    } else {
+        verbose(`${exception.stack}`);
+    }
+    standard(`${divider}`);
+}
+
 module.exports = {
-    divider,
     blackForeground,
     brightYellowForeground,
     brightCyanForeground,
     redBackground,
     brightGreenBackground,
+    bold,
+    underline,
     resetStyling,
+    divider,
     logLevel,
     logLevels,
+    shellOptions,
     getLogLevel,
     setLogLevel,
+    isQuiet,
+    isStandard,
+    isVerbose,
     standard,
     verbose,
+    logFailedTesting,
     logTitle,
     logInvalidSchema,
     logSuccessfulForge,
-    logFailedForge
+    logFailedForge,
+    logFailedTesting
 };
