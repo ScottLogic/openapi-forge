@@ -46,12 +46,12 @@ program
   .option(
     "-c, --csharp <csharpPath>",
     "Sets the location of the CSharp generator. Default is a directory named 'openapi-forge-csharp' in the same location as openapi-forge",
-    "../../openapi-forge-csharp"
+    "./openapi-forge-csharp"
   )
   .option(
     "-t, --typescript <typescriptPath>",
     "Sets the location of the TypeScript generator. Default is a directory named 'openapi-forge-typescript' in the same location as openapi-forge",
-     "../../openapi-forge-typescript"
+     "./openapi-forge-typescript"
   )
   .option(
     "-l, --logLevel <level>",
