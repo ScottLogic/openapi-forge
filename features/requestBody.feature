@@ -40,6 +40,6 @@ Feature: Handles requests with a body
       }
     }
     """
-    When calling the method testBody with object "{'value':'test'}"
+    When calling the method testBody with object {"value":"test"}
     Then the requested URL should be https://example.com/api/v3/test/testBody
-    And the request should have a body with value "{'value':'test'}"
+    And the request should have a body with value {"value":"test"}
