@@ -12,7 +12,7 @@ const generatorResolver = require("./generatorResolver");
 const typescriptData = {
     languageString: "TypeScript",
     languageLetter: "t",
-    generatorURL: "https://github.com/ScottLogic/openapi-forge-typescript.git"
+    generatorURL: "https://github.com/jhowlett-scottlogic/openapi-forge-typescript.git"
 }
 
 const csharpData = {
@@ -100,6 +100,10 @@ async function testGenerators(options) {
             const generatorPath = getGenerator(csharpData, options.csharp);
 
             const featurePath = path.relative(path.join(generatorPath, "tests/FeaturesTests"), path.join(__dirname, "../features/*.feature"));
+
+            console.log("generatorPath:" + generatorPath);
+            console.log("__dirname:" + __dirname);
+            console.log("featurePath:" + featurePath);
 
             const stdout = setupAndStartTests(generatorPath, featurePath, "");
 
