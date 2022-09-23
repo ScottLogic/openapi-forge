@@ -18,7 +18,7 @@ const typescriptData = {
 const csharpData = {
     languageString: "CSharp",
     languageLetter: "c",
-    generatorURL: "https://github.com/ScottLogic/openapi-forge-csharp.git"
+    generatorURL: "https://github.com/jhowlett-scottlogic/openapi-forge-csharp.git"
 }
 
 function setupAndStartTests(generatorPath, arg1, arg2) {
