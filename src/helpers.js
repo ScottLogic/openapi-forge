@@ -9,7 +9,6 @@ function ifEquals(arg1, arg2, options) {
   return arg1 == arg2 ? options.fn(this) : options.inverse(this);
 }
 
-
 function ifContains(collection, value, options) {
   return collection && collection.includes(value)
     ? options.fn(this)
@@ -31,5 +30,5 @@ module.exports = {
   ifEquals,
   ifContains,
   ifNotContains,
-  json
+  json,
 };
