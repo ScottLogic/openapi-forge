@@ -233,5 +233,5 @@ Feature: Querystring handling
       }
     }
     """
-    When calling the method sendValueObject with object "{'id': 7, 'type': 'test'}"
+    When calling the method sendValueObject with object {"id": 7, "type": "test"}
     Then the requested URL should be https://example.com/api/v3/test/values?id=7&type=test
