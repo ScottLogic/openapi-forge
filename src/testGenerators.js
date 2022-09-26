@@ -2,7 +2,6 @@
 
 const fs = require("fs");
 const path = require("path");
-const os = require("os");
 const shell = require("shelljs");
 
 const log = require("./log");

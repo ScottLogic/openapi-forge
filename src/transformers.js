@@ -132,8 +132,7 @@ const createInlineObjects = (schema) => {
 };
 
 // where a $ref exists in the schema, it replaces this with the referenced JSON
-const resolveReferences = (root, node) => {
-  node = node || root;
+const resolveReferences = (root) => {
   let queue = [root];
 
   while (queue.length) {

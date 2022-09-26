@@ -153,5 +153,4 @@ module.exports = {
     logInvalidSchema,
     logSuccessfulForge,
     logFailedForge,
-    logFailedTesting
 };

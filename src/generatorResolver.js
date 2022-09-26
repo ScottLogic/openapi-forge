@@ -33,7 +33,7 @@ function installGeneratorFromNPM(generatorPathOrUrl) {
     log.verbose(`Checking if npm package ${generatorPathOrUrl} is installed`);
     const currentPath = process.cwd();
     shell.cd(__dirname, log.shellOptions);
-    if (!shell.exec(`npm list --depth=0`, log.shellOptions).stdout.match(new RegExp(`^\\+--.${generatorPathOrUrl}@\\d+\.\\d+\.\\d+$`, 'm'))) {
+    if (!shell.exec(`npm list --depth=0`, log.shellOptions).stdout.match(new RegExp(`^.*${generatorPathOrUrl}@\\d+\\.\\d+\\.\\d+$`, 'm'))) {
         npmPackage = generatorPathOrUrl;
         log.verbose(`npm package ${generatorPathOrUrl} doesn't exist, installing package`);
         if (shell.exec(`npm install ${generatorPathOrUrl}`, log.shellOptions).code !== 0) {
