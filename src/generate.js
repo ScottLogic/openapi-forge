@@ -83,7 +83,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
     let generatorPath;
     if (isUrl(generatorPathOrUrl)) {
-      generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
+      generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, true);
     } else {
       //first check if there is a local generator
       generatorPath = path.resolve(generatorPathOrUrl);
