@@ -127,7 +127,7 @@ You can test openapi-forge on all of the language generators from one command:
 
 ```
 % openapi-forge help test-generators
-Usage: openapi-generator test-generators [options]
+Usage: openapi-forge test-generators [options]
 
 Test language specific generators.
 

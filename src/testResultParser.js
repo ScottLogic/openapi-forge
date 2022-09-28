@@ -14,6 +14,22 @@ function parseTestResultNumber(number) {
   return isNaN(result) ? 0 : result;
 }
 
+function checkTestResultForErrors(result) {
+    if(result.failed !== 0) {
+        return 1;
+    }
+    if(result.undefined !== 0) {
+        return 1;
+    }
+    if(result.skipped !== 0) {
+        return 1;
+    }
+    if(result.passed !== result.scenarios) {
+        return 1;
+    }
+    return 0;
+}
+
 function parseTypeScript(durationLine, resultLine) {
   // Extract the duration of the testing from stdout.
   const durationMatch = durationLine.match(/^(\d+)m(\d+)\.\d+s/);
@@ -70,7 +86,8 @@ function parseCSharp(resultLine) {
   return result;
 }
 
-module.exports = {
-  parseTypeScript,
-  parseCSharp,
+module.exports =  {
+    parseTypeScript,
+    parseCSharp,
+    checkTestResultForErrors
 };
