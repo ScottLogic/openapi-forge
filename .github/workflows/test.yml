@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test-generators:
+    name: Test
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [16.x]    
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Node.js dependencies globally
+        run: |
+          npm install
+          npm install --global
+
+      - name: test-generators
+        run: npm run test:generators
+        continue-on-error: true
+
+
+
