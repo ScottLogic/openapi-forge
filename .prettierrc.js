@@ -1,3 +1,3 @@
 module.exports = {
-    endOfLine: "crlf"
+    endOfLine: "lf"
 };
