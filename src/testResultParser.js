@@ -15,19 +15,19 @@ function parseTestResultNumber(number) {
 }
 
 function checkTestResultForErrors(result) {
-    if(result.failed !== 0) {
-        return 1;
-    }
-    if(result.undefined !== 0) {
-        return 1;
-    }
-    if(result.skipped !== 0) {
-        return 1;
-    }
-    if(result.passed !== result.scenarios) {
-        return 1;
-    }
-    return 0;
+  if (result.failed !== 0) {
+    return 1;
+  }
+  if (result.undefined !== 0) {
+    return 1;
+  }
+  if (result.skipped !== 0) {
+    return 1;
+  }
+  if (result.passed !== result.scenarios) {
+    return 1;
+  }
+  return 0;
 }
 
 function parseTypeScript(durationLine, resultLine) {
@@ -86,8 +86,8 @@ function parseCSharp(resultLine) {
   return result;
 }
 
-module.exports =  {
-    parseTypeScript,
-    parseCSharp,
-    checkTestResultForErrors
+module.exports = {
+  parseTypeScript,
+  parseCSharp,
+  checkTestResultForErrors,
 };
