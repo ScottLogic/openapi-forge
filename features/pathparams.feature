@@ -69,7 +69,7 @@ Feature: Path parameter handling
     }
     """
     When calling the method sendStringArray with array "cabbage,carrots"
-    Then the requested URL should be https://example.com/api/v3/test/vegetables/cabbage,carrots
+    Then the requested URL should be https://example.com/api/v3/test/vegetables/cabbage%2Ccarrots
 
   Scenario: Calling API methods with a path object parameter 
     Given an API with the following specification
@@ -107,5 +107,5 @@ Feature: Path parameter handling
       }
     }
     """
-    When calling the method sendValueObject with object "{'id': 7, 'type': 'test'}"
+    When calling the method sendValueObject with object {"id": 7, "type": "test"}
     Then the requested URL should be https://example.com/api/v3/test/values/id,7,type,test
