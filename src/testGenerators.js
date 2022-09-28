@@ -33,7 +33,7 @@ function setupAndStartTests(generatorPath, arg1, arg2) {
 
 function getGenerator(languageData, generatorOption) {
     log.standard(`\n${log.bold}${log.underline}${languageData.languageString}${log.resetStyling}`);
-    let generatorPath = path.resolve(path.join("../../../", generatorOption));
+    let generatorPath = path.resolve(path.join("../../", generatorOption));
 
     log.standard(`Loading ${languageData.languageString} generator from '${generatorPath}'`);
 
