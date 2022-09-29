@@ -13,7 +13,7 @@ const typescriptData = {
   languageString: "TypeScript",
   languageLetter: "t",
   generatorURL:
-    "https://github.com/jhowlett-scottlogic/openapi-forge-typescript.git",
+    "https://github.com/ScottLogic/openapi-forge-typescript.git",
 };
 
 const csharpData = {
