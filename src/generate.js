@@ -85,7 +85,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     if (isUrl(generatorPathOrUrl)) {
       generatorPath = generatorResolver.cloneGenerator(
         generatorPathOrUrl,
-        false
+        true
       );
     } else {
       //first check if there is a local generator
