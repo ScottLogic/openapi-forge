@@ -164,7 +164,6 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     const templates = fs.readdirSync(generatorTemplatesPath);
     log.verbose("");
     log.standard(`Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`);
-
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;

@@ -46,5 +46,4 @@ module.exports = {
   json,
   isObj,
   capitalizeFirst,
-  testtest
 };
