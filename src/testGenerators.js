@@ -12,8 +12,7 @@ const generatorResolver = require("./generatorResolver");
 const typescriptData = {
   languageString: "TypeScript",
   languageLetter: "t",
-  generatorURL:
-    "https://github.com/ScottLogic/openapi-forge-typescript.git",
+  generatorURL: "https://github.com/ScottLogic/openapi-forge-typescript.git",
 };
 
 const csharpData = {
