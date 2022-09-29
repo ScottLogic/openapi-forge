@@ -164,6 +164,11 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     const templates = fs.readdirSync(generatorTemplatesPath);
     log.verbose("");
     log.standard(`Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`);
+
+    schema.info.description = JSON.stringify(schema.info.description);
+    schema.info.description = schema.info.description.replace(/(?:\\r|\\n)/g, " ");
+    schema.info.description = JSON.parse(schema.info.description);
+
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;
