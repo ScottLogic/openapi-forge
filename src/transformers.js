@@ -190,6 +190,12 @@ const parameterSerializationOptions = (schema) => {
   });
 };
 
+ //adds parameter serialization style if missing
+ const removeNewLineCharForDescription = (schema) => {
+   schema._info = schema.info;
+   schema._info.description = schema.info.description.replace(/(?:\r|\n)/g, " ");
+ };
+
 module.exports = {
   requiredSchemaObjectProperties,
   resolveReferences,
@@ -199,4 +205,5 @@ module.exports = {
   addRequestBodyToParams,
   resolveResponse,
   createInlineObjects,
+  removeNewLineCharForDescription
 };
