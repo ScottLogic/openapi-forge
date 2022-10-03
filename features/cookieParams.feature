@@ -1,6 +1,6 @@
 Feature: Cookie parameter handling
 
-  Scenario: Calling API methods that have cookie parameters
+  Scenario: Calling API methods that have a cookie parameter
     Given an API with the following specification
     """
     {
@@ -35,4 +35,48 @@ Feature: Cookie parameter handling
     }
     """
     When calling the method cookieParameters with parameters "parameterValue"
-    Then the request should have a cookie property with value parameterValue
+    Then the request header should have a cookie property with value test=parameterValue
+
+    Scenario: Calling API methods that have multiple cookie parameters
+    Given an API with the following specification
+    """
+    {
+      "servers": [{ "url": "https://example.com/api/v3" }],
+      "paths": {
+         "/test/cookieParameters": {
+          "get": {
+            "operationId": "cookieParameters",
+            "parameters": [
+              {
+                "name": "cookieOne",
+                "in": "cookie",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "cookieTwo",
+                "in": "cookie",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method cookieParameters with parameters "cookieOneValue,cookieTwoValue"
+    Then the request header should have a cookie property with value cookieOne=cookieOneValue;cookieTwo=cookieTwoValue
