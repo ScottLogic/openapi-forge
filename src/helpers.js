@@ -26,10 +26,18 @@ function json(context) {
   return JSON.stringify(context);
 }
 
+function ifEitherIsTrue(v1, v2, options){
+  return (v1 || v2)
+  ? options.fn(this)
+  : options.inverse(this);
+}
+
 module.exports = {
   setVar,
   ifEquals,
   ifContains,
   ifNotContains,
+  ifEitherIsTrue,
   json
 };
+
