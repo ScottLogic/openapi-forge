@@ -190,11 +190,10 @@ const parameterSerializationOptions = (schema) => {
   });
 };
 
- //remove line breaks from description 
- const removeNewLineCharForDescription = (schema) => {
-   schema._info = schema.info;
-   schema._info.description = schema.info.description.replace(/(?:\r|\n)/g, " ");
- };
+//remove line breaks from description 
+const removeNewLineCharForDescription = (schema) => {
+  schema._info = { ...schema.info, description: schema.info.description.replace(/(?:\r|\n)/g, " ") };
+};
 
 module.exports = {
   requiredSchemaObjectProperties,
