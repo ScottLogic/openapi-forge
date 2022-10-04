@@ -85,12 +85,10 @@ const resolveResponse = (schema) => {
       .filter((responseKvp) => responseKvp[0].match(/^(2\d{2}|default)$/))
       .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 
-    if (successOrDefaultResponses.length > 0 && successOrDefaultResponses[0][1].content) {
-      if (successOrDefaultResponses[0][1].content["application/json"]) {
-        verb._response = successOrDefaultResponses[0][1].content["application/json"];
-      } else if (successOrDefaultResponses[0][1].content["text/plain"]){
-        verb._response = successOrDefaultResponses[0][1].content["text/plain"];
-      }
+    if (successOrDefaultResponses.length > 0 && successOrDefaultResponses[0][1].content["application/json"]) {
+      verb._response = successOrDefaultResponses[0][1].content["application/json"];
+    } else if (successOrDefaultResponses.length > 0 && successOrDefaultResponses[0][1].content["text/plain"]) {
+      verb._response = successOrDefaultResponses[0][1].content["text/plain"];
     } else {
       verb._response = null;
     }
