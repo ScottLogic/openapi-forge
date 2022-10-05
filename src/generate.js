@@ -82,18 +82,13 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   try {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
     let generatorPath;
-    if (isUrl(generatorPathOrUrl)) {
-      generatorPath = generatorResolver.cloneGenerator(
-        generatorPathOrUrl,
-        true
-      );
-    } else {
-      //first check if there is a local generator
-      generatorPath = path.resolve(generatorPathOrUrl);
-      if (!fs.existsSync(generatorPath)) {
-        //if no local generator, assume it is an npm package name.
-        generatorPath =
-          generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
+    
+    generatorPath = path.resolve(generatorPathOrUrl);
+    if (!fs.existsSync(generatorPath)) {
+      if (isUrl(generatorPathOrUrl)) {
+        generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
+      } else {
+        generatorPath = generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
       }
     }
 
