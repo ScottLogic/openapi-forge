@@ -4,7 +4,7 @@
   "description": "Effortlessly create OpenAPI clients from the fiery furnace of our forge",
   "main": "src/generate.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:generators": "openapi-forge test-generators -l v",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "eslint:check": "eslint .",
@@ -17,13 +17,15 @@
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
     "commander": "^9.2.0",
-    "eslint": "^8.23.1",
     "handlebars": "^4.7.7",
     "minimatch": "^5.1.0",
     "node-fetch": "^2.6.7",
-    "prettier": "^2.6.2",
+    "prettier": "^2.7.1",
     "shelljs": "^0.8.5",
     "swagger2openapi": "^7.0.8",
     "yaml": "^2.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.24.0"
   }
 }

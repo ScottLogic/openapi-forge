@@ -81,13 +81,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   try {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
     let generatorPath;
-    if (isUrl(generatorPathOrUrl)) {
-      generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
-    } else {
-      //first check if there is a local generator
-      generatorPath = path.resolve(generatorPathOrUrl);
-      if (!fs.existsSync(generatorPath)) {
-        //if no local generator, assume it is an npm package name.
+    
+    generatorPath = path.resolve(generatorPathOrUrl);
+    if (!fs.existsSync(generatorPath)) {
+      if (isUrl(generatorPathOrUrl)) {
+        generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
+      } else {
         generatorPath = generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
       }
     }
@@ -103,27 +102,31 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         : await loadSchema(schemaPathOrUrl);
 
     //Check if schema is v2, if so convert it to v3
-    if(schema.swagger === "2.0") {
+    if (schema.swagger === "2.0") {
       log.verbose("Converting schema");
-      schema = await converter.convertObj(schema, {direct: true});
+      schema = await converter.convertObj(schema, { direct: true });
     }
 
     // validate OpenAPI schema
-    if(!options.skipValidation) {
+    if (!options.skipValidation) {
       log.standard("Validating schema");
-      if(!(await isValidSchema(schema))) {
+      if (!(await isValidSchema(schema))) {
         return;
       }
     }
 
     if (schema?.components?.schemas) {
       numberOfDiscoveredModels = Object.keys(schema.components.schemas).length;
-      log.verbose(`Discovered ${log.brightCyanForeground}${numberOfDiscoveredModels}${log.resetStyling} models`);
+      log.verbose(
+        `Discovered ${log.brightCyanForeground}${numberOfDiscoveredModels}${log.resetStyling} models`
+      );
     }
 
     if (schema?.paths) {
       numberOfDiscoveredEndpoints = Object.keys(schema.paths).length;
-      log.verbose(`Discovered ${log.brightCyanForeground}${numberOfDiscoveredEndpoints}${log.resetStyling} endpoints`);
+      log.verbose(
+        `Discovered ${log.brightCyanForeground}${numberOfDiscoveredEndpoints}${log.resetStyling} endpoints`
+      );
     }
 
     // transform
@@ -151,7 +154,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     // create the output folder
     const outputFolder = path.resolve(options.output);
-    if (!fs.existsSync(outputFolder)){
+    if (!fs.existsSync(outputFolder)) {
       const pathString = fs.mkdirSync(outputFolder, { recursive: true });
       log.verbose(`Creating output folder '${pathString}'`);
     } else {
@@ -162,7 +165,9 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     const generatorTemplatesPath = generatorPath + "/template";
     const templates = fs.readdirSync(generatorTemplatesPath);
     log.verbose("");
-    log.standard(`Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`);
+    log.standard(
+      `Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`
+    );
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;
@@ -198,16 +203,18 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       }
     });
     log.verbose("\nIteration complete\n");
-
-  } catch(e) {
+  } catch (e) {
     exception = e;
   } finally {
     generatorResolver.cleanup();
   }
   if (exception === null) {
-    log.logSuccessfulForge(numberOfDiscoveredModels, numberOfDiscoveredEndpoints);
+    log.logSuccessfulForge(
+      numberOfDiscoveredModels,
+      numberOfDiscoveredEndpoints
+    );
   } else {
-    log.logFailedForge(exception)
+    log.logFailedForge(exception);
   }
 }
 
