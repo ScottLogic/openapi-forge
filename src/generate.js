@@ -1,7 +1,6 @@
 const fs = require("fs");
 const URL = require("url").URL;
 const path = require("path");
-const os = require("os");
 
 const Handlebars = require("handlebars");
 const prettier = require("prettier");
@@ -188,7 +187,9 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         try {
           log.verbose("Formatting");
           result = prettier.format(result, { parser: "typescript" });
-        } catch {}
+        } catch {
+          log.verbose("Error while formatting");
+        }
 
         log.verbose("Writing to output location");
         fs.writeFileSync(

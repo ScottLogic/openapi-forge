@@ -1,12 +1,12 @@
 class Result {
-  constructor(scenarios, passed, skipped, undefined, failed, time) {
-    this.scenarios = scenarios;
-    this.passed = passed;
-    this.skipped = skipped;
-    this.undefined = undefined;
-    this.failed = failed;
-    this.time = time;
-  }
+    constructor(scenarios, passed, skipped, undef, failed, time) {
+        this.scenarios = scenarios;
+        this.passed = passed;
+        this.skipped = skipped;
+        this.undef = undef;
+        this.failed = failed;
+        this.time = time;
+    }
 }
 
 function parseTestResultNumber(number) {

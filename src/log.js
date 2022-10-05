@@ -168,7 +168,6 @@ module.exports = {
   error,
   standard,
   verbose,
-  logFailedTesting,
   logTitle,
   logInvalidSchema,
   logSuccessfulForge,
