@@ -52,6 +52,10 @@ function isVerbose() {
   return logLevel === logLevels.verbose ? true : false;
 }
 
+function error(msg) {
+  console.log(msg);
+}
+
 function standard(msg) {
   if (logLevel >= logLevels.standard) console.log(msg);
   return;
@@ -89,7 +93,7 @@ function logInvalidSchema(errors) {
     let errorMessage = error.message;
     if (error.instancePath !== undefined)
       errorMessage += `at ${error.instancePath}`;
-    console.error(errorMessage);
+    error(errorMessage);
   });
   standard(`${divider}`);
 }
@@ -120,8 +124,8 @@ function logFailedForge(exception) {
     `              API generation ${redBackground}${blackForeground} FAILED ${resetStyling}`
   );
   standard(`${divider}`);
-  if (getLogLevel() === logLevels.standard) {
-    standard(`${exception.message}`);
+  if (isStandard() || isQuiet()) {
+    error(`${exception.message}`);
   } else {
     verbose(`${exception.stack}`);
   }
@@ -135,8 +139,8 @@ function logFailedTesting(language, exception) {
     `              ${language} testing ${redBackground}${blackForeground} FAILED ${resetStyling}`
   );
   standard(`${divider}`);
-  if (isStandard()) {
-    standard(`${exception.message}`);
+  if (isStandard() || isQuiet()) {
+    error(`${exception.message}`);
   } else {
     verbose(`${exception.stack}`);
   }
@@ -161,6 +165,7 @@ module.exports = {
   isQuiet,
   isStandard,
   isVerbose,
+  error,
   standard,
   verbose,
   logFailedTesting,
