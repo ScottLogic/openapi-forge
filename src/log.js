@@ -163,7 +163,6 @@ module.exports = {
   isVerbose,
   standard,
   verbose,
-  logFailedTesting,
   logTitle,
   logInvalidSchema,
   logSuccessfulForge,
