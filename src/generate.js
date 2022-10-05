@@ -86,7 +86,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     generatorPath = path.resolve(generatorPathOrUrl);
     if (!fs.existsSync(generatorPath)) {
       if (isUrl(generatorPathOrUrl)) {
-        generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
+        generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, true);
       } else {
         generatorPath = generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
       }
