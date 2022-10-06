@@ -1,7 +1,6 @@
 const fs = require("fs");
 const URL = require("url").URL;
 const path = require("path");
-const os = require("os");
 
 const Handlebars = require("handlebars");
 const prettier = require("prettier");
@@ -82,13 +81,17 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   try {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
     let generatorPath;
-    
+
     generatorPath = path.resolve(generatorPathOrUrl);
     if (!fs.existsSync(generatorPath)) {
       if (isUrl(generatorPathOrUrl)) {
-        generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, false);
+        generatorPath = generatorResolver.cloneGenerator(
+          generatorPathOrUrl,
+          true
+        );
       } else {
-        generatorPath = generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
+        generatorPath =
+          generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
       }
     }
 
@@ -188,7 +191,9 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         try {
           log.verbose("Formatting");
           result = prettier.format(result, { parser: "typescript" });
-        } catch {}
+        } catch {
+          log.verbose("Error while formatting");
+        }
 
         log.verbose("Writing to output location");
         fs.writeFileSync(
