@@ -41,7 +41,7 @@ function installGeneratorFromNPM(generatorPathOrUrl) {
     !shell
       .exec(`npm list --depth=0`, log.shellOptions)
       .stdout.match(
-        new RegExp(`^\\+--.${generatorPathOrUrl}@\\d+\.\\d+\.\\d+$`, "m")
+        new RegExp(`^.*${generatorPathOrUrl}@\\d+\\.\\d+\\.\\d+$`, "m")
       )
   ) {
     npmPackage = generatorPathOrUrl;
