@@ -81,13 +81,17 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   try {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
     let generatorPath;
-    
+
     generatorPath = path.resolve(generatorPathOrUrl);
     if (!fs.existsSync(generatorPath)) {
       if (isUrl(generatorPathOrUrl)) {
-        generatorPath = generatorResolver.cloneGenerator(generatorPathOrUrl, true);
+        generatorPath = generatorResolver.cloneGenerator(
+          generatorPathOrUrl,
+          true
+        );
       } else {
-        generatorPath = generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
+        generatorPath =
+          generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
       }
     }
 
