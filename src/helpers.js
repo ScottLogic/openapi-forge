@@ -30,5 +30,5 @@ module.exports = {
   ifEquals,
   ifContains,
   ifNotContains,
-  json,
+  json
 };
