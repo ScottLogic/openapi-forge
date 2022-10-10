@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo 'Pre-commit checks'
+npm run prettier:check
+npm run eslint:check
