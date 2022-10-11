@@ -87,15 +87,16 @@ const resolveResponse = (schema) => {
 
     if (
       successOrDefaultResponses.length > 0 &&
-      successOrDefaultResponses[0][1].content["application/json"]
+      successOrDefaultResponses[0][1]?.content
     ) {
-      verb._response =
-        successOrDefaultResponses[0][1].content["application/json"];
-    } else if (
-      successOrDefaultResponses.length > 0 &&
-      successOrDefaultResponses[0][1].content["text/plain"]
-    ) {
-      verb._response = successOrDefaultResponses[0][1].content["text/plain"];
+      if (successOrDefaultResponses[0][1].content["application/json"]) {
+        verb._response =
+          successOrDefaultResponses[0][1].content["application/json"];
+      } else if (successOrDefaultResponses[0][1].content["text/plain"]) {
+        verb._response = successOrDefaultResponses[0][1].content["text/plain"];
+      } else {
+        verb._response = null;
+      }
     } else {
       verb._response = null;
     }
