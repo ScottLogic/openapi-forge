@@ -30,7 +30,8 @@ const optionalProperties = (schema) => {
       verb.parameters.forEach((param) => {
         if (
           !param.required &&
-          (param.schema && param.schema.default === undefined) &&
+          param.schema &&
+          param.schema.default === undefined &&
           param.in !== "path"
         ) {
           param._optional = true;
@@ -80,13 +81,21 @@ const addRequestBodyToParams = (schema) => {
 // locate a 2XX response, or a default
 const resolveResponse = (schema) => {
   iterateVerbs(schema, (verb) => {
-
     const successOrDefaultResponses = Object.entries(verb.responses)
-      .filter(responseKvp => responseKvp[0].match(/^(2\d{2}|default)$/))
-      .sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0);
+      .filter((responseKvp) => responseKvp[0].match(/^(2\d{2}|default)$/))
+      .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 
-    if (successOrDefaultResponses.length > 0 && successOrDefaultResponses[0][1].content) {
-      verb._response = successOrDefaultResponses[0][1].content["application/json"];
+    if (
+      successOrDefaultResponses.length > 0 &&
+      successOrDefaultResponses[0][1].content["application/json"]
+    ) {
+      verb._response =
+        successOrDefaultResponses[0][1].content["application/json"];
+    } else if (
+      successOrDefaultResponses.length > 0 &&
+      successOrDefaultResponses[0][1].content["text/plain"]
+    ) {
+      verb._response = successOrDefaultResponses[0][1].content["text/plain"];
     } else {
       verb._response = null;
     }
@@ -132,8 +141,7 @@ const createInlineObjects = (schema) => {
 };
 
 // where a $ref exists in the schema, it replaces this with the referenced JSON
-const resolveReferences = (root, node) => {
-  node = node || root;
+const resolveReferences = (root) => {
   let queue = [root];
 
   while (queue.length) {
@@ -158,7 +166,7 @@ const resolveReferences = (root, node) => {
       }
     });
   }
-}
+};
 
 // adds parameter serialization style if missing
 const parameterSerializationOptions = (schema) => {

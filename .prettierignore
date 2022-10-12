@@ -1,2 +1,7 @@
 node_modules
 .github
+.eslintrc.js
+.eslintignore
+.prettierrc.js
+.prettierignore
+.vscode

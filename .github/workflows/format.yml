@@ -1,4 +1,4 @@
-name: ESLint
+name: Format
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   run-eslint:
-    name: ESLint
+    name: Format
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,5 +27,5 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
-      - name: ESLint
-        run: npm run eslint:check
+      - name: Code Format Check
+        run: npm run format:check

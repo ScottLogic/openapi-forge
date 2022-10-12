@@ -1,82 +1,93 @@
 class Result {
-    constructor(scenarios, passed, skipped, undefined, failed, time) {
-        this.scenarios = scenarios;
-        this.passed = passed;
-        this.skipped = skipped;
-        this.undefined = undefined;
-        this.failed = failed;
-        this.time = time;
-    }
+  constructor(scenarios, passed, skipped, undef, failed, time) {
+    this.scenarios = scenarios;
+    this.passed = passed;
+    this.skipped = skipped;
+    this.undef = undef;
+    this.failed = failed;
+    this.time = time;
+  }
 }
 
 function parseTestResultNumber(number) {
-    const result = parseInt(number);
-    return isNaN(result) ? 0 : result;
+  const result = parseInt(number);
+  return isNaN(result) ? 0 : result;
 }
 
 function checkTestResultForErrors(result) {
-    if(result.failed !== 0) {
-        return 1;
-    }
-    if(result.undefined !== 0) {
-        return 1;
-    }
-    if(result.skipped !== 0) {
-        return 1;
-    }
-    if(result.passed !== result.scenarios) {
-        return 1;
-    }
-    return 0;
+  if (result.failed !== 0) {
+    return 1;
+  }
+  if (result.undefined !== 0) {
+    return 1;
+  }
+  if (result.skipped !== 0) {
+    return 1;
+  }
+  if (result.passed !== result.scenarios) {
+    return 1;
+  }
+  return 0;
 }
 
 function parseTypeScript(durationLine, resultLine) {
+  // Extract the duration of the testing from stdout.
+  const durationMatch = durationLine.match(/^(\d+)m(\d+)\.\d+s/);
 
-    // Extract the duration of the testing from stdout.
-    const durationMatch = durationLine.match(/^(\d+)m(\d+)\.\d+s/);
-    
-    let result;
-    if(durationMatch) {
-        // Format the duration
-        let time = "";
-        if((durationMatch[1] !== "0") && (durationMatch[1] !== "")) time = `${durationMatch[1]}m`;
-        time = `${time}${durationMatch[2]}s`;
+  let result;
+  if (durationMatch) {
+    // Format the duration
+    let time = "";
+    if (durationMatch[1] !== "0" && durationMatch[1] !== "")
+      time = `${durationMatch[1]}m`;
+    time = `${time}${durationMatch[2]}s`;
 
-        // Extract the results of the testing from stdout. In stdout is a count of tests and their outcomes.
-        const resultMatch = resultLine.match(/^(\d+)\sscenarios?\s\(((\d+)\sfailed)?(,\s)?((\d+)\sundefined)?(,\s)?((\d+)\spassed)?\)/);
-        if(resultMatch) {
-            result = new Result(parseTestResultNumber(resultMatch[1]), parseTestResultNumber(resultMatch[9]), 0, parseTestResultNumber(resultMatch[6]), parseTestResultNumber(resultMatch[3]), time);
-        } else {
-            throw new Error(
-                `Could not parse the results of the TypeScript testing.`
-            );
-        }
+    // Extract the results of the testing from stdout. In stdout is a count of tests and their outcomes.
+    const resultMatch = resultLine.match(
+      /^(\d+)\sscenarios?\s\(((\d+)\sfailed)?(,\s)?((\d+)\sundefined)?(,\s)?((\d+)\spassed)?\)/
+    );
+    if (resultMatch) {
+      result = new Result(
+        parseTestResultNumber(resultMatch[1]),
+        parseTestResultNumber(resultMatch[9]),
+        0,
+        parseTestResultNumber(resultMatch[6]),
+        parseTestResultNumber(resultMatch[3]),
+        time
+      );
     } else {
-        throw new Error(
-            `Could not parse the duration of the TypeScript testing.`
-        );
+      throw new Error(`Could not parse the results of the TypeScript testing.`);
     }
-    return result;
+  } else {
+    throw new Error(`Could not parse the duration of the TypeScript testing.`);
+  }
+  return result;
 }
 
 function parseCSharp(resultLine) {
+  // Extract the results of the testing from stdout. In stdout is a count of tests and their outcomes. Also included is the test duration.
+  const resultMatch = resultLine.match(
+    /Failed:\s+(\d+),\sPassed:\s+(\d+),\sSkipped:\s+(\d+),\sTotal:\s+(\d+),\sDuration:\s+(.*)\s-\sFeaturesTests.dll\s\(net6\.0\)/
+  );
 
-    // Extract the results of the testing from stdout. In stdout is a count of tests and their outcomes. Also included is the test duration.
-    const resultMatch = resultLine.match(/Failed:\s+(\d+),\sPassed:\s+(\d+),\sSkipped:\s+(\d+),\sTotal:\s+(\d+),\sDuration:\s+(.*)\s-\sFeaturesTests.dll\s\(net6\.0\)/);
-        
-    let result;
-    if(resultMatch) {
-        result = new Result(parseInt(resultMatch[4]), parseInt(resultMatch[2]), parseInt(resultMatch[3]), 0, parseInt(resultMatch[1]), resultMatch[5].replace(" ", ""));
-    } else {
-        throw new Error(
-            `Could not parse the results of the CSharp testing.`
-        );
-    }
-    return result;
+  let result;
+  if (resultMatch) {
+    result = new Result(
+      parseInt(resultMatch[4]),
+      parseInt(resultMatch[2]),
+      parseInt(resultMatch[3]),
+      0,
+      parseInt(resultMatch[1]),
+      resultMatch[5].replace(" ", "")
+    );
+  } else {
+    throw new Error(`Could not parse the results of the CSharp testing.`);
+  }
+  return result;
 }
 
-module.exports =  {
-    parseTypeScript,
-    parseCSharp,
-    checkTestResultForErrors
+module.exports = {
+  parseTypeScript,
+  parseCSharp,
+  checkTestResultForErrors,
 };

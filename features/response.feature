@@ -262,3 +262,34 @@ Feature: API responses, including model object deserialization
     """
     Then the response should be of type String
     And the response should be equal to "hello world"
+
+  Scenario: the API specifies a plain text response
+    Given an API with the following specification
+    """
+    {
+      "paths": {
+        "/test/get": {
+          "get": {
+            "operationId": "getResponse",
+            "responses": {
+              "200": {
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method getResponse and the server responds with
+    """
+    "hello world"
+    """
+    Then the response should be of type String
+    And the response should be equal to "hello world"
