@@ -198,9 +198,12 @@ const parameterSerializationOptions = (schema) => {
   });
 };
 
-//remove line breaks from description 
+//remove line breaks from description
 const removeNewLineCharForDescription = (schema) => {
-  schema._info = { ...schema.info, description: schema.info.description.replace(/(?:\r|\n)/g, " ") };
+  schema._info = {
+    ...schema.info,
+    description: schema.info.description.replace(/(?:\r|\n)/g, " "),
+  };
 };
 
 module.exports = {
@@ -212,5 +215,5 @@ module.exports = {
   addRequestBodyToParams,
   resolveResponse,
   createInlineObjects,
-  removeNewLineCharForDescription
+  removeNewLineCharForDescription,
 };
