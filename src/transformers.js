@@ -63,22 +63,15 @@ const sortPathParameters = (schema) => {
 // parameters
 const addRequestBodyToParams = (schema) => {
   iterateVerbs(schema, (verb) => {
-    let param;
     if (verb.requestBody) {
-      if (verb.requestBody.content) {
-        if (verb.requestBody.content["application/json"]) {
-          param = verb.requestBody.content["application/json"];
-        } else if (verb.requestBody.content["text/plain"]) {
-          param = verb.requestBody.content["text/plain"];
-        }
-        if (param) {
-          param.name = "body";
-          param.in = "body";
-          if (verb._sortedParameters) {
-            verb._sortedParameters.push(param);
-          } else {
-            verb._sortedParameters = [param];
-          }
+      const param = verb.requestBody.content["application/json"];
+      if (param) {
+        param.name = "body";
+        param.in = "body";
+        if (verb._sortedParameters) {
+          verb._sortedParameters.push(param);
+        } else {
+          verb._sortedParameters = [param];
         }
       }
     }
@@ -91,6 +84,7 @@ const resolveResponse = (schema) => {
     const successOrDefaultResponses = Object.entries(verb.responses)
       .filter((responseKvp) => responseKvp[0].match(/^(2\d{2}|default)$/))
       .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+
     if (
       successOrDefaultResponses.length > 0 &&
       successOrDefaultResponses[0][1]?.content
