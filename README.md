@@ -109,8 +109,6 @@ Options:
 
 If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder and finally if no local generator is found it looks for an npm package and installs it if it does not exist.
 
-TODO: Elaborate
-
 ## Developer guide
 
 The following is a very high-level overview of the generation process:
@@ -120,25 +118,3 @@ The following is a very high-level overview of the generation process:
 - generate - the generators are implemented using the [Handlebars templating engine](https://handlebarsjs.com/).
 
 TODO: Elaborate etc ...
-
-## Testing
-
-You can test openapi-forge on all of the language generators from one command:
-
-```
-% openapi-forge help test-generators
-Usage: openapi-forge test-generators [options]
-
-Test language specific generators.
-
-Options:
-  -g, --generators <gens>            Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are:
-                                     c (CSharp), t (TypeScript) (default: "ct")
-  -c, --csharp <csharpPath>          Sets the location of the CSharp generator. Default is a directory called 'openapi-forge-csharp' in the same location as
-                                     openapi-forge (default: "../../openapi-forge-csharp")
-  -t, --typescript <typescriptPath>  Sets the location of the TypeScript generator. Default is a directory called 'openapi-forge-typescript' in the same
-                                     location as openapi-forge (default: "../../openapi-forge-typescript")
-  -l, --logLevel <level>             Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose
-                                     ('verbose', 'v' or '2') (default: "1")
-  -h, --help                         display help for command
-```
