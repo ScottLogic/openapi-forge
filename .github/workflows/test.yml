@@ -30,7 +30,6 @@ jobs:
 
       - name: test-generators
         run: npm run test:generators
-        continue-on-error: true
 
 
 
