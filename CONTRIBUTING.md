@@ -15,29 +15,30 @@ We are actively looking for contributors to help increase the Forge's capabiliti
 ## What to include in the issue
 
 - ### Bug
-    - A short and clear title of the bug 
-    - Forge version (and generator versions if it relates to the generators)
-    - Reproduction steps or a link to a project that shows the bug
-    - Expected and actual behaviour<br><br>
+
+  - A short and clear title of the bug
+  - Forge version (and generator versions if it relates to the generators)
+  - Reproduction steps or a link to a project that shows the bug
+  - Expected and actual behaviour<br><br>
 
 - ### New Feature / Improvement
-    - A short and clear title of the new feature / improvement
-    - A more detailed description of the new feature / improvement (adding code snippets if you desire)<br><br>
+  - A short and clear title of the new feature / improvement
+  - A more detailed description of the new feature / improvement (adding code snippets if you desire)<br><br>
 
 ## Before you start working on an issue
 
-- Fork the repos you will need to work on. *You may also need the generators*
-- Have you contributed before? *If not, look for issues with the 'good first issue' label*
-- Is it assigned to anyone else? *If so, post a message to see if the assignee is still working on it*
-- Is it assigned to you? *If not, post a message stating your intent so that the maintainers and other contributors know what is being developed*
-- Do you understand the issue fully? *If not, ask on in the issue. We are all here to help you contribute*
+- Fork the repos you will need to work on. _You may also need the generators_
+- Have you contributed before? _If not, look for issues with the 'good first issue' label_
+- Is it assigned to anyone else? _If so, post a message to see if the assignee is still working on it_
+- Is it assigned to you? _If not, post a message stating your intent so that the maintainers and other contributors know what is being developed_
+- Do you understand the issue fully? _If not, ask on in the issue. We are all here to help you contribute_
 
 <br>
 
 ## Before you submit a PR
 
 - Link issue that PR addresses
-- Link any related PRs *This could happen when forge and generator needs updating*
+- Link any related PRs _This could happen when forge and generator needs updating_
 - Have you added tests?
 - Are all workflow steps passing?
 
@@ -71,6 +72,7 @@ Options:
 
 - This project uses [semantic-release](https://semantic-release.gitbook.io/semantic-release/) which enforces [Angular Commit Message Conventions](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format). Ensure you are writing your commit messages correctly. Husky hooks have got your back for ensuring correct format but will not prevent the use of wrong types.
 - The NPM scripts below can help you fix failing workflow steps:
+
 ```
     npm run test:generators
     npm run format:check
