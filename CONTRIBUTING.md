@@ -8,7 +8,7 @@ We are actively looking for contributors to help increase the Forge's capabiliti
 
 ## Before you create an issue
 
-- Does the issue already exist? *Remember to check the **open** and **closed** tickets*
+- Does the issue already exist? _Remember to check the **open** and **closed** tickets_
 
 <br>
 
@@ -41,6 +41,7 @@ We are actively looking for contributors to help increase the Forge's capabiliti
 - Link any related PRs _This could happen when forge and generator needs updating_
 - Have you added tests?
 - Are all workflow steps passing?
+- Is it ready for review? _If not, create a draft_
 
 <br>
 
