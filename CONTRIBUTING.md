@@ -8,7 +8,7 @@ We are actively looking for contributors to help increase the Forge's capabiliti
 
 ## Before you create an issue
 
-- Does the issue already exist? (remember to check the **open** and **closed** tickets)
+- Does the issue already exist? *Remember to check the **open** and **closed** tickets*
 
 <br>
 
