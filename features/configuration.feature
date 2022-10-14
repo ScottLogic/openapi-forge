@@ -4,6 +4,8 @@ Feature: Confihguration options
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "http://test-one.com" }, { "url": "http://test-two.com" }],
       "paths": {
         "/test/get": {

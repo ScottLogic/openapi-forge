@@ -4,6 +4,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -45,6 +47,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -74,6 +78,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -120,6 +126,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -162,6 +170,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -217,6 +227,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -238,6 +250,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -267,6 +281,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {

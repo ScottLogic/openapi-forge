@@ -4,6 +4,8 @@ Feature: Model object generation
     When generating an API from the following specification 
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "components": {
         "schemas": {
           "ObjectResponse": {
@@ -25,6 +27,8 @@ Feature: Model object generation
     When generating an API from the following specification 
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "components": {
         "schemas": {
           "ObjectResponse": {
@@ -47,6 +51,8 @@ Feature: Model object generation
     When generating an API from the following specification 
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "components": {
         "schemas": {
           "ChildObject": {

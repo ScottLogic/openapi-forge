@@ -6,6 +6,8 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test": {
@@ -44,6 +46,8 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/testBody": {
@@ -83,6 +87,8 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
