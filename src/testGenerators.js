@@ -109,7 +109,10 @@ async function testGenerators(options) {
 
       const stdout = setupAndStartTests(generatorPath, featurePath, basePath);
 
-      const testResultParser = require(path.join(generatorPath, "testResultParser"));
+      const testResultParser = require(path.join(
+        generatorPath,
+        "testResultParser"
+      ));
 
       const result = testResultParser.parse(
         stdout[stdout.length - 2],
@@ -141,7 +144,10 @@ async function testGenerators(options) {
 
       const stdout = setupAndStartTests(generatorPath, featurePath, "");
 
-      const testResultParser = require(path.join(generatorPath, "testResultParser"));
+      const testResultParser = require(path.join(
+        generatorPath,
+        "testResultParser"
+      ));
 
       const result = testResultParser.parse(stdout[stdout.length - 2]);
 
