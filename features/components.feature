@@ -7,6 +7,8 @@ Feature: Components section
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -51,6 +53,8 @@ Feature: Components section
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/getThings": {
