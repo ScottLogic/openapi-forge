@@ -5,7 +5,6 @@ const path = require("path");
 const shell = require("shelljs");
 
 const log = require("./log");
-const testResultParser = require("./testResultParser");
 const generatorResolver = require("./generatorResolver");
 
 const typescriptData = {
@@ -62,6 +61,22 @@ function getGenerator(languageData, generatorOption) {
   return generatorPath;
 }
 
+function checkTestResultForErrors(result) {
+  if (result.failed !== 0) {
+    return 1;
+  }
+  if (result.undefined !== 0) {
+    return 1;
+  }
+  if (result.skipped !== 0) {
+    return 1;
+  }
+  if (result.passed !== result.scenarios) {
+    return 1;
+  }
+  return 0;
+}
+
 async function testGenerators(options) {
   let resultArray = {};
   let exitCode = 0;
@@ -94,13 +109,15 @@ async function testGenerators(options) {
 
       const stdout = setupAndStartTests(generatorPath, featurePath, basePath);
 
-      const result = testResultParser.parseTypeScript(
+      const testResultParser = require(path.join(generatorPath, "testResultParser"));
+
+      const result = testResultParser.parse(
         stdout[stdout.length - 2],
         stdout[stdout.length - 4]
       );
 
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
-      exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
+      exitCode = exitCode | checkTestResultForErrors(result);
 
       resultArray.TypeScript = result;
 
@@ -124,10 +141,12 @@ async function testGenerators(options) {
 
       const stdout = setupAndStartTests(generatorPath, featurePath, "");
 
-      const result = testResultParser.parseCSharp(stdout[stdout.length - 2]);
+      const testResultParser = require(path.join(generatorPath, "testResultParser"));
+
+      const result = testResultParser.parse(stdout[stdout.length - 2]);
 
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
-      exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
+      exitCode = exitCode | checkTestResultForErrors(result);
 
       resultArray.CSharp = result;
 
