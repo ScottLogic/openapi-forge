@@ -4,6 +4,8 @@ Feature: Header parameter handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
          "/test/headerParameters": {
