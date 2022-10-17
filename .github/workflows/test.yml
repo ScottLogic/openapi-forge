@@ -41,6 +41,8 @@ jobs:
       - name: Update generator table
         if: github.event_name == 'push'
         run: |
+          git config --global user.name "Continuous Integration"
+          git config --global user.email "jhowlett-scottlogic@users.noreply.github.com"
           git add README.md
           git commit -m 'docs: update README.md with new generator test results'
           git push
