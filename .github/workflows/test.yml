@@ -39,9 +39,9 @@ jobs:
         continue-on-error: true
 
       - name: Update generator table
-      if: github.event_name == 'push'
-      run: |
-        git add README.md
-        git commit -m 'docs: update README.md with new generator test results'
-        git push
+        if: github.event_name == 'push'
+        run: |
+          git add README.md
+          git commit -m 'docs: update README.md with new generator test results'
+          git push
 
