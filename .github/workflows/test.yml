@@ -35,8 +35,8 @@ jobs:
 
       - name: test-generators-push
         if: github.event_name == 'push'
-        run: npm run test:generators --workflow
         run: |
+          npm run test:generators --workflow
           git config --global user.name "Continuous Integration"
           git config --global user.email "jhowlett-scottlogic@users.noreply.github.com"
           npm run format:write README.md
