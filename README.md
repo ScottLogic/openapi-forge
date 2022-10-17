@@ -87,8 +87,8 @@ The Forge currently provides the following generators. Each provide documentatio
 
 | Generator      | Scenarios | Passed | Skipped | Undefined | Failed | Time |
 | -------------- | --------- | ------ | ------- | --------- | ------ | ---- |
-| **TypeScript** | 30        | 30     | 0       | 0         | 0      | 40s  |
-| **CSharp**     | 30        | 30     | 0       | 0         | 0      | 40s  |
+| **TypeScript** | x        | x     | x       | x         | x      | x  |
+| **CSharp**     | x        | x     | x       | x         | x      | x  |
 
 [MARKER]: <> (END OF GENERATOR TESTING TABLE)
 
