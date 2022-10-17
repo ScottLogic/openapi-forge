@@ -28,9 +28,20 @@ jobs:
           npm install
           npm install --global
 
-      - name: test-generators
+      - name: test-generators-pull_request
+        if: github.event_name == 'pull_request'
         run: npm run test:generators
         continue-on-error: true
 
+      - name: test-generators-push
+        if: github.event_name == 'push'
+        run: npm run test:generators -w
+        continue-on-error: true
 
+      - name: Update generator table
+        if: github.event_name == 'push'
+        run: |
+          git add README.md
+          git commit -m 'docs: update README.md with new generator test results'
+          git push
 
