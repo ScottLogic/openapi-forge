@@ -35,7 +35,7 @@ jobs:
 
       - name: test-generators-push
         if: github.event_name == 'push'
-        run: npm run test:generators -w
+        run: npm run test:generators --workflow
         continue-on-error: true
 
       - name: Update generator table
