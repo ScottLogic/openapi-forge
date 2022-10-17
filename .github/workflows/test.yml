@@ -35,16 +35,12 @@ jobs:
 
       - name: test-generators-push
         if: github.event_name == 'push'
-        run: npm run test:generators --workflow
-        continue-on-error: true
-
-      - name: Update generator table
-        if: github.event_name == 'push'
         run: |
+          npm run test:generators --workflow
           git config --global user.name "Continuous Integration"
           git config --global user.email "jhowlett-scottlogic@users.noreply.github.com"
           npm run format:write
           git add .
           git commit -m 'docs: update README.md with new generator test results'
           git push
-
+        continue-on-error: true
