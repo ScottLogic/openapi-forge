@@ -67,6 +67,11 @@ Options:
   -h, --help                         display help for command
 ```
 
+If the testing doesn't work you may be using the wrong script-shell configuration in npm. To keep scripts working in both Unix and Windows machines the shell expected in the project is git-bash. To change your shell type you can run the command below, changing the file location if you have your git-bash executable in a different location:
+```
+npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
+```
+
 <br>
 
 ## Points to remember when contributing
