@@ -61,7 +61,7 @@ program
     "1"
   )
   .option(
-    "-w, --workflow",
+    "--workflow",
     "Updates the generator test results table with the new values"
   )
   .action(async (options) => {
