@@ -63,15 +63,22 @@ const sortPathParameters = (schema) => {
 // parameters
 const addRequestBodyToParams = (schema) => {
   iterateVerbs(schema, (verb) => {
+    let param;
     if (verb.requestBody) {
-      const param = verb.requestBody.content["application/json"];
-      if (param) {
-        param.name = "body";
-        param.in = "body";
-        if (verb._sortedParameters) {
-          verb._sortedParameters.push(param);
-        } else {
-          verb._sortedParameters = [param];
+      if (verb.requestBody.content) {
+        if (verb.requestBody.content["application/json"]) {
+          param = verb.requestBody.content["application/json"];
+        } else if (verb.requestBody.content["text/plain"]) {
+          param = verb.requestBody.content["text/plain"];
+        }
+        if (param) {
+          param.name = "body";
+          param.in = "body";
+          if (verb._sortedParameters) {
+            verb._sortedParameters.push(param);
+          } else {
+            verb._sortedParameters = [param];
+          }
         }
       }
     }
@@ -87,15 +94,16 @@ const resolveResponse = (schema) => {
 
     if (
       successOrDefaultResponses.length > 0 &&
-      successOrDefaultResponses[0][1].content["application/json"]
+      successOrDefaultResponses[0][1]?.content
     ) {
-      verb._response =
-        successOrDefaultResponses[0][1].content["application/json"];
-    } else if (
-      successOrDefaultResponses.length > 0 &&
-      successOrDefaultResponses[0][1].content["text/plain"]
-    ) {
-      verb._response = successOrDefaultResponses[0][1].content["text/plain"];
+      if (successOrDefaultResponses[0][1].content["application/json"]) {
+        verb._response =
+          successOrDefaultResponses[0][1].content["application/json"];
+      } else if (successOrDefaultResponses[0][1].content["text/plain"]) {
+        verb._response = successOrDefaultResponses[0][1].content["text/plain"];
+      } else {
+        verb._response = null;
+      }
     } else {
       verb._response = null;
     }
