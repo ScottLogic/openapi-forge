@@ -151,20 +151,22 @@ async function testGenerators(options) {
 }
 
 function writeResultTable(resultArray) {
-  const resultTableReplace = /\[MARKER\]:\s<>\s\(START\sOF\sGENERATOR\sTESTING\sTABLE\)[\s\S]+\[MARKER\]:\s<>\s\(END\sOF\sGENERATOR\sTESTING\sTABLE\)/m
+  const resultTableReplace =
+    /\[MARKER\]:\s<>\s\(START\sOF\sGENERATOR\sTESTING\sTABLE\)[\s\S]+\[MARKER\]:\s<>\s\(END\sOF\sGENERATOR\sTESTING\sTABLE\)/m;
 
   const originalFile = fs.readFileSync("README.md", "utf-8");
 
-  let newTable = "[MARKER]: <> (START OF GENERATOR TESTING TABLE)\n\n| Generator | Scenarios | Passed | Skipped | Undefined | Failed | Time |\n| --- | --- | --- | --- | --- | --- | --- |\n";
+  let newTable =
+    "[MARKER]: <> (START OF GENERATOR TESTING TABLE)\n\n| Generator | Scenarios | Passed | Skipped | Undefined | Failed | Time |\n| --- | --- | --- | --- | --- | --- | --- |\n";
 
   const languages = Object.keys(resultArray);
 
-  for(let xx = 0; xx < languages.length; xx++) {
+  for (let xx = 0; xx < languages.length; xx++) {
     const result = resultArray[languages[xx]];
-    newTable += `| **${languages[xx]}** | ${result.scenarios} | ${result.passed} | ${result.skipped} | ${result.undef} | ${result.failed} | ${result.time} |\n`
+    newTable += `| **${languages[xx]}** | ${result.scenarios} | ${result.passed} | ${result.skipped} | ${result.undef} | ${result.failed} | ${result.time} |\n`;
   }
 
-  newTable += `\n[MARKER]: <> (END OF GENERATOR TESTING TABLE)`
+  newTable += `\n[MARKER]: <> (END OF GENERATOR TESTING TABLE)`;
 
   fs.writeFileSync(
     "README.md",
