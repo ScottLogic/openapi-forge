@@ -82,6 +82,16 @@ The Forge currently provides the following generators. Each provide documentatio
 - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
 - C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp (in development)
 
+[comment]: <> (Do not modify the text between the two MARKERs, it is auto-generated in the test.yml workflow)
+[MARKER]: <> (START OF GENERATOR TESTING TABLE)
+
+| Generator      | Scenarios | Passed | Skipped | Undefined | Failed | Time |
+| -------------- | --------- | ------ | ------- | --------- | ------ | ---- |
+| **TypeScript** | 30        | 30     | 0       | 0         | 0      | 40s  |
+| **CSharp**     | 30        | 30     | 0       | 0         | 0      | 40s  |
+
+[MARKER]: <> (END OF GENERATOR TESTING TABLE)
+
 ## User Guide
 
 The CLI tool provided by this repository is the primary interface for the Forge:

@@ -60,6 +60,10 @@ program
     "Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')",
     "1"
   )
+  .option(
+    "-w, --workflow",
+    "Updates the generator test results table with the new values"
+  )
   .action(async (options) => {
     testGenerators(options);
   });
