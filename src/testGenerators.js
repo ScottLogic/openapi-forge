@@ -172,6 +172,7 @@ function writeResultTable(resultArray) {
     "README.md",
     originalFile.replace(resultTableReplace, newTable)
   );
+  console.log(fs.readFileSync("README.md", "utf-8"));
 }
 
 module.exports = testGenerators;
