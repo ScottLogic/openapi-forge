@@ -53,3 +53,10 @@ jobs:
           git commit -m 'docs: update README.md with new generator test results'
           git push
         continue-on-error: true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: README
+          path: README.md
+
