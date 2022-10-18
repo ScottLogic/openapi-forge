@@ -172,7 +172,7 @@ function writeResultTable(resultArray) {
     "README.md",
     originalFile.replace(resultTableReplace, newTable)
   );
-  const file = fs.readFileSync("README.md", "utf-8"); 
+  const file = fs.readFileSync("README.md", "utf-8");
   console.log(file);
 }
 
