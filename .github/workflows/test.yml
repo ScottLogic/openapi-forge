@@ -38,18 +38,18 @@ jobs:
           name: test-results
           path: test-results.json
         
-# if below step fails then download artifact from last push to master as it is the first commit of the PR.
+# compare against last commit to master as this will prevent a dip
+# in results giving a pass when an extra test passes but previously extra 10 failed
 
       - name: Download previous test results
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-         workflow: test.yml
-         pr: ${{github.event.pull_request.number}}
-         event: ${{github.event_name}}
-         name: test-results
-         path: CICD
-         search_artifacts: true
+          workflow: test.yml
+          branch: master
+          name: test-results
+          path: CICD
+          search_artifacts: true
       
       
       - name: Compare test results
