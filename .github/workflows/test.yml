@@ -42,11 +42,10 @@ jobs:
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-         github_token: ${{secrets.GITHUB_TOKEN}}
          workflow: test.yml
          branch: master
          event: ${{github.event_name}}
-         name: test-results
+       #  name: test-results
          path: CICD
       
       
