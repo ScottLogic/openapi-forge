@@ -39,11 +39,17 @@ jobs:
           npm run test:generators --workflow
           git config --global user.name "Continuous Integration"
           git config --global user.email "jhowlett-scottlogic@users.noreply.github.com"
+          echo "HERE1"
           git status
+          echo "HERE2"
           npm run format:write
+          echo "HERE3"
           git status
-          git add .
+          echo "HERE4"
+          git add README.md
+          echo "HERE5"
           git status
+          echo "HERE6"
           git commit -m 'docs: update README.md with new generator test results'
           git push
         continue-on-error: true
