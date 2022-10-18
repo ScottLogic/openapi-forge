@@ -7,6 +7,7 @@ const shell = require("shelljs");
 const log = require("./log");
 const testResultParser = require("./testResultParser");
 const generatorResolver = require("./generatorResolver");
+const CICDHelpers = require("../CICD/CICDHelpers");
 
 const typescriptData = {
   languageString: "TypeScript",
@@ -143,42 +144,19 @@ async function testGenerators(options) {
   if (Object.keys(resultArray).length) {
     if (!log.isQuiet()) console.table(resultArray);
   }
-  console.log("HERE0");
-  console.log(options);
-  if (options.workflow) {
-    console.log("HERE00");
+  if (options.reportResults) {
     shell.cd("../", log.shellOptions);
-    writeResultTable(resultArray);
+    reportResults(resultArray);
   }
   process.exit(exitCode);
 }
 
-function writeResultTable(resultArray) {
-  console.log("HERE000"); 
-  const resultTableReplace =
-    /\[MARKER\]:\s<>\s\(START\sOF\sGENERATOR\sTESTING\sTABLE\)[\s\S]+\[MARKER\]:\s<>\s\(END\sOF\sGENERATOR\sTESTING\sTABLE\)/m;
-
-  const originalFile = fs.readFileSync("README.md", "utf-8");
-
-  let newTable =
-    "[MARKER]: <> (START OF GENERATOR TESTING TABLE)\n\n| Generator | Scenarios | Passed | Skipped | Undefined | Failed | Time |\n| --- | --- | --- | --- | --- | --- | --- |\n";
-
-  const languages = Object.keys(resultArray);
-
-  for (let xx = 0; xx < languages.length; xx++) {
-    const result = resultArray[languages[xx]];
-    newTable += `| **${languages[xx]}** | ${result.scenarios} | ${result.passed} | ${result.skipped} | ${result.undef} | ${result.failed} | ${result.time} |\n`;
-  }
-
-  newTable += `\n[MARKER]: <> (END OF GENERATOR TESTING TABLE)`;
-
+function reportResults(resultArray) {
   fs.writeFileSync(
-    "README.md",
-    originalFile.replace(resultTableReplace, newTable)
+    "test-results.json",
+    JSON.stringify(resultArray)
   );
-  const file = fs.readFileSync("README.md", "utf-8");
-  console.log("FILE_CONTENTS"); 
-  console.log(file);
 }
+
 
 module.exports = testGenerators;

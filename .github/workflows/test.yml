@@ -29,34 +29,28 @@ jobs:
           npm install --global
 
       - name: test-generators-pull_request
-        if: github.event_name == 'pull_request'
         run: npm run test:generators
         continue-on-error: true
 
-      - name: test-generators-push
-        if: github.event_name == 'push'
-        run: |
-          npm run test:generators:workflow
-          git config --global user.name "Continuous Integration"
-          git config --global user.email "jhowlett-scottlogic@users.noreply.github.com"
-          echo "HERE1"
-          git status
-          echo "HERE2"
-          npm run format:write
-          echo "HERE3"
-          git status
-          echo "HERE4"
-          git add README.md
-          echo "HERE5"
-          git status
-          echo "HERE6"
-          git commit -m 'docs: update README.md with new generator test results'
-          git push
-        continue-on-error: true
-
-      - name: Upload artifact
+      - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: README
-          path: README.md
-
+          name: test-results
+          path: test-results.json
+        
+      - name: Download previous test results
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+         github_token: ${{secrets.GITHUB_TOKEN}}
+         workflow: test.yml
+         branch: master
+         event: github.event_name
+         name: test-results
+         path: CICD
+      
+      -name: Compare test results
+        run: |
+          ls
+          cd CICD
+          ls
