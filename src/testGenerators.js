@@ -7,7 +7,6 @@ const shell = require("shelljs");
 const log = require("./log");
 const testResultParser = require("./testResultParser");
 const generatorResolver = require("./generatorResolver");
-const CICDHelpers = require("../CICD/CICDHelpers");
 
 const typescriptData = {
   languageString: "TypeScript",

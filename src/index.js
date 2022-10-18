@@ -61,8 +61,8 @@ program
     "1"
   )
   .option(
-    "--workflow",
-    "Updates the generator test results table with the new values"
+    "-r, --reportResults",
+    "Writes the testing results to a JSON file named test-results.json"
   )
   .action(async (options) => {
     testGenerators(options);
