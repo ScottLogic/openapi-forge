@@ -143,7 +143,10 @@ async function testGenerators(options) {
   if (Object.keys(resultArray).length) {
     if (!log.isQuiet()) console.table(resultArray);
   }
+  console.log("HERE0");
+  console.log(options);
   if (options.workflow) {
+    console.log("HERE00");
     shell.cd("../", log.shellOptions);
     writeResultTable(resultArray);
   }
@@ -151,6 +154,7 @@ async function testGenerators(options) {
 }
 
 function writeResultTable(resultArray) {
+  console.log("HERE000"); 
   const resultTableReplace =
     /\[MARKER\]:\s<>\s\(START\sOF\sGENERATOR\sTESTING\sTABLE\)[\s\S]+\[MARKER\]:\s<>\s\(END\sOF\sGENERATOR\sTESTING\sTABLE\)/m;
 
