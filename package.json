@@ -5,6 +5,7 @@
   "main": "src/generate.js",
   "scripts": {
     "test:generators": "openapi-forge test-generators -l v",
+    "test:generators::workflow": "openapi-forge test-generators -l v --workflow",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "lint:check": "eslint .",
