@@ -49,7 +49,7 @@ jobs:
          event: ${{github.event_name}}
          name: test-results
          path: CICD
-         check_artifacts: false
+         search_artifacts: false
       
       
       - name: Compare test results
