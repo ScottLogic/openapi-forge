@@ -50,7 +50,6 @@ jobs:
           branch: master
           name: test-results
           path: CICD
-          search_artifacts: true
       
       
       - name: Compare test results
