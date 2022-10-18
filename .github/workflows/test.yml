@@ -40,7 +40,9 @@ jobs:
           git config --global user.name "Continuous Integration"
           git config --global user.email "jhowlett-scottlogic@users.noreply.github.com"
           npm run format:write README.md
+          git status
           git add README.md
+          git status
           git commit -m 'docs: update README.md with new generator test results'
           git push
         continue-on-error: true
