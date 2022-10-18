@@ -41,6 +41,7 @@ jobs:
 # compare against last commit to master as this will prevent a dip
 # in results giving a pass when an extra test passes but previously extra 10 failed
 
+
       - name: Download previous test results
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
