@@ -38,6 +38,8 @@ jobs:
           name: test-results
           path: test-results.json
         
+# if below step fails then download artifact from last push to master as it is the first commit of the PR.
+
       - name: Download previous test results
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
@@ -47,6 +49,7 @@ jobs:
          event: ${{github.event_name}}
          name: test-results
          path: CICD
+         check_artifacts: false
       
       
       - name: Compare test results
