@@ -43,9 +43,9 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
          workflow: test.yml
-         branch: master
+         pr: ${{github.event.pull_request.number}}
          event: ${{github.event_name}}
-       #  name: test-results
+         name: test-results
          path: CICD
       
       
