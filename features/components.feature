@@ -3,8 +3,8 @@ Feature: Components section
 
   # NOTE: the components/schemas section is tested in the model.feature file
 
-  Scenario: a resse defined in the coonents section
-    Given an API with the folling specication
+  Scenario: a response defined in the components section
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -41,7 +41,7 @@ Feature: Components section
       }
     }
     """
-    When calling the method geesponse and the rver responds with
+    When calling the method getResponse and the server responds with
     """
     { "id": 56, "value": "foo" }
     """
@@ -95,3 +95,50 @@ Feature: Components section
     """
     When calling the method getThings with parameters "cats,2"
     Then the requested URL should be https://example.com/api/v3/test/getThings?value=cats&limit=2
+
+  Scenario: a parscscameter definedscscs in the components section
+    Given an API wiscscth the folloscscscwing specification
+    """
+    {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
+      "servers": [{ "url": "https://example.com/api/v3" }],
+      "paths": {
+        "/test/getThings": {
+          "get": {
+            "operationId": "getThings",
+            "parameters": [
+              {
+                "name": "value",
+                "in": "query",
+                "schema": { "type": "string" }
+              },
+              {
+                "$ref": "#/components/parameters/limitParam"
+              }
+            ],
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "components": {
+        "parameters": {
+          "limitParam": {
+            "name": "limit",
+            "in": "query",
+            "schema" : { "type": "integer" }
+          }
+        }
+      }
+    }
+    """
+    When callscscing the method getTscscshings with parameters "cats,2"
+    Then the requesscscted URL shouscscld be https://example.cscscm/api/v3/test/getThings?value=cats&limit=2
