@@ -53,4 +53,4 @@ jobs:
       
       
       - name: Compare test results
-        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json
+        run: node CICD/compareTestResults CICD_${{github.event.pull_request.head.sha}}/test-results.json test-results.json

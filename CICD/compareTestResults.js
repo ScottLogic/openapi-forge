@@ -4,8 +4,6 @@ const log = require("../src/log.js")
 
 log.setLogLevel(log.logLevels.verbose);
 
-console.log(log.getLogLevel());
-
 // Extract cl arguments
 const clArgs = process.argv.slice(2);
 
@@ -36,8 +34,11 @@ try {
 }
 
 Object.entries(oldResults).forEach(([language, oldResult]) => {
-    if(newResults[language] != undefined) {
-        if(newResults[language].failed > oldResult.failed) process.exit(1);
+    let newResult;
+    if((newResult = newResults[language]) != undefined) {
+        let limit = newResult.scenarios > oldResult.scenarios;
+        if(limit < 0) limit = 0;
+        if((newResult.failed - oldResult.failed) > limit) process.exit(1);
     }
   });
 
