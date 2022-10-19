@@ -51,6 +51,7 @@ jobs:
           branch: master
           name: test-results
           path: CICD
+          workflow_conclusion: completed
       
       
       - name: Compare test results
