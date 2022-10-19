@@ -7,35 +7,29 @@ log.setLogLevel(log.logLevels.verbose);
 // Extract cl arguments
 const clArgs = process.argv.slice(2);
 
-if(clArgs.length != 2) {
+if(clArgs.length !== 2) {
     log.error("Incorrect number of arguments")
     process.exit(1);
 }
 
-let oldResults;
-let newResults;
+const resultType = ["New", "Previous"];
+let results = [];
 
-try {
-    oldResults = fs.readFileSync(clArgs[0], "utf-8");
-    oldResults = JSON.parse(oldResults);
-    log.verbose(`${log.underline}Previous test results${log.resetStyling}`);
-    log.verbose(oldResults);
-} catch (ee) {
-    log.error(clArgs[0] + " : " + ee.message);
+for(let ii = 0; ii < 2; ii++) {
+    try {
+        results[ii] = fs.readFileSync(clArgs[ii], "utf-8");
+        results[ii] = JSON.parse(results[ii]);
+        log.verbose(`${log.underline}${resultType[ii]} test results${log.resetStyling}`);
+        log.verbose(results[ii]);    
+    } catch (ee) {
+        log.error(clArgs[ii] + " : " + ee.message);
+        process.exit(1);
+    }
 }
 
-try {
-    newResults = fs.readFileSync(clArgs[1], "utf-8");
-    newResults = JSON.parse(newResults);
-    log.verbose(`${log.underline}New test results${log.resetStyling}`);
-    log.verbose(newResults);
-} catch (ee) {
-    log.error(clArgs[1] + " : " + ee.message);
-}
-
-Object.entries(oldResults).forEach(([language, oldResult]) => {
+Object.entries(results[1]).forEach(([language, oldResult]) => {
     let newResult;
-    if((newResult = newResults[language]) != undefined) {
+    if((newResult = results[0][language]) != undefined) {
         let limit = newResult.scenarios > oldResult.scenarios;
         if(limit < 0) limit = 0;
         if((newResult.failed - oldResult.failed) > limit) {

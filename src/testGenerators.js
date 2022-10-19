@@ -142,20 +142,13 @@ async function testGenerators(options) {
   if (Object.keys(resultArray).length) {
     if (!log.isQuiet()) console.table(resultArray);
   }
-  resultArray.Java = {
-    scenarios: 3,
-    passed: 2,
-    skipped: 0,
-undef: 1,
-failed: 0,
-time: '03s'}
+
   if (options.reportResults) {
     fs.writeFileSync(
       "../test-results.json",
       JSON.stringify(resultArray)
     );
   }
-
 
   process.exit(exitCode);
 }
