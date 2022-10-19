@@ -50,4 +50,5 @@ jobs:
       
       
       - name: Compare test results
+        if: ${{ always() && (steps.download-artifact.outcome == 'success')}}
         run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json 
