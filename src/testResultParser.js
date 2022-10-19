@@ -15,6 +15,7 @@ function parseTestResultNumber(number) {
 }
 
 function checkTestResultForErrors(result) {
+  console.log(result);
   if (result.failed !== 0) {
     return 1;
   }
@@ -23,9 +24,6 @@ function checkTestResultForErrors(result) {
   }
   if (result.skipped !== 0) {
     return 3;
-  }
-  if (result.passed !== result.scenarios) {
-    return 4;
   }
   return 0;
 }
