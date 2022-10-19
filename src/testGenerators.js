@@ -65,13 +65,10 @@ function checkTestResultForErrors(result) {
   if (result.failed !== 0) {
     return 1;
   }
-  if (result.undefined !== 0) {
+  if (result.undef !== 0) {
     return 1;
   }
   if (result.skipped !== 0) {
-    return 1;
-  }
-  if (result.passed !== result.scenarios) {
     return 1;
   }
   return 0;
