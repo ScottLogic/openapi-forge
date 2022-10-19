@@ -98,11 +98,9 @@ async function testGenerators(options) {
         stdout[stdout.length - 2],
         stdout[stdout.length - 4]
       );
-        console.log("1exitCode:" + exitCode)
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
-      console.log("2exitCode:" + exitCode)
-        exitCode = 0;
+
       resultArray.TypeScript = result;
 
       log.standard(`${typescriptData.languageString} testing complete`);
@@ -126,11 +124,9 @@ async function testGenerators(options) {
       const stdout = setupAndStartTests(generatorPath, featurePath, "");
 
       const result = testResultParser.parseCSharp(stdout[stdout.length - 2]);
-      console.log("3exitCode:" + exitCode)
 
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
-      console.log("4exitCode:" + exitCode)
 
       resultArray.CSharp = result;
 
@@ -150,6 +146,14 @@ async function testGenerators(options) {
     shell.cd("../", log.shellOptions);
     reportResults(resultArray);
   }
+  resultArray.Java = {
+        scenarios: 3,
+        passed: 2,
+        skipped: 0,
+  undef: 1,
+  failed: 0,
+  time: '03s'}
+
   process.exit(exitCode);
 }
 
