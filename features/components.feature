@@ -49,8 +49,8 @@ Feature: Components section
     And the response should have a property id with value 56
     And the response should have a property value with value foo
 
-  Scenario: a parameter defined in the components section
-    Given an API with the following specification
+  Scenario: a paramXXXeter defined in the components section
+    Given an API wiXXXth the following specification
     """
     {
       "openapi":"3.0.2",
@@ -93,8 +93,8 @@ Feature: Components section
       }
     }
     """
-    When calling the method getThings with parameters "cats,2"
-    Then the requested URL should be https://example.com/api/v3/test/getThings?value=cats&limit=2
+    When calXXling the meXXthod getThings with parameters "cats,2"
+    Then the requested URL sXXhould be https://example.com/api/v3/test/getThings?value=cats&limit=2
 
   Scenario: a parscscameter definedscscs in the components section
     Given an API wiscscth the folloscscscwing specification
