@@ -41,8 +41,6 @@ jobs:
 # compare against last commit to master as this will prevent a dip
 # in results giving a pass when an extra test passes but previously extra 10 failed
 
-
-
       - name: Download previous test results
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
@@ -50,12 +48,12 @@ jobs:
           workflow: test.yml
           branch: master
           name: test-results
-          path: CICD
+          path: CICD_${{github.event.pull_request.head.sha}}
           workflow_conclusion: completed
       
       
       - name: Compare test results
         run: |
           ls
-          cd CICD
+          cd CICD_${{github.event.pull_request.head.sha}}
           ls
