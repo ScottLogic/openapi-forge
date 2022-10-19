@@ -24,10 +24,10 @@ function getLogLevel() {
 }
 
 function setLogLevel(level) {
-  if (level == logLevels.quiet || level === "0" || level === "q" || level === "quiet") {
+  if (level === logLevels.quiet || level === "0" || level === "q" || level === "quiet") {
     logLevel = logLevels.quiet;
     setSilentShell();
-  } else if (level == logLevels.standard || level === "1" || level === "s" || level === "standard") {
+  } else if (level === logLevels.standard || level === "1" || level === "s" || level === "standard") {
     logLevel = logLevels.standard;
     setSilentShell();
   } else if (level === logLevels.verbose || level === "2" || level === "v" || level === "verbose") {

@@ -210,7 +210,7 @@ const parameterSerializationOptions = (schema) => {
 const removeNewLineCharForDescription = (schema) => {
   schema._info = {
     ...schema.info,
-    description: schema.info?.description?.replace(/(?:\r|\n)/g, " "),
+    description: schema.info.description?.replace(/(?:\r|\n)/g, " "),
   };
 };
 

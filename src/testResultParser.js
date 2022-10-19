@@ -84,7 +84,6 @@ function parseCSharp(resultLine) {
 }
 
 module.exports = {
-  Result,
   parseTypeScript,
   parseCSharp,
   checkTestResultForErrors,

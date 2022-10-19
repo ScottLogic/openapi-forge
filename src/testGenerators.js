@@ -98,6 +98,7 @@ async function testGenerators(options) {
         stdout[stdout.length - 2],
         stdout[stdout.length - 4]
       );
+      
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
 
