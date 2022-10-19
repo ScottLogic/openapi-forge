@@ -19,13 +19,13 @@ function checkTestResultForErrors(result) {
     return 1;
   }
   if (result.undefined !== 0) {
-    return 1;
+    return 2;
   }
   if (result.skipped !== 0) {
-    return 1;
+    return 3;
   }
   if (result.passed !== result.scenarios) {
-    return 1;
+    return 4;
   }
   return 0;
 }
@@ -87,6 +87,7 @@ function parseCSharp(resultLine) {
 }
 
 module.exports = {
+  Result,
   parseTypeScript,
   parseCSharp,
   checkTestResultForErrors,

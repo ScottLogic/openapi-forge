@@ -102,7 +102,7 @@ async function testGenerators(options) {
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
       console.log("2exitCode:" + exitCode)
-
+        exitCode = 0;
       resultArray.TypeScript = result;
 
       log.standard(`${typescriptData.languageString} testing complete`);

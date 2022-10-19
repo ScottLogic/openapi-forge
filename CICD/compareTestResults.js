@@ -4,6 +4,8 @@ const log = require("../src/log.js")
 
 log.setLogLevel(log.logLevels.verbose);
 
+console.log(log.getLogLevel());
+
 // Extract cl arguments
 const clArgs = process.argv.slice(2);
 
