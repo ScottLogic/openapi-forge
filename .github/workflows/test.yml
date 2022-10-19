@@ -28,7 +28,7 @@ jobs:
           npm install
           npm install --global
 
-      - name: test-generators-pull_request
+      - name: Test generators
         run: npm run test:generators
         continue-on-error: true
 
@@ -53,7 +53,4 @@ jobs:
       
       
       - name: Compare test results
-        run: |
-          ls
-          cd CICD_${{github.event.pull_request.head.sha}}
-          ls
+        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json
