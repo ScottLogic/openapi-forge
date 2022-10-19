@@ -38,7 +38,12 @@ Object.entries(oldResults).forEach(([language, oldResult]) => {
     if((newResult = newResults[language]) != undefined) {
         let limit = newResult.scenarios > oldResult.scenarios;
         if(limit < 0) limit = 0;
-        if((newResult.failed - oldResult.failed) > limit) process.exit(1);
+        if((newResult.failed - oldResult.failed) > limit) {
+            log.error(`${language} ${log.redBackground}${log.blackForeground} FAILED ${log.resetStyling}`);
+            log.verbose("There are more newly failing tests than added test.");
+            log.verbose("This is an indication that an existing test is now failing.");
+            process.exit(1);
+        }
     }
   });
 

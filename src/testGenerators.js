@@ -128,7 +128,7 @@ async function testGenerators(options) {
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
 
-      resultArray.CSharp = result;
+     // resultArray.CSharp = result;
 
       log.standard(`${csharpData.languageString} testing complete`);
     } catch (exception) {
