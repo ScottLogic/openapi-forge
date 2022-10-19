@@ -3,8 +3,8 @@ Feature: Components section
 
   # NOTE: the components/schemas section is tested in the model.feature file
 
-  Scenario: a response defined in the components section
-    Given an API with the following specification
+  Scenario: a resse defined in the coonents section
+    Given an API with the folling specication
     """
     {
       "openapi":"3.0.2",
@@ -41,7 +41,7 @@ Feature: Components section
       }
     }
     """
-    When calling the method getResponse and the server responds with
+    When calling the method geesponse and the rver responds with
     """
     { "id": 56, "value": "foo" }
     """

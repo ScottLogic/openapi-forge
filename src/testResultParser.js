@@ -19,10 +19,10 @@ function checkTestResultForErrors(result) {
     return 1;
   }
   if (result.undef !== 0) {
-    return 2;
+    return 1;
   }
   if (result.skipped !== 0) {
-    return 3;
+    return 1;
   }
   return 0;
 }
