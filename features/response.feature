@@ -12,6 +12,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "$ref": "#/components/schemas/ObjectResponse" }
@@ -55,6 +56,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -86,6 +88,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -134,6 +137,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "$ref": "#/components/schemas/DateResponse" }
@@ -178,6 +182,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
              "responses": {
                "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -195,6 +200,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponseTwo",
              "responses": {
                "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -258,6 +264,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
             "responses": {
               "default": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -289,6 +296,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "text/plain": {
                     "schema": {

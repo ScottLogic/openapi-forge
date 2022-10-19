@@ -15,6 +15,7 @@ Feature: Path parameter handling
               {
                 "name": "test",
                 "in": "path",
+                "required": true,
                 "schema": {
                   "type": "string"
                 }
@@ -22,6 +23,7 @@ Feature: Path parameter handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -54,12 +56,14 @@ Feature: Path parameter handling
               {
                 "name": "value",
                 "in": "path",
+                "required": true,
                 "schema": { "type": "array", 
                             "items": { "type": "string" } }
               }
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -90,7 +94,8 @@ Feature: Path parameter handling
               {
                 "name": "value",
                 "in": "path",
-                "schema": {                   
+                "required": true,
+                "schema": {
                   "type": "object",
                   "properties": {
                     "id": { "type": "integer" },
@@ -101,6 +106,7 @@ Feature: Path parameter handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }

@@ -20,6 +20,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -55,6 +56,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -96,6 +98,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -149,6 +152,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -185,13 +189,15 @@ Feature: Querystring handling
               {
                 "name": "value",
                 "in": "query",
-                "schema": { "type": "array", 
-                            "items": { "type": "string" } 
-                          }
+                "schema": {
+                   "type": "array", 
+                   "items": { "type": "string" } 
+                }
               }
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -233,6 +239,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
