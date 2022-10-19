@@ -128,7 +128,7 @@ async function testGenerators(options) {
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | testResultParser.checkTestResultForErrors(result);
 
-     // resultArray.CSharp = result;
+      resultArray.CSharp = result;
 
       log.standard(`${csharpData.languageString} testing complete`);
     } catch (exception) {
@@ -142,27 +142,22 @@ async function testGenerators(options) {
   if (Object.keys(resultArray).length) {
     if (!log.isQuiet()) console.table(resultArray);
   }
-  if (options.reportResults) {
-    shell.cd("../", log.shellOptions);
-    reportResults(resultArray);
-  }
   resultArray.Java = {
-        scenarios: 3,
-        passed: 2,
-        skipped: 0,
-  undef: 1,
-  failed: 0,
-  time: '03s'}
+    scenarios: 3,
+    passed: 2,
+    skipped: 0,
+undef: 1,
+failed: 0,
+time: '03s'}
+  if (options.reportResults) {
+    fs.writeFileSync(
+      "../test-results.json",
+      JSON.stringify(resultArray)
+    );
+  }
+
 
   process.exit(exitCode);
 }
-
-function reportResults(resultArray) {
-  fs.writeFileSync(
-    "test-results.json",
-    JSON.stringify(resultArray)
-  );
-}
-
 
 module.exports = testGenerators;
