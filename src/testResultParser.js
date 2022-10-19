@@ -15,11 +15,10 @@ function parseTestResultNumber(number) {
 }
 
 function checkTestResultForErrors(result) {
-  console.log(result);
   if (result.failed !== 0) {
     return 1;
   }
-  if (result.undefined !== 0) {
+  if (result.undef !== 0) {
     return 2;
   }
   if (result.skipped !== 0) {
