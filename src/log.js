@@ -24,28 +24,13 @@ function getLogLevel() {
 }
 
 function setLogLevel(level) {
-  if (
-    level === logLevels.quiet ||
-    level === "0" ||
-    level === "q" ||
-    level === "quiet"
-  ) {
+  if([logLevels.quiet, "0", "q", "quiet"].includes(level)) {
     logLevel = logLevels.quiet;
     setSilentShell();
-  } else if (
-    level === logLevels.standard ||
-    level === "1" ||
-    level === "s" ||
-    level === "standard"
-  ) {
+  } else if([logLevels.standard, "1", "s", "standard"].includes(level)) {
     logLevel = logLevels.standard;
     setSilentShell();
-  } else if (
-    level === logLevels.verbose ||
-    level === "2" ||
-    level === "v" ||
-    level === "verbose"
-  ) {
+  } else if([logLevels.verbose, "2", "v", "verbose"].includes(level)) {
     logLevel = logLevels.verbose;
   }
   return;

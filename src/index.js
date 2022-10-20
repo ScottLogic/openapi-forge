@@ -61,7 +61,7 @@ program
     "1"
   )
   .option(
-    "-r, --reportResults",
+    "-o, --outputFile",
     "Writes the testing results to a JSON file named test-results.json"
   )
   .action(async (options) => {

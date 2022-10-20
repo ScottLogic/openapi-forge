@@ -166,7 +166,7 @@ async function testGenerators(options) {
     if (!log.isQuiet()) console.table(resultArray);
   }
 
-  if (options.reportResults) {
+  if (options.outputFile) {
     fs.writeFileSync("../test-results.json", JSON.stringify(resultArray));
   }
 

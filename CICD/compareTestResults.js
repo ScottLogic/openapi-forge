@@ -17,8 +17,7 @@ let results = [];
 
 for (let ii = 0; ii < 2; ii++) {
   try {
-    results[ii] = fs.readFileSync(clArgs[ii], "utf-8");
-    results[ii] = JSON.parse(results[ii]);
+    results[ii] = JSON.parse(fs.readFileSync(clArgs[ii], "utf-8"));
     log.verbose(
       `${log.underline}${resultType[ii]} test results${log.resetStyling}`
     );
