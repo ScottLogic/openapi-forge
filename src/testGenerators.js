@@ -7,6 +7,8 @@ const shell = require("shelljs");
 const log = require("./log");
 const generatorResolver = require("./generatorResolver");
 
+const defaultResultFile = "test-results.json";
+
 const typescriptData = {
   languageString: "TypeScript",
   languageLetter: "t",
@@ -77,6 +79,8 @@ function checkTestResultForErrors(result) {
 async function testGenerators(options) {
   let resultArray = {};
   let exitCode = 0;
+
+  const curDir = process.cwd();
 
   log.setLogLevel(options.logLevel);
 
@@ -167,10 +171,18 @@ async function testGenerators(options) {
   }
 
   if (options.outputFile) {
-    fs.writeFileSync("../test-results.json", JSON.stringify(resultArray));
+    if (typeof options.outputFile === "boolean")
+      options.outputFile = defaultResultFile;
+    fs.writeFileSync(
+      path.join(curDir, options.outputFile),
+      JSON.stringify(resultArray)
+    );
   }
 
   process.exit(exitCode);
 }
 
-module.exports = testGenerators;
+module.exports = {
+  defaultResultFile,
+  testGenerators,
+};

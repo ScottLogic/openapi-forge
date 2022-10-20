@@ -5,7 +5,7 @@ const generate = require("./generate");
 const testGenerators = require("./testGenerators");
 const program = new Command();
 
-program.name("openapi-generator");
+program.name("openapi-forge");
 
 program
   .command("forge")
@@ -61,8 +61,8 @@ program
     "1"
   )
   .option(
-    "-o, --outputFile",
-    "Writes the testing results to a JSON file named test-results.json"
+    "-o, --outputFile [file]",
+    `Writes the testing results to a JSON file, defaults to "${testGenerators.defaultResultFile}"`
   )
   .action(async (options) => {
     testGenerators(options);
