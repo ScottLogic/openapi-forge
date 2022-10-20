@@ -24,13 +24,13 @@ function getLogLevel() {
 }
 
 function setLogLevel(level) {
-  if([logLevels.quiet, "0", "q", "quiet"].includes(level)) {
+  if ([logLevels.quiet, "0", "q", "quiet"].includes(level)) {
     logLevel = logLevels.quiet;
     setSilentShell();
-  } else if([logLevels.standard, "1", "s", "standard"].includes(level)) {
+  } else if ([logLevels.standard, "1", "s", "standard"].includes(level)) {
     logLevel = logLevels.standard;
     setSilentShell();
-  } else if([logLevels.verbose, "2", "v", "verbose"].includes(level)) {
+  } else if ([logLevels.verbose, "2", "v", "verbose"].includes(level)) {
     logLevel = logLevels.verbose;
   }
   return;
