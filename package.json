@@ -4,7 +4,7 @@
   "description": "Effortlessly create OpenAPI clients from the fiery furnace of our forge",
   "main": "src/generate.js",
   "scripts": {
-    "test:generators": "openapi-forge test-generators -l v",
+    "test:generators": "openapi-forge test-generators -l v -o",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "lint:check": "eslint .",

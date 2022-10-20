@@ -88,7 +88,7 @@ The CLI tool provided by this repository is the primary interface for the Forge:
 
 ```
 % openapi-forge help forge
-Usage: openapi-generator forge [options] <schema> <generator>
+Usage: openapi-forge forge [options] <schema> <generator>
 
 Forge the API client from an OpenAPI specification. This command takes an
 OpenAPI schema, and uses the given generator to create a client library.
@@ -132,13 +132,10 @@ Usage: openapi-forge test-generators [options]
 Test language specific generators.
 
 Options:
-  -g, --generators <gens>            Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are:
-                                     c (CSharp), t (TypeScript) (default: "ct")
-  -c, --csharp <csharpPath>          Sets the location of the CSharp generator. Default is a directory called 'openapi-forge-csharp' in the same location as
-                                     openapi-forge (default: "../../openapi-forge-csharp")
-  -t, --typescript <typescriptPath>  Sets the location of the TypeScript generator. Default is a directory called 'openapi-forge-typescript' in the same
-                                     location as openapi-forge (default: "../../openapi-forge-typescript")
-  -l, --logLevel <level>             Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose
-                                     ('verbose', 'v' or '2') (default: "1")
+  -g, --generators <gens>            Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are: c (CSharp), t (TypeScript) (default: "ct")
+  -c, --csharp <csharpPath>          Sets the location of the CSharp generator. Default is a directory named 'openapi-forge-csharp' in the same location as openapi-forge (default: "./openapi-forge-csharp")
+  -t, --typescript <typescriptPath>  Sets the location of the TypeScript generator. Default is a directory named 'openapi-forge-typescript' in the same location as openapi-forge (default: "./openapi-forge-typescript")
+  -l, --logLevel <level>             Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2') (default: "1")
+  -o, --outputFile [file]            Writes the testing results to a JSON file, defaults to "test-results.json"
   -h, --help                         display help for command
 ```
