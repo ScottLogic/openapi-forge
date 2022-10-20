@@ -22,6 +22,7 @@ Feature: Cookie parameter handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -68,6 +69,7 @@ Feature: Cookie parameter handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {

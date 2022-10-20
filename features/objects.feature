@@ -27,6 +27,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -67,6 +68,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
             },
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -95,6 +97,7 @@ Feature: Handles inlin / anonymous objects, i.e. those that are not defined in t
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { 

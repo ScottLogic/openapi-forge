@@ -14,7 +14,11 @@ Feature: Components section
           "get": {
             "operationId": "getResponse",
             "responses": {
-              "200": { "$ref": "#/components/responses/responseOne" }
+              "200": {
+                "description": "description",
+                "$ref": "#/components/responses/responseOne"
+                
+              }
             }
           }
         }
@@ -22,6 +26,7 @@ Feature: Components section
       "components": {
         "responses": {
           "responseOne": {
+            "description": "description",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ObjectResponse" }
@@ -72,6 +77,7 @@ Feature: Components section
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }

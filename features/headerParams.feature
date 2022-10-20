@@ -22,6 +22,7 @@ Feature: Header parameter handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
