@@ -65,7 +65,7 @@ program
     `Writes the testing results to a JSON file, defaults to "${testGenerators.defaultResultFile}"`
   )
   .action(async (options) => {
-    testGenerators(options);
+    testGenerators.testGenerators(options);
   });
 
 program.parse();
