@@ -13,6 +13,7 @@ Feature: Confihguration options
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }

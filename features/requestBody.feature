@@ -20,6 +20,7 @@ Feature: Handles requests with a body
             },
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }

@@ -88,7 +88,7 @@ The CLI tool provided by this repository is the primary interface for the Forge:
 
 ```
 % openapi-forge help forge
-Usage: openapi-generator forge [options] <schema> <generator>
+Usage: openapi-forge forge [options] <schema> <generator>
 
 Forge the API client from an OpenAPI specification. This command takes an
 OpenAPI schema, and uses the given generator to create a client library.

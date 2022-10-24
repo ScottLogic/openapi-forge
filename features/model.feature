@@ -6,6 +6,7 @@ Feature: Model object generation
     {
       "openapi":"3.0.2",
       "info" : {"title": "test", "version": "0.0.0"},
+      "paths": {},
       "components": {
         "schemas": {
           "ObjectResponse": {
@@ -29,6 +30,7 @@ Feature: Model object generation
     {
       "openapi":"3.0.2",
       "info" : {"title": "test", "version": "0.0.0"},
+      "paths": {},
       "components": {
         "schemas": {
           "ObjectResponse": {
@@ -53,6 +55,7 @@ Feature: Model object generation
     {
       "openapi":"3.0.2",
       "info" : {"title": "test", "version": "0.0.0"},
+      "paths": {},
       "components": {
         "schemas": {
           "ChildObject": {
