@@ -8,6 +8,7 @@ on:
 
 jobs:
   test-generators:
+    if: github.event.commits[0].author.name != 'GitHubActions'
     name: Test
     runs-on: windows-latest
     strategy:
@@ -17,6 +18,8 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
+        # with:
+        #   token: ${{ secrets.PAT }}
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -24,6 +27,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Node.js dependencies globally
+        # env:
+        #   NODE_AUTH_TOKEN: $\{{ secrets.PAT }}
         run: |
           npm install
           npm install --global
@@ -59,8 +64,8 @@ jobs:
       - name: Commit changes
         if: github.event_name == 'push'
         run: |
-          git config --global user.name 'Jake Howlett'
-          git config --global user.email 'jhowlett-scottlogic@users.noreply.github.com'
+          git config --global user.name 'GitHubActions'
+          git config --global user.email '<>'
           npm run format:write
           git add WEBPAGE.md
           git commit -m "docs: Auto-update WEBPAGE.md"
