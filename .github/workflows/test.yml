@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
-        # with:
-        #   token: ${{ secrets.PAT }}
+        with:
+          token: ${{ secrets.PAT }}
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -27,8 +27,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Node.js dependencies globally
-        # env:
-        #   NODE_AUTH_TOKEN: $\{{ secrets.PAT }}
+        env:
+          NODE_AUTH_TOKEN: $\{{ secrets.PAT }}
         run: |
           npm install
           npm install --global
