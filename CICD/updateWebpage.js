@@ -25,7 +25,6 @@ function getNewFailures(results) {
       newFailures = newFailures.slice(0, -2);
     } else {
       newFailures += "- No failed scenarios";
-    }
   }
 
   newFailures += `\n\n[MARKER]: <> (END OF GENERATOR TESTING FAILURES)`;
@@ -58,8 +57,6 @@ function populateWebpage(results) {
 
   fs.writeFileSync("WEBPAGE.md", fileContents);
 }
-
-//--------------------------START OF SCRIPT----------------------------------//
 
 function updateWebpage() {
   log.setLogLevel(log.logLevels.verbose);
