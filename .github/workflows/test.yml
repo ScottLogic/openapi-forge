@@ -50,4 +50,19 @@ jobs:
       
       
       - name: Compare test results
-        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json 
+        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json
+
+      - name: Update webpage contents
+        if: github.event_name == 'push'
+        run: node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
+      
+      - name: Commit changes
+        if: github.event_name == 'push'
+        run: |
+          git config --global user.name 'Jake Howlett'
+          git config --global user.email 'jhowlett-scottlogic@users.noreply.github.com'
+          npm run format:write
+          git add WEBPAGE.md
+          git commit -m "docs: Auto-update WEBPAGE.md"
+          git push
+
