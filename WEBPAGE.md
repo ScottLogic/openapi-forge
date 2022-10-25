@@ -25,8 +25,4 @@ Some generators are more mature than others and this means that they can be at d
 
 - No failed scenarios
 
-## CSharp
-
-- No failed scenarios
-
 [MARKER]: <> (END OF GENERATOR TESTING FAILURES)
