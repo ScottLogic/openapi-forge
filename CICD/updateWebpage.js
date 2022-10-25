@@ -25,8 +25,8 @@ function getNewFailures(results) {
       newFailures = newFailures.slice(0, -2);
     } else {
       newFailures += "- No failed scenarios";
+    }
   }
-
   newFailures += `\n\n[MARKER]: <> (END OF GENERATOR TESTING FAILURES)`;
 
   return newFailures;
@@ -81,3 +81,5 @@ function updateWebpage() {
 }
 
 updateWebpage();
+
+process.exit(0);
