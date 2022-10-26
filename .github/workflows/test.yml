@@ -8,6 +8,7 @@ on:
 
 jobs:
   test-generators:
+    if: github.event.commits[0].author.name != 'GitHubActions'
     name: Test
     runs-on: windows-latest
     strategy:
@@ -17,6 +18,8 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ github.token }}
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -48,6 +51,19 @@ jobs:
           path: CICD_${{github.event.pull_request.head.sha}}
           workflow_conclusion: completed
       
-      
       - name: Compare test results
-        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json 
+        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json
+
+      - name: Update webpage contents
+        if: github.event_name == 'push'
+        run: |
+          git config --global user.name 'GitHubActions'
+          git config --global user.email '<>'
+          git branch -d gh-pages
+          git checkout -b gh-pages
+          node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
+          npm run format:write
+          git add docs/WEBPAGE.md
+          git commit -m "docs: Auto-update WEBPAGE.md"
+          git push --set-upstream origin gh-pages
+
