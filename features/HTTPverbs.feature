@@ -1,7 +1,7 @@
 # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#fixed-fields-7
 Feature: HTTP verbs section
 
-  Scenario: Creating a get Method
+  Scenario: Handles a GET Method
     Given an API with the following specification
     """
     {
@@ -30,7 +30,7 @@ Feature: HTTP verbs section
     When calling the spied method sendString without params
     Then the request method should be of type get
 
-  Scenario: Creating a post Method
+  Scenario: Handles a POST Method
     Given an API with the following specification
     """
     {
@@ -59,7 +59,7 @@ Feature: HTTP verbs section
     When calling the spied method testBody without params
     Then the request method should be of type post
 
-  Scenario: Creating a patch Method
+  Scenario: Handles a PATCH Method
     Given an API with the following specification
     """
     {
@@ -88,7 +88,7 @@ Feature: HTTP verbs section
     When calling the spied method testBody without params
     Then the request method should be of type patch
 
-  Scenario: Creating a head Method
+  Scenario: Handles a HEAD Method
     Given an API with the following specification
     """
     {
@@ -117,7 +117,7 @@ Feature: HTTP verbs section
     When calling the spied method testBody without params
     Then the request method should be of type head
 
-  Scenario: Creating a options Method
+  Scenario: Handles a OPTIONS Method
     Given an API with the following specification
     """
     {
@@ -146,7 +146,7 @@ Feature: HTTP verbs section
     When calling the spied method testBody without params
     Then the request method should be of type options
 
-  Scenario: Creating a delete Method
+  Scenario: Handles a DELETE Method
     Given an API with the following specification
     """
     {
@@ -175,7 +175,7 @@ Feature: HTTP verbs section
     When calling the spied method testBody without params
     Then the request method should be of type delete
 
-  Scenario: Creating a put Method
+  Scenario: Handles a PUT Method
     Given an API with the following specification
     """
     {
@@ -203,6 +203,35 @@ Feature: HTTP verbs section
     """
     When calling the spied method testBody without params
     Then the request method should be of type put
+
+  Scenario: Handles a TRACE Method
+    Given an API with the following specification
+    """
+    {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
+      "servers": [{ "url": "https://example.com/api/v3" }],
+      "paths": {
+        "/test/testBody": {
+          "trace": {
+            "operationId": "testBody",
+            "responses": {
+              "200": {
+                "description": "description",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the spied method testBody without params
+    Then the request method should be of type trace
 
 
 
