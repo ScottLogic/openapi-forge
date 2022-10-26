@@ -49,13 +49,13 @@ function getNewTable(results) {
 }
 
 function populateWebpage(results) {
-  let fileContents = fs.readFileSync("WEBPAGE.md", "utf-8");
+  let fileContents = fs.readFileSync("docs/WEBPAGE.md", "utf-8");
 
   fileContents = fileContents.replace(tableRegex, getNewTable(results));
 
   fileContents = fileContents.replace(failuresRegex, getNewFailures(results));
 
-  fs.writeFileSync("WEBPAGE.md", fileContents);
+  fs.writeFileSync("docs/WEBPAGE.md", fileContents);
 }
 
 function updateWebpage() {
