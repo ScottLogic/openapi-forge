@@ -58,11 +58,12 @@ jobs:
         run: |
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
-          npm run format:write
           git branch -d gh-pages
+          git push
           git checkout -b gh-pages
           node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
-          git add WEBPAGE.md
+          npm run format:write
+          git add docs/WEBPAGE.md
           git commit -m "docs: Auto-update WEBPAGE.md"
-          git push
+          git push --set-upstream origin gh-pages
 
