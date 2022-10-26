@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ github.token }}
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -59,7 +61,6 @@ jobs:
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
           git branch -d gh-pages
-          git push
           git checkout -b gh-pages
           node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
           npm run format:write
