@@ -51,7 +51,6 @@ jobs:
           path: CICD_${{github.event.pull_request.head.sha}}
           workflow_conclusion: completed
       
-      
       - name: Compare test results
         run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json
 
