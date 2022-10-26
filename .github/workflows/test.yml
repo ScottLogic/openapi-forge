@@ -67,6 +67,8 @@ jobs:
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
           npm run format:write
+          git branch -d gh-pages
+          git checkout -b gh-pages
           git add WEBPAGE.md
           git commit -m "docs: Auto-update WEBPAGE.md"
           git push
