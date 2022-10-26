@@ -19,6 +19,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           token: ${{ github.token }}
       
       - name: Use Node.js ${{ matrix.node-version }}
