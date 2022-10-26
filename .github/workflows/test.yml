@@ -61,6 +61,7 @@ jobs:
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
           git branch -d gh-pages
+          git push
           git checkout -b gh-pages
           node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
           npm run format:write
