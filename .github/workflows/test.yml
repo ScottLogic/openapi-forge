@@ -68,5 +68,6 @@ jobs:
           npm run format:write
           git add docs/
           git commit -m "docs: auto-update docs/"
+          git pull
           git push --set-upstream origin gh-pages
 
