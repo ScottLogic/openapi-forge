@@ -62,6 +62,7 @@ jobs:
           git config --global user.email '<>'
           git push -d origin gh-pages
           git branch -d gh-pages
+          git push
           git checkout -b gh-pages
           node CICD/updateWebpage CICD_${{github.sha}}/test-results.json 
           npm run format:write
