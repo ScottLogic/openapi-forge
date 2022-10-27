@@ -49,22 +49,23 @@ jobs:
           workflow: test.yml
           branch: master
           name: test-results
-          path: CICD_${{github.event.pull_request.head.sha}}
+          path: CICD_${{github.sha}}
           workflow_conclusion: completed
       
       - name: Compare test results
-        run: node CICD/compareTestResults test-results.json CICD_${{github.event.pull_request.head.sha}}/test-results.json
+        run: node CICD/compareTestResults test-results.json CICD_${{github.sha}}/test-results.json
 
       - name: Update webpage contents
         if: github.event_name == 'push'
         run: |
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
+          git pull
           git branch -d gh-pages
           git checkout -b gh-pages
-          node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
+          node CICD/updateWebpage CICD_${{github.sha}}/test-results.json 
           npm run format:write
-          git add docs/WEBPAGE.md
-          git commit -m "docs: Auto-update WEBPAGE.md"
+          git add docs/
+          git commit -m "docs: auto-update docs/"
           git push --set-upstream origin gh-pages
 
