@@ -60,7 +60,7 @@ jobs:
         run: |
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
-          git pull
+          git push -d origin gh-pages
           git branch -d gh-pages
           git push
           git checkout -b gh-pages
