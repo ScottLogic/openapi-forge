@@ -62,9 +62,10 @@ jobs:
           git config --global user.email '<>'
           git checkout -b gh-pages
           git reset --hard master
+          git push --set-upstream origin gh-pages
           node CICD/updateWebpage CICD_${{github.sha}}/test-results.json 
           npm run format:write
           git add docs/
           git commit -m "docs: auto-update docs/"
-          git push --set-upstream origin gh-pages
+          git push
 
