@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-generators:
-    if: github.event.commits[0].author.name != 'GitHubActions'
+ #   if: github.event.commits[0].author.name != 'GitHubActions'
     name: Test
     runs-on: windows-latest
     strategy:
@@ -61,7 +61,6 @@ jobs:
           git config --global user.name 'GitHubActions'
           git config --global user.email '<>'
           git branch -d gh-pages
-          git push
           git checkout -b gh-pages
           node CICD/updateWebpage CICD_${{github.event.pull_request.head.sha}}/test-results.json 
           npm run format:write
