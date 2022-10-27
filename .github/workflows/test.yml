@@ -8,7 +8,6 @@ on:
 
 jobs:
   test-generators:
- #   if: github.event.commits[0].author.name != 'GitHubActions'
     name: Test
     runs-on: windows-latest
     strategy:
