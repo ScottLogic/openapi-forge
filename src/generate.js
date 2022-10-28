@@ -34,12 +34,12 @@ async function loadSchema(schemaPathOrUrl) {
     schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
   const schema = isUrl(schemaPathOrUrl)
     ? await fetch(schemaPathOrUrl).then((d) => {
-      if (d.status === 200) {
-        return d.text();
-      } else {
-        throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
-      }
-    })
+        if (d.status === 200) {
+          return d.text();
+        } else {
+          throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
+        }
+      })
     : fs.readFileSync(schemaPathOrUrl, "utf-8");
   return isYml ? parse(schema) : JSON.parse(schema);
 }
@@ -203,8 +203,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.verbose("\nIteration complete\n");
 
     shell.cd(generatorPath);
-    shell.exec(`npm run format:output -- ${outputFolder}`,
-      log.shellOptions);
+    shell.exec(`npm run format:output -- ${outputFolder}`, log.shellOptions);
   } catch (e) {
     exception = e;
   } finally {
