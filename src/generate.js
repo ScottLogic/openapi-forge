@@ -3,7 +3,6 @@ const URL = require("url").URL;
 const path = require("path");
 
 const Handlebars = require("handlebars");
-const prettier = require("prettier");
 const minimatch = require("minimatch");
 const fetch = require("node-fetch");
 const { parse } = require("yaml");
@@ -14,6 +13,7 @@ const log = require("./log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
 const converter = require("swagger2openapi");
+const shell = require("shelljs");
 
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
@@ -34,12 +34,12 @@ async function loadSchema(schemaPathOrUrl) {
     schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
   const schema = isUrl(schemaPathOrUrl)
     ? await fetch(schemaPathOrUrl).then((d) => {
-        if (d.status === 200) {
-          return d.text();
-        } else {
-          throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
-        }
-      })
+      if (d.status === 200) {
+        return d.text();
+      } else {
+        throw new Error(`Failed to load schema from ${schemaPathOrUrl}`);
+      }
+    })
     : fs.readFileSync(schemaPathOrUrl, "utf-8");
   return isYml ? parse(schema) : JSON.parse(schema);
 }
@@ -188,12 +188,6 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         const template = Handlebars.compile(source);
         log.verbose("Populating template");
         let result = template(schema);
-        try {
-          log.verbose("Formatting");
-          result = prettier.format(result, { parser: "typescript" });
-        } catch {
-          log.verbose("Error while formatting");
-        }
 
         log.verbose("Writing to output location");
         fs.writeFileSync(
@@ -207,11 +201,16 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       }
     });
     log.verbose("\nIteration complete\n");
+
+    shell.cd(generatorPath);
+    shell.exec(`npm run format:output -- ${outputFolder}`,
+      log.shellOptions);
   } catch (e) {
     exception = e;
   } finally {
     generatorResolver.cleanup();
   }
+
   if (exception === null) {
     log.logSuccessfulForge(
       numberOfDiscoveredModels,
