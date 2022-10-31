@@ -5,11 +5,11 @@
   "main": "src/generate.js",
   "scripts": {
     "prepare": "husky install",
-    "test:generators": "openapi-forge test-generators -l v",
-    "prettier:check": "prettier --check .",
-    "prettier:write": "prettier --write .",
-    "eslint:check": "eslint .",
-    "eslint:write": "eslint --fix ."
+    "test:generators": "openapi-forge test-generators -l v -o",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:write": "eslint --fix ."
   },
   "bin": {
     "openapi-forge": "./src/index.js"

@@ -1,4 +1,4 @@
-name: ESLint
+name: Lint
 
 on:
   push:
@@ -8,7 +8,8 @@ on:
 
 jobs:
   run-eslint:
-    name: ESLint
+    if: github.event.commits[0].author.name != 'GitHubActions'
+    name: Lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,5 +28,5 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
-      - name: ESLint
-        run: npm run eslint:check
+      - name: Code Lint Check
+        run: npm run lint:check

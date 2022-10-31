@@ -4,6 +4,8 @@ Feature: Handles requests with a body
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/testBody": {
@@ -18,6 +20,7 @@ Feature: Handles requests with a body
             },
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }

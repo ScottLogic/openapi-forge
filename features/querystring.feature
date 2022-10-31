@@ -4,6 +4,8 @@ Feature: Querystring handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
@@ -18,6 +20,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -37,6 +40,8 @@ Feature: Querystring handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
@@ -51,6 +56,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -70,6 +76,8 @@ Feature: Querystring handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/required": {
@@ -90,6 +98,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -111,6 +120,8 @@ Feature: Querystring handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
          "/test/testDefaultParam": {
@@ -141,6 +152,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -166,6 +178,8 @@ Feature: Querystring handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/get": {
@@ -175,13 +189,15 @@ Feature: Querystring handling
               {
                 "name": "value",
                 "in": "query",
-                "schema": { "type": "array", 
-                            "items": { "type": "string" } 
-                          }
+                "schema": {
+                   "type": "array", 
+                   "items": { "type": "string" } 
+                }
               }
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -201,6 +217,8 @@ Feature: Querystring handling
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "servers": [{ "url": "https://example.com/api/v3" }],
       "paths": {
         "/test/values": {
@@ -221,6 +239,7 @@ Feature: Querystring handling
             ],
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }

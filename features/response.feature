@@ -4,12 +4,15 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "$ref": "#/components/schemas/ObjectResponse" }
@@ -45,12 +48,15 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
@@ -74,12 +80,15 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -120,12 +129,15 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
             "operationId": "getResponse",
             "responses": {
               "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "$ref": "#/components/schemas/DateResponse" }
@@ -162,12 +174,15 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
             "operationId": "getResponse",
              "responses": {
                "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -185,6 +200,7 @@ Feature: API responses, including model object deserialization
             "operationId": "getResponseTwo",
              "responses": {
                "200": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": {
@@ -217,6 +233,8 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
@@ -238,15 +256,52 @@ Feature: API responses, including model object deserialization
     Given an API with the following specification
     """
     {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
       "paths": {
         "/test/get": {
           "get": {
             "operationId": "getResponse",
             "responses": {
               "default": {
+                "description": "description",
                 "content": {
                   "application/json": {
                     "schema": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method getResponse and the server responds with
+    """
+    "hello world"
+    """
+    Then the response should be of type String
+    And the response should be equal to "hello world"
+
+  Scenario: the API specifies a plain text response
+    Given an API with the following specification
+    """
+    {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
+      "paths": {
+        "/test/get": {
+          "get": {
+            "operationId": "getResponse",
+            "responses": {
+              "200": {
+                "description": "description",
+                "content": {
+                  "text/plain": {
+                    "schema": {
+                      "type": "string"
+                    }
                   }
                 }
               }

@@ -25,10 +25,20 @@ function json(context) {
   return JSON.stringify(context);
 }
 
+function isObj(value) {
+  return typeof value == "object";
+}
+
+function capitalizeFirst(value) {
+  return value[0].toUpperCase() + value.slice(1);
+}
+
 module.exports = {
   setVar,
   ifEquals,
   ifContains,
   ifNotContains,
   json,
+  isObj,
+  capitalizeFirst,
 };

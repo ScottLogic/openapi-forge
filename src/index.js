@@ -5,7 +5,7 @@ const generate = require("./generate");
 const testGenerators = require("./testGenerators");
 const program = new Command();
 
-program.name("openapi-generator");
+program.name("openapi-forge");
 
 program
   .command("forge")
@@ -60,8 +60,12 @@ program
     "Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')",
     "1"
   )
+  .option(
+    "-o, --outputFile [file]",
+    `Writes the testing results to a JSON file, defaults to "${testGenerators.defaultResultFile}"`
+  )
   .action(async (options) => {
-    testGenerators(options);
+    testGenerators.testGenerators(options);
   });
 
 program.parse();
