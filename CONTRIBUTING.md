@@ -77,6 +77,7 @@ npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
 
 ## Points to remember when contributing
 
+- The branch `gh-pages` is used to auto-generate the Github Pages webpage. DO NOT USE THIS BRANCH!!!
 - This project uses [semantic-release](https://semantic-release.gitbook.io/semantic-release/) which enforces [Angular Commit Message Conventions](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format). Ensure you are writing your commit messages correctly. Husky hooks have got your back for ensuring correct format but will not prevent the use of wrong types.
 - The NPM scripts below can help you fix failing workflow steps:
 
