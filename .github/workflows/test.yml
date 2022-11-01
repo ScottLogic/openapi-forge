@@ -58,7 +58,7 @@ jobs:
           git config --global user.email '<>'
           git checkout -b gh-pages
           git reset --hard master
-          node CICD/updateWebpage CICD_${{github.sha}}/test-results.json 
+          node CICD/updateWebpage test-results.json 
           npm run format:write
           git add docs/
           git commit -m "docs: auto-update docs/"
