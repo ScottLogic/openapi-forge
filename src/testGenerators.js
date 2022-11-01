@@ -172,14 +172,14 @@ async function testGenerators(options) {
     );
   }
 
-    // Remove failure scenarios and present the results of the testing
-    if (Object.keys(resultArray).length) {
-      const languages = Object.keys(resultArray);
-      for (let xx = 0; xx < languages.length; xx++) {
-        delete resultArray[languages[xx]].failures;
-      }
-      if (!log.isQuiet()) console.table(resultArray);
+  // Remove failure scenarios and present the results of the testing
+  if (Object.keys(resultArray).length) {
+    const languages = Object.keys(resultArray);
+    for (let xx = 0; xx < languages.length; xx++) {
+      delete resultArray[languages[xx]].failures;
     }
+    if (!log.isQuiet()) console.table(resultArray);
+  }
 
   process.exit(exitCode);
 }
