@@ -4,7 +4,7 @@ Feature: Components section
   # NOTE: the components/schemas section is tested in the model.feature file
 
   Scenario: a response defined in the components section
-    Given an API with the following specificafgtion
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",

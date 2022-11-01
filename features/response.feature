@@ -1,7 +1,7 @@
 Feature: API responses, including model object deserialization
 
   Scenario: the API returns an Object response
-    Given an API with the following specifsication
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
