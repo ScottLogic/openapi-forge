@@ -7,27 +7,27 @@ on:
 
 
 jobs:
-  on-success:
-  if: github.event_name == 'push'
-  release:
-    name: Release
-    runs-on: ubuntu-latest
+  if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'push'
+    release:
+      name: Release
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
-      
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: 'npm'
+      steps:
+        - name: Check out Git repository
+          uses: actions/checkout@v3
 
-      - name: Install Node.js dependencies
-        run: npm ci
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: 16.x
+            cache: 'npm'
 
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+        - name: Install Node.js dependencies
+          run: npm ci
+
+        - name: Release
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          run: npx semantic-release

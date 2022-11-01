@@ -7,58 +7,58 @@ on:
       - completed
 
 jobs:
-on-success:
-  test-generators:
-    name: Test
-    runs-on: windows-latest 
+  if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    test-generators:
+      name: Test
+      runs-on: windows-latest 
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
-      
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
+      steps:
+        - name: Check out Git repository
+          uses: actions/checkout@v3
 
-      - name: Install Node.js dependencies globally
-        run: |
-          npm install
-          npm install --global
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: 16.x
 
-      - name: Test generators
-        run: npm run test:generators
-        continue-on-error: true
+        - name: Install Node.js dependencies globally
+          run: |
+            npm install
+            npm install --global
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: test-results.json
+        - name: Test generators
+          run: npm run test:generators
+          continue-on-error: true
 
-      - name: Download previous test results
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: test.yml
-          branch: master
-          name: test-results
-          path: CICD_${{github.sha}}
-          workflow_conclusion: completed
-      
-      - name: Compare test results
-        run: node CICD/compareTestResults test-results.json CICD_${{github.sha}}/test-results.json
+        - name: Upload test results
+          uses: actions/upload-artifact@v3
+          with:
+            name: test-results
+            path: test-results.json
 
-      - name: Update webpage contents
-        if: github.event_name == 'push'
-        run: |
-          git config --global user.name 'GitHubActions'
-          git config --global user.email '<>'
-          git checkout -b gh-pages
-          git reset --hard master
-          node CICD/updateWebpage test-results.json 
-          npm run format:write
-          git add docs/
-          git commit -m "docs: auto-update docs/"
-          git push --force --set-upstream origin gh-pages
+        - name: Download previous test results
+          id: download-artifact
+          uses: dawidd6/action-download-artifact@v2
+          with:
+            workflow: test.yml
+            branch: master
+            name: test-results
+            path: CICD_${{github.sha}}
+            workflow_conclusion: completed
+
+        - name: Compare test results
+          run: node CICD/compareTestResults test-results.json CICD_${{github.sha}}/test-results.json
+
+        - name: Update webpage contents
+          if: github.event_name == 'push'
+          run: |
+            git config --global user.name 'GitHubActions'
+            git config --global user.email '<>'
+            git checkout -b gh-pages
+            git reset --hard master
+            node CICD/updateWebpage test-results.json 
+            npm run format:write
+            git add docs/
+            git commit -m "docs: auto-update docs/"
+            git push --force --set-upstream origin gh-pages
 
