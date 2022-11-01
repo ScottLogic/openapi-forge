@@ -162,10 +162,6 @@ async function testGenerators(options) {
       generatorResolver.cleanup();
     }
   }
-  //Present the results of the testing
-  if (Object.keys(resultArray).length) {
-    if (!log.isQuiet()) console.table(resultArray);
-  }
 
   if (options.outputFile) {
     if (typeof options.outputFile === "boolean")
@@ -174,6 +170,15 @@ async function testGenerators(options) {
       path.join(curDir, options.outputFile),
       JSON.stringify(resultArray)
     );
+  }
+
+  // Remove failure scenarios and present the results of the testing
+  if (Object.keys(resultArray).length) {
+    const languages = Object.keys(resultArray);
+    for (let xx = 0; xx < languages.length; xx++) {
+      delete resultArray[languages[xx]].failures;
+    }
+    if (!log.isQuiet()) console.table(resultArray);
   }
 
   process.exit(exitCode);
