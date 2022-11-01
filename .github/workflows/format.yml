@@ -7,8 +7,8 @@ on:
       - completed
 
 jobs:
-  if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    run-eslint:
+  run-eslint:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
       name: Format
       runs-on: ubuntu-latest
 

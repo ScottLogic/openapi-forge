@@ -7,8 +7,8 @@ on:
       - completed
 
 jobs:
-  if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    test-generators:
+  test-generators:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
       name: Test
       runs-on: windows-latest 
 
