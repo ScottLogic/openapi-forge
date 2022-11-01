@@ -115,10 +115,7 @@ async function testGenerators(options) {
         "testResultParser"
       ));
 
-      const result = testResultParser.parse(
-        stdout[stdout.length - 2],
-        stdout[stdout.length - 4]
-      );
+      const result = testResultParser.parse(stdout);
 
       // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
       exitCode = exitCode | checkTestResultForErrors(result);
