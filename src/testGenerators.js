@@ -172,11 +172,12 @@ async function testGenerators(options) {
     );
   }
 
-    //Present the results of the testing
+    // Remove failure scenarios and present the results of the testing
     if (Object.keys(resultArray).length) {
-      resultArray.forEach(result => {
-        delete result.failures;
-      });
+      const languages = Object.keys(resultArray);
+      for (let xx = 0; xx < languages.length; xx++) {
+        delete resultArray[languages[xx]].failures;
+      }
       if (!log.isQuiet()) console.table(resultArray);
     }
 
