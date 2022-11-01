@@ -4,11 +4,15 @@ on:
   push:
     branches: [master]
 
+
+
 jobs:
+  on-success:
+  if: github.event_name == 'push'
   release:
     name: Release
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
