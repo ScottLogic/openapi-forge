@@ -23,7 +23,7 @@ function getNewFailures(results) {
         newFailures += `- ${result.failures[yy]}\\\n`;
       }
       newFailures = newFailures.slice(0, -2);
-    } else {
+    } else  {
       newFailures += "- No failed scenarios";
     }
   }
