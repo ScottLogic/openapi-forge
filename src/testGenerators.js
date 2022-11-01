@@ -165,10 +165,6 @@ async function testGenerators(options) {
       generatorResolver.cleanup();
     }
   }
-  //Present the results of the testing
-  if (Object.keys(resultArray).length) {
-    if (!log.isQuiet()) console.table(resultArray);
-  }
 
   if (options.outputFile) {
     if (typeof options.outputFile === "boolean")
@@ -178,6 +174,14 @@ async function testGenerators(options) {
       JSON.stringify(resultArray)
     );
   }
+
+    //Present the results of the testing
+    if (Object.keys(resultArray).length) {
+      resultArray.forEach(result => {
+        delete result.failures;
+      });
+      if (!log.isQuiet()) console.table(resultArray);
+    }
 
   process.exit(exitCode);
 }
