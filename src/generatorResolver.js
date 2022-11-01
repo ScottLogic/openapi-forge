@@ -27,7 +27,6 @@ function cloneGenerator(generatorPathOrUrl, installDependencies) {
     const currentPath = process.cwd();
     shell.cd(temporaryFolder, log.shellOptions);
     log.verbose("Installing generator dependencies");
-    shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // This line removes husky script that causes testing TypeScript failure
     shell.exec(`npm install`, log.shellOptions);
     shell.cd(currentPath, log.shellOptions);
   }

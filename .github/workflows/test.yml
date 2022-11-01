@@ -22,8 +22,7 @@ jobs:
 
       - name: Install Node.js dependencies globally
         run: |
-          # This line removes husky script that causes testing TypeScript failure  
-          npm pkg delete scripts.prepare
+          npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
           npm install
           npm install --global
 
