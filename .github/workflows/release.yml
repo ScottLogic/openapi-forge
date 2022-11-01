@@ -17,9 +17,6 @@ jobs:
         with:
           node-version: 16.x
           cache: 'npm'
-  
-      - name: Set npm shell
-        run: npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
 
       - name: Install Node.js dependencies
         run: npm ci

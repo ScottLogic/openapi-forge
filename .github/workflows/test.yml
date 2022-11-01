@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: 16.x
 
+        # Must change shell as you are using the windows-latest image 
       - name: Set npm shell
         run: npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
 
