@@ -1,20 +1,17 @@
-name: Format
+name: Release
 
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
-  run-eslint:
-    name: Format
+  release:
+    name: Release
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
-    
+  
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -23,6 +20,9 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm ci
-
-      - name: Code Format Check
-        run: npm run format:check
+  
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
