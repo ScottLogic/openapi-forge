@@ -6,10 +6,10 @@
   "scripts": {
     "prepare": "husky install",
     "test:generators": "openapi-forge test-generators -l v -o",
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write .",
-    "lint:check": "eslint .",
-    "lint:write": "eslint --fix ."
+    "format:check:all": "prettier --check .",
+    "format:write:all": "prettier --write .",
+    "lint:check:all": "eslint .",
+    "lint:write:all": "eslint --fix ."
   },
   "bin": {
     "openapi-forge": "./src/index.js"

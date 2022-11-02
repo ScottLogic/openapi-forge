@@ -60,7 +60,7 @@ jobs:
           git checkout -b gh-pages
           git reset --hard master
           node CICD/updateWebpage test-results.json 
-          npm run format:write
+          npm run format:write:all
           git add docs/
           git commit -m "docs: auto-update docs/"
           git push --force --set-upstream origin gh-pages
