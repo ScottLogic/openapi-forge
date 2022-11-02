@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo 'Pre-commit checks'
-npm run format:check
-npm run lint:check
+npm run format:check:all
+npm run lint:check:all

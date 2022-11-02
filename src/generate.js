@@ -203,7 +203,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.verbose("\nIteration complete\n");
 
     shell.cd(generatorPath);
-    shell.exec(`npm run format:output -- ${outputFolder}`, log.shellOptions);
+    shell.exec(`npm run format:write -- ${outputFolder}`, log.shellOptions);
   } catch (e) {
     exception = e;
   } finally {
