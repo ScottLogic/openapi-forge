@@ -9,19 +9,20 @@ on:
 jobs:
   test-generators:
     name: Test
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        node-version: [16.x]    
+    runs-on: windows-latest 
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
-      
-      - name: Use Node.js ${{ matrix.node-version }}
+
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
+
+        # Must change shell because this workflow uses the windows-latest image 
+      - name: Set npm shell
+        run: npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
 
       - name: Install Node.js dependencies globally
         run: |
@@ -47,7 +48,7 @@ jobs:
           name: test-results
           path: CICD_${{github.sha}}
           workflow_conclusion: completed
-      
+
       - name: Compare test results
         run: node CICD/compareTestResults test-results.json CICD_${{github.sha}}/test-results.json
 
