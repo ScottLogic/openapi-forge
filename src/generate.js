@@ -1,5 +1,5 @@
 const fs = require("fs");
-const URL = require("url").URL;
+
 const path = require("path");
 
 const Handlebars = require("handlebars");
@@ -19,20 +19,11 @@ Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
 });
 
-function isUrl(maybeUrl) {
-  try {
-    new URL(maybeUrl);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
-
 // loads the schema, either from a local file or from a remote URL
 async function loadSchema(schemaPathOrUrl) {
   const isYml =
     schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
-  const schema = isUrl(schemaPathOrUrl)
+  const schema = generatorResolver.isUrl(schemaPathOrUrl)
     ? await fetch(schemaPathOrUrl).then((d) => {
         if (d.status === 200) {
           return d.text();
@@ -80,20 +71,8 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   let numberOfDiscoveredEndpoints = 0;
   try {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
-    let generatorPath;
 
-    generatorPath = path.resolve(generatorPathOrUrl);
-    if (!fs.existsSync(generatorPath)) {
-      if (isUrl(generatorPathOrUrl)) {
-        generatorPath = generatorResolver.cloneGenerator(
-          generatorPathOrUrl,
-          true
-        );
-      } else {
-        generatorPath =
-          generatorResolver.installGeneratorFromNPM(generatorPathOrUrl);
-      }
-    }
+    let generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
 
     log.standard("Validating generator");
     validateGenerator(generatorPath);
