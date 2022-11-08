@@ -172,6 +172,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.standard(
       `Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`
     );
+
+    let generatorPackage = require(path.resolve(
+      generatorPath,
+      "./package.json"
+    ));
+
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;
@@ -187,13 +193,35 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         // run the handlebars template
         const template = Handlebars.compile(source);
         log.verbose("Populating template");
-        let result = template(schema);
+        if (file === generatorPackage.apiTemplate) {
+          // Iterating tags to generate grouped paths
+          schema._tags.forEach((tag) => {
+            schema._tag = tag;
+            let result = template(schema);
+            log.verbose("Writing to output location");
+            console.log(file.slice(0, file.indexOf(".")));
 
-        log.verbose("Writing to output location");
-        fs.writeFileSync(
-          `${outputFolder}/${file.replace(".handlebars", "")}`,
-          result
-        );
+            let fileName;
+            if (tag.name !== "") {
+              fileName = `${outputFolder}/${file.slice(
+                0,
+                file.indexOf(".")
+              )}${helpers.capitalizeFirst(tag.name)}${file
+                .slice(file.indexOf("."))
+                .replace(".handlebars", "")}`;
+            } else {
+              fileName = `${outputFolder}/${file.replace(".handlebars", "")}`;
+            }
+            fs.writeFileSync(fileName, result);
+          });
+        } else {
+          let result = template(schema);
+          log.verbose("Writing to output location");
+          fs.writeFileSync(
+            `${outputFolder}/${file.replace(".handlebars", "")}`,
+            result
+          );
+        }
       } else {
         log.verbose("Copying to output location");
         // for other files, simply copy them to the output folder

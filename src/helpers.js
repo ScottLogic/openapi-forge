@@ -9,6 +9,10 @@ function ifEquals(arg1, arg2, options) {
   return arg1 == arg2 ? options.fn(this) : options.inverse(this);
 }
 
+function ifNotEquals(arg1, arg2, options) {
+  return arg1 == arg2 ? options.inverse(this) : options.fn(this);
+}
+
 function ifContains(collection, value, options) {
   return collection && collection.includes(value)
     ? options.fn(this)
@@ -36,6 +40,7 @@ function capitalizeFirst(value) {
 module.exports = {
   setVar,
   ifEquals,
+  ifNotEquals,
   ifContains,
   ifNotContains,
   json,
