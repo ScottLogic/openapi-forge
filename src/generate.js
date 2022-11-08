@@ -199,7 +199,6 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
             schema._tag = tag;
             let result = template(schema);
             log.verbose("Writing to output location");
-            console.log(file.slice(0, file.indexOf(".")));
 
             let fileName;
             if (tag.name !== "") {

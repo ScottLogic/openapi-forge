@@ -1,3 +1,5 @@
+const helpers = require("./helpers");
+
 // moved required properties from the array at the object level to
 // each individual property
 const requiredSchemaObjectProperties = (schema) => {
@@ -218,8 +220,8 @@ const getAllTags = (schema) => {
   let newTags = [];
   iterateVerbs(schema, (verb) => {
     verb._tag = {};
-    if (verb.tags && verb.tags.length !== 0) {
-      verb._tag.name = verb.tags[0];
+    if (verb.tags?.length > 0 && verb.tags[0] !== "") {
+      verb._tag.name = helpers.capitalizeFirst(verb.tags[0]);
     } else {
       verb._tag.name = "";
     }
