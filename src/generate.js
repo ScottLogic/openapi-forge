@@ -193,7 +193,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         // run the handlebars template
         const template = Handlebars.compile(source);
         log.verbose("Populating template");
-        if (file === generatorPackage.apiTemplate) {
+        if (generatorPackage.apiTemplates.includes(file)) {
           // Iterating tags to generate grouped paths
           schema._tags.forEach((tag) => {
             schema._tag = tag;
