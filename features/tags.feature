@@ -1,7 +1,7 @@
 Feature: Grouping of paths by tags
 
   Scenario: Path with an empty tag array is present in a tagless API file
-    Given an API with the following specification and tag ""
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -26,10 +26,11 @@ Feature: Grouping of paths by tags
       }
     }
     """
-    Then the method "getResponse" should be present
+    Then the api file with tag "" exists
+    And the method "getResponse" should be present in the api file with tag ""
 
     Scenario: Path with a tag = "" is present in a tagless API file
-    Given an API with the following specification and tag ""
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -54,10 +55,11 @@ Feature: Grouping of paths by tags
       }
     }
     """
-    Then the method "getResponse" should be present
+    Then the api file with tag "" exists
+    And the method "getResponse" should be present in the api file with tag ""
 
     Scenario: Path with no tag array is present in a tagless API file
-    Given an API with the following specification and tag ""
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -81,10 +83,11 @@ Feature: Grouping of paths by tags
       }
     }
     """
-    Then the method "getResponse" should be present
+    Then the api file with tag "" exists
+    And the method "getResponse" should be present in the api file with tag ""
 
     Scenario: Path with no tag is not present in a tagged API file
-    Given an API with the following specification and tag "tag"
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -152,62 +155,23 @@ Feature: Grouping of paths by tags
               }
             }
           }
-        },
-        "/test/doNotGet4": {
-          "get": {
-            "tags": ["differentTag"],
-            "operationId": "doNotGetResponse4",
-            "responses": {
-              "200": {
-                "description": "description",
-                "content": {
-                  "application/json": {
-                    "schema": { "type": "string" }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
     """
-    Then the method "doNotGetResponse1" should not be present
-    And the method "doNotGetResponse2" should not be present
-    And the method "doNotGetResponse3" should not be present
-    And the method "doNotGetResponse4" should not be present
-    
-    Scenario: Path with tag "tag" is present in a "tag" API file
-    Given an API with the following specification and tag "tag"
-    """
-    {
-      "openapi":"3.0.2",
-      "info" : {"title": "test", "version": "0.0.0"},
-      "paths": {
-        "/test/get": {
-          "get": {
-            "tags": ["tag"],
-            "operationId": "getResponse",
-            "responses": {
-              "200": {
-                "description": "description",
-                "content": {
-                  "application/json": {
-                    "schema": { "type": "string" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    """
-    Then the method "getResponse" should be present
-
-        
+    Then the api file with tag "" exists
+    And the api file with tag "tag" exists
+    And the method "getResponse" should be present in the api file with tag "tag"
+    And the method "getResponse" should not be present in the api file with tag ""
+    And the method "doNotGetResponse1" should be present in the api file with tag ""
+    And the method "doNotGetResponse1" should not be present in the api file with tag "tag"
+    And the method "doNotGetResponse2" should be present in the api file with tag ""
+    And the method "doNotGetResponse2" should not be present in the api file with tag "tag"
+    And the method "doNotGetResponse3" should be present in the api file with tag ""
+    And the method "doNotGetResponse3" should not be present in the api file with tag "tag"
+   
     Scenario: Path with multiple tags is present in first tag's API file
-    Given an API with the following specification and tag "tag"
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -232,10 +196,13 @@ Feature: Grouping of paths by tags
       }
     }
     """
-    Then the method "getResponse" should be present
+    Then the api file with tag "tag" exists
+    And the api file with tag "user" does not exist
+    And the api file with tag "" does not exist
+    Then the method "getResponse" should be present in the api file with tag "tag"
 
     Scenario: Path with multiple tags is not present in second tag's API file
-    Given an API with the following specification and tag "user"
+    Given an API with the following specification
     """
     {
       "openapi":"3.0.2",
@@ -276,5 +243,10 @@ Feature: Grouping of paths by tags
       }
     }
     """
-    Then the method "getResponse" should be present
-    And the method "doNotGetResponse" should not be present
+    Then the api file with tag "tag" exists
+    And the api file with tag "user" exists
+    And the api file with tag "" does not exist
+    And the method "getResponse" should be present in the api file with tag "user"
+    And the method "doNotGetResponse" should not be present in the api file with tag "user"
+    And the method "doNotGetResponse" should be present in the api file with tag "tag"
+    And the method "getResponse" should be present in the api file with tag "user"
