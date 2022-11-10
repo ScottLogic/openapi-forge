@@ -51,6 +51,7 @@ jobs:
 
       - name: Compare test results
         run: node CICD/compareTestResults test-results.json CICD_${{github.sha}}/test-results.json
+        continue-on-error: true
 
       - name: Update webpage contents
         if: github.event_name == 'push'
