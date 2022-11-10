@@ -29,11 +29,11 @@ Now you can forge your client API ...
 ```
 $ openapi-forge forge
  \ https://petstore3.swagger.io/api/v3/openapi.json
- \ https://github.com/ScottLogic/openapi-forge-typescript.git
+ \ openapi-forge-typescript
  \ -o api
 ```
 
-The above command forges a client API for the 'petstore' API, downloaded via the given URL. It uses the `openapi-forge-typescript` generator, which creates the TypeScript API, with the results saves in a folder called `api`.
+The above command forges a client API for the 'petstore' API, downloaded via the given URL creating a TypeScript API using the `openapi-forge-typescript` generator, with the results saves in a folder called `api`.
 
 If you take a look within the `api` folder you'll find that a number of files have been generated. The exact structure depends on the generator you use, with the detail available in the respective README file.
 
@@ -107,7 +107,7 @@ Options:
 
 **Generator Hierarchy**
 
-If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder and finally if no local generator is found it looks for an npm package and installs it if it does not exist.
+If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder at the same level as the forge with the same name of the generator and finally if no local generator is found it will look for an npm package and install it if it does not exist.
 
 ## Developer guide
 

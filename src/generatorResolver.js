@@ -2,13 +2,35 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const shell = require("shelljs");
+const URL = require("url").URL;
 
 const log = require("./log");
 
 let npmPackage;
 let temporaryFolder;
 
-function cloneGenerator(generatorPathOrUrl, installDependencies) {
+function isUrl(maybeUrl) {
+  try {
+    new URL(maybeUrl);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+function getGenerator(generatorPathOrUrl) {
+  let generatorPath = path.resolve(generatorPathOrUrl);
+  if (!fs.existsSync(generatorPath)) {
+    if (isUrl(generatorPathOrUrl)) {
+      generatorPath = cloneGenerator(generatorPathOrUrl);
+    } else {
+      generatorPath = installGeneratorFromNPM(generatorPathOrUrl);
+    }
+  }
+  return generatorPath;
+}
+
+function cloneGenerator(generatorPathOrUrl) {
   // if the generator is specified as a git URL, clone it into a temporary directory
   if (!generatorPathOrUrl.endsWith(".git")) {
     throw new Error(
@@ -23,13 +45,12 @@ function cloneGenerator(generatorPathOrUrl, installDependencies) {
     `git clone ${generatorPathOrUrl} ${temporaryFolder}`,
     log.shellOptions
   );
-  if (installDependencies) {
-    const currentPath = process.cwd();
-    shell.cd(temporaryFolder, log.shellOptions);
-    log.verbose("Installing generator dependencies");
-    shell.exec(`npm install`, log.shellOptions);
-    shell.cd(currentPath, log.shellOptions);
-  }
+  const currentPath = process.cwd();
+  shell.cd(temporaryFolder, log.shellOptions);
+  log.verbose("Installing generator dependencies");
+  shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // Do not run husky preparation script as it will cause unnecessary errors
+  shell.exec(`npm install`, log.shellOptions);
+  shell.cd(currentPath, log.shellOptions);
   return temporaryFolder;
 }
 
@@ -57,8 +78,16 @@ function installGeneratorFromNPM(generatorPathOrUrl) {
       );
     }
   }
+  const generatorPath = path.resolve(
+    __dirname,
+    `..\\node_modules\\${generatorPathOrUrl}`
+  );
+  shell.cd(generatorPath, log.shellOptions);
+  log.verbose("Installing generator dependencies");
+  shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // Do not run husky preparation script as it will cause unnecessary errors
+  shell.exec(`npm install`, log.shellOptions);
   shell.cd(currentPath, log.shellOptions);
-  return path.resolve(__dirname, `..\\node_modules\\${generatorPathOrUrl}`);
+  return generatorPath;
 }
 
 function cleanup() {
@@ -78,7 +107,7 @@ function cleanup() {
 }
 
 module.exports = {
-  cloneGenerator,
-  installGeneratorFromNPM,
+  isUrl,
+  getGenerator,
   cleanup,
 };

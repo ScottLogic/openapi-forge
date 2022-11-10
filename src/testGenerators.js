@@ -45,20 +45,8 @@ function getGenerator(languageData, generatorOption) {
   if (!fs.existsSync(generatorPath)) {
     log.verbose(`Cannot find ${languageData.languageString} generator`);
 
-    if (
-      process.argv.includes(`-${languageData.languageLetter}`) ||
-      process.argv.includes(`--${languageData.languageString.toLowerCase()}`)
-    ) {
-      throw new Error(
-        `No local ${languageData.languageString} generator found at ${generatorPath}.`
-      );
-    }
-
     // Local generator does not exist, clone from GitHub to temporary location
-    generatorPath = generatorResolver.cloneGenerator(
-      languageData.generatorURL,
-      true
-    );
+    generatorPath = generatorResolver.getGenerator(languageData.generatorURL);
   }
   return generatorPath;
 }
