@@ -47,9 +47,7 @@ function cloneGenerator(generatorPathOrUrl) {
   );
   const currentPath = process.cwd();
   shell.cd(temporaryFolder, log.shellOptions);
-  log.verbose("Installing generator dependencies");
-  shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // Do not run husky preparation script as it will cause unnecessary errors
-  shell.exec(`npm install`, log.shellOptions);
+  installGeneratorDependencies();
   shell.cd(currentPath, log.shellOptions);
   return temporaryFolder;
 }
@@ -83,11 +81,16 @@ function installGeneratorFromNPM(generatorPathOrUrl) {
     `..\\node_modules\\${generatorPathOrUrl}`
   );
   shell.cd(generatorPath, log.shellOptions);
+  installGeneratorDependencies();
+  shell.cd(currentPath, log.shellOptions);
+  return generatorPath;
+}
+
+function installGeneratorDependencies() {
   log.verbose("Installing generator dependencies");
   shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // Do not run husky preparation script as it will cause unnecessary errors
   shell.exec(`npm install`, log.shellOptions);
-  shell.cd(currentPath, log.shellOptions);
-  return generatorPath;
+  shell.exec(`npm install openapi-forge@latest`, log.shellOptions); // Ensure the latest version of openapi-forge is used, a bug is in npm where it is not using the latest version
 }
 
 function cleanup() {
