@@ -1,3 +1,5 @@
+const helpers = require("./helpers");
+
 // moved required properties from the array at the object level to
 // each individual property
 const requiredSchemaObjectProperties = (schema) => {
@@ -214,6 +216,25 @@ const removeNewLineCharForDescription = (schema) => {
   };
 };
 
+const getAllTags = (schema) => {
+  let newTags = [];
+  iterateVerbs(schema, (verb) => {
+    verb._tag = {};
+    if (verb.tags?.length > 0 && verb.tags[0] !== "") {
+      verb._tag.name = helpers.capitalizeFirst(verb.tags[0]);
+    } else {
+      verb._tag.name = "";
+    }
+    if (!newTags.find((newTag) => newTag.name === verb._tag.name)) {
+      verb._tag.description = schema.tags?.find(
+        (schemaTag) => schemaTag.name === verb._tag.name
+      )?.description;
+      newTags.push(verb._tag);
+    }
+  });
+  schema._tags = newTags;
+};
+
 module.exports = {
   requiredSchemaObjectProperties,
   resolveReferences,
@@ -224,4 +245,5 @@ module.exports = {
   resolveResponse,
   createInlineObjects,
   removeNewLineCharForDescription,
+  getAllTags,
 };

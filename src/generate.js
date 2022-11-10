@@ -63,6 +63,22 @@ function validateGenerator(generatorPath) {
   }
 }
 
+function getFileName(fileName, tagName = "") {
+  let newFileName = fileName.slice(0, fileName.indexOf("."));
+  if (tagName !== "") newFileName += helpers.capitalizeFirst(tagName);
+  newFileName += fileName.slice(fileName.indexOf("."));
+  return newFileName.replace(".handlebars", "");
+}
+
+function templateAndWriteToFile(schema, template, file, outputFolder) {
+  let result = template(schema);
+  log.verbose("Writing to output location");
+  fs.writeFileSync(
+    `${outputFolder}/${getFileName(file, schema._tag?.name)}`,
+    result
+  );
+}
+
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.setLogLevel(options.logLevel);
   log.logTitle();
@@ -151,6 +167,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.standard(
       `Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`
     );
+
+    let generatorPackage = require(path.resolve(
+      generatorPath,
+      "./package.json"
+    ));
+
     templates.forEach((file) => {
       if (options.exclude && minimatch(file, options.exclude)) {
         return;
@@ -166,13 +188,16 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
         // run the handlebars template
         const template = Handlebars.compile(source);
         log.verbose("Populating template");
-        let result = template(schema);
-
-        log.verbose("Writing to output location");
-        fs.writeFileSync(
-          `${outputFolder}/${file.replace(".handlebars", "")}`,
-          result
-        );
+        if (generatorPackage.apiTemplates.includes(file)) {
+          // Iterating tags to generate grouped paths
+          schema._tags.forEach((tag) => {
+            schema._tag = tag;
+            templateAndWriteToFile(schema, template, file, outputFolder);
+          });
+        } else {
+          schema._tag = null;
+          templateAndWriteToFile(schema, template, file, outputFolder);
+        }
       } else {
         log.verbose("Copying to output location");
         // for other files, simply copy them to the output folder
