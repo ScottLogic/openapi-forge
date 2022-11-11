@@ -59,9 +59,9 @@ Options:
   -g, --generators <gens>            Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are:
                                      c (CSharp), t (TypeScript) (default: "ct")
   -c, --csharp <csharpPath>          Sets the location of the CSharp generator. Default is a directory called 'openapi-forge-csharp' in the same location as
-                                     openapi-forge (default: "../../openapi-forge-csharp")
+                                     openapi-forge (default: "./openapi-forge-csharp")
   -t, --typescript <typescriptPath>  Sets the location of the TypeScript generator. Default is a directory called 'openapi-forge-typescript' in the same
-                                     location as openapi-forge (default: "../../openapi-forge-typescript")
+                                     location as openapi-forge (default: "./openapi-forge-typescript")
   -l, --logLevel <level>             Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose
                                      ('verbose', 'v' or '2') (default: "1")
   -h, --help                         display help for command
