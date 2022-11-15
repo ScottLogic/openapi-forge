@@ -59,18 +59,32 @@ Options:
   -g, --generators <gens>            Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are:
                                      c (CSharp), t (TypeScript) (default: "ct")
   -c, --csharp <csharpPath>          Sets the location of the CSharp generator. Default is a directory called 'openapi-forge-csharp' in the same location as
-                                     openapi-forge (default: "../../openapi-forge-csharp")
+                                     openapi-forge (default: "./openapi-forge-csharp")
   -t, --typescript <typescriptPath>  Sets the location of the TypeScript generator. Default is a directory called 'openapi-forge-typescript' in the same
-                                     location as openapi-forge (default: "../../openapi-forge-typescript")
+                                     location as openapi-forge (default: "./openapi-forge-typescript")
   -l, --logLevel <level>             Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose
                                      ('verbose', 'v' or '2') (default: "1")
   -h, --help                         display help for command
 ```
 
-If the testing doesn't work you may be using the wrong script-shell configuration in npm. To keep scripts working in both Unix and Windows machines the shell expected in the project is git-bash. To change your shell type you can run the command below, changing the file location if you have your git-bash executable in a different location:
+If the testing doesn't work you may be using the wrong script-shell configuration in npm. To keep scripts working in both Unix and Windows machines the shell expected in the project is git-bash. To change your shell type you can run the command below, changing the file location if you have your git-bash executable is in a different location:
 
 ```
 npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
+```
+
+<br>
+
+# Example directory structure for testing to work using default locations
+
+You can have the locations of the forge and generators in custom locations with custom names but you will need to input the relative file paths into the testing commands of the forge nad generators.
+Below is the file structure needed to use the testing commands with the default locations:
+
+```
+|-openapi-forge
+|-openapi-forge-typescript
+|-openapi-forge-csharp
+|-openapi-forge-...
 ```
 
 <br>
