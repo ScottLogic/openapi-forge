@@ -90,7 +90,6 @@ function installGeneratorDependencies() {
   log.verbose("Installing generator dependencies");
   shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // Do not run husky preparation script as it will cause unnecessary errors
   shell.exec(`npm install`, log.shellOptions);
-  shell.exec(`npm update openapi-forge`, log.shellOptions); // Ensure the latest version of openapi-forge is used, if openapi-forge in package-lock.json then it will use that version instead of latest
 }
 
 function cleanup() {
