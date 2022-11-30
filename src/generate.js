@@ -206,8 +206,10 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     });
     log.verbose("\nIteration complete\n");
 
+    const currentPath = process.cwd();
     shell.cd(generatorPath);
     shell.exec(`npm run format:write -- ${outputFolder}`, log.shellOptions);
+    shell.cd(currentPath, log.shellOptions);
   } catch (e) {
     exception = e;
   } finally {
