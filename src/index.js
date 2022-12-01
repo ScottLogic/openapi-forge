@@ -2,7 +2,7 @@
 
 const { Command } = require("commander");
 const generate = require("./generate");
-var packageJson = require("../package.json");
+const packageJson = require("../package.json");
 const testGenerators = require("./testGenerators");
 const program = new Command();
 
