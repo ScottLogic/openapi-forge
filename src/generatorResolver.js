@@ -78,7 +78,7 @@ function installGeneratorFromNPM(generatorPathOrUrl) {
   }
   const generatorPath = path.resolve(
     __dirname,
-    `..\\node_modules\\${generatorPathOrUrl}`
+    path.join("..", "node_modules", generatorPathOrUrl)
   );
   shell.cd(generatorPath, log.shellOptions);
   installGeneratorDependencies();
