@@ -1,178 +1,82 @@
-//TODO: Once generators are published to npm use package instead of github repo. command 'npm install {packageName} -g --prefix {packageInstallLocation}' and then remember to uninstall at the end of testing generator.
-
-const fs = require("fs");
 const path = require("path");
 const shell = require("shelljs");
 
 const log = require("./log");
-const generatorResolver = require("./generatorResolver");
 
-const defaultResultFile = "test-results.json";
-
-const typescriptData = {
-  languageString: "TypeScript",
-  languageLetter: "t",
-  generatorURL: "https://github.com/ScottLogic/openapi-forge-typescript.git",
-};
-
-const csharpData = {
-  languageString: "CSharp",
-  languageLetter: "c",
-  generatorURL: "https://github.com/ScottLogic/openapi-forge-csharp.git",
-};
-
-function setupAndStartTests(generatorPath, arg1, arg2) {
-  shell.cd(generatorPath, log.shellOptions);
-
-  log.standard("Starting tests");
-  const test = shell.exec(`npm run test "${arg1}" "${arg2}"`, log.shellOptions);
-
-  shell.cd(__dirname, log.shellOptions);
-  return test.stdout.split("\n");
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
-function getGenerator(languageData, generatorOption) {
-  log.standard(
-    `\n${log.bold}${log.underline}${languageData.languageString}${log.resetStyling}`
-  );
-  let generatorPath = path.resolve(path.join("../../", generatorOption));
+function parseMessages(messages) {
+  // each test case starts with a testCaseStarted message, followed by a number of testStepFinished messages
+  const stepsForTestCase = [];
+  messages.forEach((message) => {
+    if (message.testCaseStarted) {
+      stepsForTestCase.push([]);
+    }
+    if (message.testStepFinished) {
+      stepsForTestCase[stepsForTestCase.length - 1].push(
+        message.testStepFinished
+      );
+    }
+  });
 
-  log.standard(
-    `Loading ${languageData.languageString} generator from '${generatorPath}'`
-  );
+  // determine the duration
+  const start = messages.filter((m) => m.testRunStarted)[0].testRunStarted
+    .timestamp.seconds;
+  const end = messages.filter((m) => m.testRunFinished)[0].testRunFinished
+    .timestamp.seconds;
 
-  // Check for local generator.
-  if (!fs.existsSync(generatorPath)) {
-    log.verbose(`Cannot find ${languageData.languageString} generator`);
-
-    // Local generator does not exist, clone from GitHub to temporary location
-    generatorPath = generatorResolver.getGenerator(languageData.generatorURL);
-  }
-  return generatorPath;
+  return {
+    scenarios: stepsForTestCase.length,
+    failed: stepsForTestCase.filter((steps) =>
+      steps.some((s) => s.testStepResult.status === "FAILED")
+    ).length,
+    passed: stepsForTestCase.filter((steps) =>
+      steps.every((s) => s.testStepResult.status === "PASSED")
+    ).length,
+    time: end - start,
+  };
 }
 
-function checkTestResultForErrors(result) {
-  if (result.failed !== 0) {
-    return 1;
-  }
-  if (result.undef !== 0) {
-    return 1;
-  }
-  if (result.skipped !== 0) {
-    return 1;
-  }
-  return 0;
-}
-
-async function testGenerators(options) {
-  let resultArray = {};
-  let exitCode = 0;
-
-  const curDir = process.cwd();
+function testGenerators(options) {
+  const aggregatedResults = {};
 
   log.setLogLevel(options.logLevel);
 
-  const typescript = options.generators.includes(typescriptData.languageLetter);
-  const csharp = options.generators.includes(csharpData.languageLetter);
-  if (!typescript && !csharp) {
-    throw new Error(
-      `No language to test. Please provide a language that you would like to test.`
-    );
-  }
-
-  shell.cd(__dirname, log.shellOptions);
-  if (typescript) {
-    // Test TypeScript generator
+  options.generators.forEach((generator) => {
     try {
-      const generatorPath = getGenerator(typescriptData, options.typescript);
-
-      const featurePath = path
-        .relative(generatorPath, path.join(__dirname, "../features/*.feature"))
-        .replaceAll("\\", "/");
-      const basePath = path
-        .relative(
-          path.join(generatorPath, "features/support"),
-          path.join(__dirname, "../src/generate")
-        )
-        .replaceAll("\\", "/");
-
-      const stdout = setupAndStartTests(generatorPath, featurePath, basePath);
-
-      const testResultParser = require(path.join(
-        generatorPath,
-        "testResultParser"
-      ));
-
-      const result = testResultParser.parse(stdout);
-
-      // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
-      exitCode = exitCode | checkTestResultForErrors(result);
-
-      resultArray.TypeScript = result;
-
-      log.standard(`${typescriptData.languageString} testing complete`);
-    } catch (exception) {
-      log.logFailedTesting(typescriptData.languageString, exception);
-      exitCode = exitCode | 1;
-    } finally {
-      generatorResolver.cleanup();
-    }
-  }
-  if (csharp) {
-    // Test CSharp generator
-    try {
-      const generatorPath = getGenerator(csharpData, options.csharp);
-
-      const featurePath = path.relative(
-        path.join(generatorPath, "tests/FeaturesTests"),
-        path.join(__dirname, "../features/*.feature")
+      const generatorPath = path.resolve(
+        path.join(__dirname, "..", "..", generator)
       );
 
-      const stdout = setupAndStartTests(generatorPath, featurePath, "");
+      log.standard(`Starting tests for generator ${generator}`);
+      shell.cd(generatorPath, log.shellOptions);
+      const result = shell
+        .exec(`npm run test:generators`, log.shellOptions)
+        .stdout.split("\n")
+        .filter(isJson)
+        .map(JSON.parse);
+      shell.cd(__dirname, log.shellOptions);
 
-      const testResultParser = require(path.join(
-        generatorPath,
-        "testResultParser"
-      ));
-
-      const result = testResultParser.parse(stdout);
-
-      // check if failed/skipped/undefined steps in tests. If so OR them onto the exit code to stop overwriting previous errors
-      exitCode = exitCode | checkTestResultForErrors(result);
-
-      resultArray.CSharp = result;
-
-      log.standard(`${csharpData.languageString} testing complete`);
-    } catch (exception) {
-      log.logFailedTesting(csharpData.languageString, exception);
-      exitCode = exitCode | 1;
-    } finally {
-      generatorResolver.cleanup();
+      aggregatedResults[generator] = parseMessages(result);
+    } catch (e) {
+      log.error(`Error testing generator ${generator}: ${e}`);
     }
-  }
+  });
 
-  if (options.outputFile) {
-    if (typeof options.outputFile === "boolean")
-      options.outputFile = defaultResultFile;
-    fs.writeFileSync(
-      path.join(curDir, options.outputFile),
-      JSON.stringify(resultArray)
-    );
+  if (options.format === "table") {
+    console.table(aggregatedResults);
+  } else {
+    console.log(JSON.stringify(aggregatedResults, null, 2));
   }
-
-  // Remove failure scenarios and present the results of the testing
-  if (Object.keys(resultArray).length) {
-    const languages = Object.keys(resultArray);
-    for (let xx = 0; xx < languages.length; xx++) {
-      delete resultArray[languages[xx]].failures;
-    }
-    if (!log.isQuiet()) console.table(resultArray);
-  }
-
-  process.exit(exitCode);
 }
 
 module.exports = {
-  defaultResultFile,
   testGenerators,
 };

@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const { Command } = require("commander");
+const { Command, Option } = require("commander");
 const generate = require("./generate");
 const packageJson = require("../package.json");
 const testGenerators = require("./testGenerators");
@@ -44,28 +44,18 @@ program
   .command("test-generators")
   .description("Test language specific generators.")
   .option(
-    "-g, --generators <gens>",
-    "Narrow down the generators to test. Each letter is a generator, combine letters to test multiple generators, options are: c (CSharp), t (TypeScript)", //h (PHP), p (Python), j (Java), s (JavaScript)
-    "ct"
-  )
-  .option(
-    "-c, --csharp <csharpPath>",
-    "Sets the location of the CSharp generator. Default is a directory named 'openapi-forge-csharp' in the same location as openapi-forge",
-    "./openapi-forge-csharp"
-  )
-  .option(
-    "-t, --typescript <typescriptPath>",
-    "Sets the location of the TypeScript generator. Default is a directory named 'openapi-forge-typescript' in the same location as openapi-forge",
-    "./openapi-forge-typescript"
+    "-g, --generators <gens...>",
+    "Generators to test, e.g. openapi-forge-typescript"
   )
   .option(
     "-l, --logLevel <level>",
     "Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')",
     "1"
   )
-  .option(
-    "-o, --outputFile [file]",
-    `Writes the testing results to a JSON file, defaults to "${testGenerators.defaultResultFile}"`
+  .addOption(
+    new Option("-f, --format <format>", "Output format")
+      .choices(["table", "json"])
+      .default("table")
   )
   .action(async (options) => {
     testGenerators.testGenerators(options);
