@@ -70,7 +70,11 @@ function testGenerators(options) {
     }
   });
 
-  console.table(aggregatedResults);
+  if (options.format === "table") {
+    console.table(aggregatedResults);
+  } else {
+    console.log(JSON.stringify(aggregatedResults, null, 2));
+  }
 }
 
 module.exports = {

@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const { Command } = require("commander");
+const { Command, Option } = require("commander");
 const generate = require("./generate");
 const packageJson = require("../package.json");
 const testGenerators = require("./testGenerators");
@@ -51,6 +51,11 @@ program
     "-l, --logLevel <level>",
     "Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')",
     "1"
+  )
+  .addOption(
+    new Option("-f, --format <format>", "Output format")
+      .choices(["table", "json"])
+      .default("table")
   )
   .action(async (options) => {
     testGenerators.testGenerators(options);

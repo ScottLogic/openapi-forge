@@ -12,9 +12,6 @@ jobs:
     runs-on: windows-latest 
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -24,45 +21,58 @@ jobs:
       - name: Set npm shell
         run: npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
 
-      - name: Install Node.js dependencies globally
+      - name: Check out openapi-forge repository
+        uses: actions/checkout@v3
+        with: 
+          path: openapi-forge
+
+      - name: Install openapi-forge dependencies globally
         run: |
+          cd openapi-forge
           npm install
           npm install --global
 
+      - name: Check out the openapi-forge-javascript generator
+        uses: actions/checkout@v3
+        with: 
+          repository: ScottLogic/openapi-forge-javascript
+          path: openapi-forge-javascript
+
+      - name: Install openapi-forge-javascript dependencies
+        run: |
+          cd openapi-forge-javascript
+          npm install
+
+      - name: Check out the openapi-forge-csharp generator
+        uses: actions/checkout@v3
+        with: 
+          repository: ScottLogic/openapi-forge-csharp
+          path: openapi-forge-csharp
+
+      - name: Install openapi-forge-csharp dependencies
+        run: |
+          cd openapi-forge-csharp
+          npm install
+
+      - name: Check out the openapi-forge-typescript generator
+        uses: actions/checkout@v3
+        with: 
+          repository: ScottLogic/openapi-forge-typescript
+          path: openapi-forge-typescript
+
+      - name: Install openapi-forge-typescript dependencies
+        run: |
+          cd openapi-forge-typescript
+          npm install
+
       - name: Test generators
-        run: npm run test:generators
+        run: |
+          cd openapi-forge
+          openapi-forge test-generators --format json --generators openapi-forge-javascript openapi-forge-typescript openapi-forge-csharp > test-results.json
         continue-on-error: true
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: test-results.json
-
-      - name: Download previous test results
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: test.yml
-          branch: master
-          name: test-results
-          path: CICD_${{github.sha}}
-          workflow_conclusion: completed
-
-      - name: Compare test results
-        run: node CICD/compareTestResults test-results.json CICD_${{github.sha}}/test-results.json
-        continue-on-error: true
-
-      - name: Update webpage contents
-        if: github.event_name == 'push'
-        run: |
-          git config --global user.name 'GitHubActions'
-          git config --global user.email '<>'
-          git checkout -b gh-pages
-          git reset --hard master
-          node CICD/updateWebpage test-results.json 
-          npm run format:write:all
-          git add docs/
-          git commit -m "docs: auto-update docs/"
-          git push --force --set-upstream origin gh-pages
-
+          path: openapi-forge/test-results.json
