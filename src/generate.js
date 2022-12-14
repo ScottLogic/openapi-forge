@@ -187,6 +187,11 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       if (file.endsWith("handlebars")) {
         // run the handlebars template
         const template = Handlebars.compile(source);
+        if (!generatorPackage.apiTemplates) {
+          throw new Error(
+            "The generator must supply a 'apiTemplates' array in package.json"
+          );
+        }
         log.verbose("Populating template");
         if (generatorPackage.apiTemplates.includes(file)) {
           // Iterating tags to generate grouped paths

@@ -126,6 +126,7 @@ function logFailedForge(exception) {
   standard(`${divider}`);
   if (isStandard() || isQuiet()) {
     error(`${exception.message}`);
+    standard("increase logging verbosity for more information");
   } else {
     verbose(`${exception.stack}`);
   }
