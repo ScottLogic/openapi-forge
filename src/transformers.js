@@ -144,10 +144,12 @@ const createInlineObjects = (schema) => {
     }
   });
 
-  if (!schema.components) {
-    schema.components = {};
+  if (Object.keys(inlineObjects).length > 0) {
+    if (!schema.components) {
+      schema.components = {};
+    }
+    schema.components["inlineObjects"] = inlineObjects;
   }
-  schema.components["inlineObjects"] = inlineObjects;
 };
 
 // where a $ref exists in the schema, it replaces this with the referenced JSON
