@@ -212,7 +212,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     try {
       const formatter = require(path.resolve(generatorPath, "./formatter.js"));
-      formatter(outputFolder, log.getLogLevel());
+      await formatter(outputFolder, log.getLogLevel());
     } catch {
       log.error(`No formatter found in ${generatorPath}`);
     }
