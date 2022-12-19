@@ -13,7 +13,6 @@ const log = require("./log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
 const converter = require("swagger2openapi");
-const shell = require("shelljs");
 
 Object.keys(helpers).forEach((helperName) => {
   Handlebars.registerHelper(helperName, helpers[helperName]);
@@ -211,10 +210,12 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     });
     log.verbose("\nIteration complete\n");
 
-    const currentPath = process.cwd();
-    shell.cd(generatorPath);
-    shell.exec(`npm run format:write -- ${outputFolder}`, log.shellOptions);
-    shell.cd(currentPath, log.shellOptions);
+    try {
+      const formatter = require(path.resolve(generatorPath, "./formatter.js"));
+      formatter(outputFolder, log.getLogLevel());
+    } catch {
+      log.error(`No formatter found in ${generatorPath}`);
+    }
   } catch (e) {
     exception = e;
   } finally {
