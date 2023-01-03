@@ -1,0 +1,386 @@
+<!DOCTYPE html><!--  This site was created in Webflow. https://www.webflow.com  -->
+<!--  Last Published: Fri Dec 23 2022 14:59:34 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="6380845d37ad3150e90c4491" data-wf-site="6380845d37ad3111e00c4490">
+<head>
+  <meta charset="utf-8">
+  <title>OpenAPI Forge</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="Webflow" name="generator">
+  <link href="css/normalize.css" rel="stylesheet" type="text/css">
+  <link href="css/webflow.css" rel="stylesheet" type="text/css">
+  <link href="css/openapi-forge.webflow.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+  <script type="text/javascript">WebFont.load({  google: {    families: ["Manjari:100,regular,700","Space Grotesk:300,regular,500,600,700","Space Mono:regular,italic,700,700italic","Manrope:200,300,regular,500,600,700,800"]  }});</script>
+  <!-- [if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif] -->
+  <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
+  <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+  <link href="images/webclip.png" rel="apple-touch-icon">
+  <style>
+* {
+font-variant-ligatures: none;
+}
+</style>
+  <!--  [Attributes by Finsweet] Copy to clipboard  -->
+  <script defer="" src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-copyclip@1/copyclip.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
+</head>
+<body class="openapi-body">
+  <div class="blobs-plus-css">
+    <div class="blob-css w-embed">
+      <style>
+.blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    #F0880E 31.77%,
+    #FF0000 100%
+  );
+  -webkit-animation: blob 15s infinite alternate;
+          animation: blob 15s infinite alternate;
+  transition: 1s cubic-bezier(0.07, 0.8, 0.16, 1);
+}
+@keyframes blob {
+  from {
+    transform: translate(-500px, -50px) rotate(-90deg);
+    border-radius: 24% 76% 35% 65% / 27% 36% 64% 73%;
+  }
+  to {
+    transform: translate(500px, 100px) rotate(-10deg);
+    border-radius: 76% 24% 33% 67% / 68% 55% 45% 32%;
+  }
+}
+.blob2 {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    #FFFFFF 10%,
+    #000000 80%
+  );
+  -webkit-animation: blob2 25s infinite alternate;
+          animation: blob2 25s infinite alternate;
+  transition: 1s cubic-bezier(0.07, 0.8, 0.16, 1);
+}
+@keyframes blob2 {
+  from {
+    transform: translate(300px, -250px) rotate(-90deg);
+    border-radius: 24% 76% 35% 65% / 27% 36% 64% 73%;
+  }
+  to {
+    transform: translate(-200px, 50px) rotate(-10deg);
+    border-radius: 76% 24% 33% 67% / 68% 55% 45% 32%;
+  }
+}
+.blob3 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(
+    #F0880E 31.77%,
+    #FF0000 100%
+  );
+  -webkit-animation: blob3 20s infinite alternate;
+          animation: blob3 20s infinite alternate;
+  transition: 1s cubic-bezier(0.07, 0.8, 0.16, 1);
+}
+@keyframes blob3 {
+  from {
+    transform: translate(-650px, 200px) rotate(-90deg);
+    border-radius: 24% 76% 35% 65% / 27% 36% 64% 73%;
+  }
+  to {
+    transform: translate(-350px, -350px) rotate(-10deg);
+    border-radius: 76% 24% 33% 67% / 68% 55% 45% 32%;
+  }
+}
+</style>
+    </div>
+    <div class="full-screen-container">
+      <div id="blob" class="blob"></div>
+      <div id="blob2" class="blob2"></div>
+      <div id="blob3" class="blob3"></div>
+    </div>
+  </div>
+  <div data-animation="default" class="navbar w-nav" data-easing2="ease" data-easing="ease" data-collapse="all" data-w-id="e38b529c-7257-0023-e34e-654ff5e92ef9" role="banner" data-duration="400" data-doc-height="1">
+    <div class="navbar-container">
+      <a href="index.html" aria-current="page" class="navbar-logo-link w-nav-brand w--current"><img src="images/OpenAPI-Logo.svg" loading="lazy" alt="OpenAPI Forge logo" class="logo"></a>
+      <div class="navbar-wrapper">
+        <div class="navbar-desktop-links">
+          <a href="getting-started.html" class="navbar-link">Getting started</a>
+          <a href="https://colineberhardt.github.io/openapi-forge-web/" target="_blank" class="navbar-link">Try it out</a>
+          <div class="navbar-button-wrapper">
+            <a href="https://github.com/ScottLogic/openapi-forge" target="_blank" class="primary-button-block w-inline-block">
+              <div class="button-text">Github</div>
+              <div class="spacer-8px"></div>
+              <div class="icon-16px w-embed"><svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10.97 6.10352e-05L13.6527 6.10352e-05C14.9491 6.10352e-05 16.0001 1.05103 16.0001 2.34745V5.0302C16.0001 5.5858 15.5497 6.03623 14.9941 6.03623C14.4385 6.03623 13.9881 5.5858 13.9881 5.0302V3.43464L8.80051 8.6222C8.4077 9.01501 7.77082 9.01501 7.378 8.6222C6.98519 8.22938 6.98519 7.5925 7.378 7.19969L12.5655 2.01213H10.97C10.4144 2.01213 9.96395 1.5617 9.96395 1.00609C9.96395 0.450487 10.4144 6.10352e-05 10.97 6.10352e-05Z" fill="black"></path>
+                  <path d="M3.66665 6.10352e-05H6.99996C7.55224 6.10352e-05 7.99995 0.447774 7.99995 1.00006C7.99995 1.55234 7.55224 2.00005 6.99996 2.00005H3.66665C3.22462 2.00005 2.8007 2.17564 2.48814 2.4882C2.17558 2.80076 1.99999 3.22468 1.99999 3.66671V12.3333C1.99999 12.7753 2.17558 13.1993 2.48814 13.5118C2.8007 13.8244 3.22462 14 3.66665 14H12.3333C12.7753 14 13.1992 13.8244 13.5118 13.5118C13.8243 13.1993 13.9999 12.7753 13.9999 12.3333V9.00001C13.9999 8.44773 14.4476 8.00001 14.9999 8.00001C15.5522 8.00001 15.9999 8.44773 15.9999 9.00001V12.3333C15.9988 13.3055 15.6122 14.2375 14.9248 14.9249C14.2374 15.6123 13.3054 15.9989 12.3333 16H3.66665C2.69452 15.9989 1.7625 15.6123 1.0751 14.9249C0.387705 14.2375 0.00105877 13.3055 0 12.3333V3.66671C0.00105877 2.69458 0.387705 1.76257 1.0751 1.07517C1.7625 0.387766 2.69452 0.00111981 3.66665 6.10352e-05Z" fill="black"></path>
+                </svg></div>
+            </a>
+          </div>
+        </div>
+        <nav role="navigation" class="navbar-menu w-nav-menu">
+          <div class="navbar-menu-wrapper">
+            <a href="getting-started.html" class="navbar-menu-link w-nav-link">Getting started</a>
+            <a href="https://colineberhardt.github.io/openapi-forge-web/" target="_blank" class="navbar-menu-link padding-bottom w-nav-link">Try it out</a>
+            <a href="#" class="navbar-menu-link hidden w-nav-link">Link Three</a>
+            <div class="navbar-button-wrapper">
+              <a href="https://github.com/ScottLogic/openapi-forge" target="_blank" class="primary-button-block w-inline-block">
+                <div class="button-text">Github</div>
+                <div class="spacer-8px"></div>
+                <div class="icon-16px w-embed"><svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.97 6.10352e-05L13.6527 6.10352e-05C14.9491 6.10352e-05 16.0001 1.05103 16.0001 2.34745V5.0302C16.0001 5.5858 15.5497 6.03623 14.9941 6.03623C14.4385 6.03623 13.9881 5.5858 13.9881 5.0302V3.43464L8.80051 8.6222C8.4077 9.01501 7.77082 9.01501 7.378 8.6222C6.98519 8.22938 6.98519 7.5925 7.378 7.19969L12.5655 2.01213H10.97C10.4144 2.01213 9.96395 1.5617 9.96395 1.00609C9.96395 0.450487 10.4144 6.10352e-05 10.97 6.10352e-05Z" fill="black"></path>
+                    <path d="M3.66665 6.10352e-05H6.99996C7.55224 6.10352e-05 7.99995 0.447774 7.99995 1.00006C7.99995 1.55234 7.55224 2.00005 6.99996 2.00005H3.66665C3.22462 2.00005 2.8007 2.17564 2.48814 2.4882C2.17558 2.80076 1.99999 3.22468 1.99999 3.66671V12.3333C1.99999 12.7753 2.17558 13.1993 2.48814 13.5118C2.8007 13.8244 3.22462 14 3.66665 14H12.3333C12.7753 14 13.1992 13.8244 13.5118 13.5118C13.8243 13.1993 13.9999 12.7753 13.9999 12.3333V9.00001C13.9999 8.44773 14.4476 8.00001 14.9999 8.00001C15.5522 8.00001 15.9999 8.44773 15.9999 9.00001V12.3333C15.9988 13.3055 15.6122 14.2375 14.9248 14.9249C14.2374 15.6123 13.3054 15.9989 12.3333 16H3.66665C2.69452 15.9989 1.7625 15.6123 1.0751 14.9249C0.387705 14.2375 0.00105877 13.3055 0 12.3333V3.66671C0.00105877 2.69458 0.387705 1.76257 1.0751 1.07517C1.7625 0.387766 2.69452 0.00111981 3.66665 6.10352e-05Z" fill="black"></path>
+                  </svg></div>
+              </a>
+            </div>
+          </div>
+        </nav>
+        <div class="navbar4_menu-button w-nav-button">
+          <div class="menu-icon4">
+            <div class="menu-icon4_wrapper">
+              <div class="menu-icon4_line-top"></div>
+              <div class="menu-icon4_line-middle">
+                <div class="menu-icon_line-middle-top"></div>
+                <div class="menu-icon_line-middle-base"></div>
+              </div>
+              <div class="menu-icon4_line-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="openapi-section wf-section">
+    <div class="openapi-inner hero-margin">
+      <div class="hero-container">
+        <h1 class="heading-h1-regular">Effortlessly create <span class="bold">OpenAPI</span> clients from the fiery furnace of our forge </h1>
+      </div>
+    </div>
+  </div>
+  <div class="openapi-section wf-section">
+    <div class="openapi-inner standard-margin">
+      <p class="paragraph-regular">The <a href="https://www.openapis.org/" target="_blank" class="paragraph-link">Open API specification</a> has become an industry standard for describing RESTful web APIs. The machine-readable specification makes it easy to generate API documentation and forms a common language for describing web services. However, most people who consume APIs still hand-craft the code that interacts with them, creating their own HTTP requests, serializing and deserializing model objects and more.<br><br>The goal of Open API Forge is to generate high-quality, simple and effective client libraries directly from the Open API specification, in a range of languages. These simplifying the process of consuming REST APIs, providing strongly-typed interfaces, error handling and more. </p>
+    </div>
+  </div>
+  <div class="openapi-section wf-section">
+    <div class="openapi-inner standard-margin">
+      <div class="w-layout-grid _2x2-grid">
+        <div id="w-node-_47a3502c-9447-4929-c6dd-378f7f569736-e90c4491" class="grid-container flex-horizontal">
+          <div class="large-icon w-embed"><svg width="37" height="41" viewbox="0 0 37 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.304 3.63159C12.4392 4.01796 10.6653 4.68256 8.98226 5.62539C6.16536 7.18813 3.92227 9.37597 2.253 12.1889C1.08387 14.201 0.332871 16.3996 0 18.7847H6.13569C6.38256 17.2945 6.82715 15.9294 7.46948 14.6893C8.54755 12.6751 10.0256 11.1297 11.9035 10.0532C12.3623 9.79015 12.8366 9.55927 13.3265 9.36052C13.6483 8.42427 13.8792 7.42592 14.0371 6.422C14.188 5.46337 14.2701 4.51429 14.304 3.63159ZM20.9673 8.67618C20.1232 8.51761 19.2407 8.43833 18.3198 8.43833C17.0523 8.43833 15.8577 8.5885 14.7358 8.88884C14.9488 8.13266 15.1092 7.3637 15.2279 6.60934C15.4011 5.50852 15.4883 4.42088 15.5171 3.42128C16.0562 3.34568 16.6026 3.2924 17.1563 3.26142C18.8632 5.07976 20.0944 6.93017 20.9673 8.67618ZM26.6592 11.4499C26.076 10.9194 25.4349 10.4538 24.736 10.0532C24.0216 9.6436 23.2694 9.31194 22.4795 9.05819C21.6538 7.19356 20.4538 5.20126 18.7533 3.23352C21.9923 3.29862 24.9603 4.0959 27.6573 5.62539C30.5089 7.18813 32.752 9.37597 34.3865 12.1889C35.5557 14.201 36.3067 16.3996 36.6395 18.7847H30.4961C30.241 17.2945 29.7816 15.9294 29.1179 14.6893C28.5089 13.5137 27.7578 12.4978 26.8646 11.6416C26.823 11.57 26.781 11.4984 26.7386 11.4267L26.6592 11.4499Z" fill="white"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M30.51 24.7108H36.6329C36.2967 27.0847 35.548 29.2833 34.3867 31.3066C32.7522 34.1196 30.5091 36.3248 27.6574 37.9222C24.8405 39.485 21.728 40.2664 18.3199 40.2664C14.9466 40.2664 11.8341 39.485 8.98238 37.9222C6.16548 36.3248 3.92239 34.1196 2.25312 31.3066C1.09179 29.2833 0.343029 27.0847 0.00683594 24.7108H5.83447C5.85027 19.4948 7.48938 17.7688 10.5331 14.5638C10.9518 14.1229 11.3971 13.654 11.8684 13.1442C14.9996 9.75714 15.1301 3.1477 14.8039 0.266357C22.5014 6.47594 23.7735 13.9086 23.4473 16.8488C25.7957 16.4254 26.2741 13.2618 26.2197 11.7329C29.1047 16.622 30.3062 20.9904 30.51 24.7108ZM11.6115 33.3159C11.2578 30.3782 11.6075 26.9246 14.8039 25.14C15.0214 26.2572 15.9129 28.8798 19.6964 29.7266C18.1743 27.6097 15.9129 22.7408 19.0441 18.0836C18.9897 19.7301 19.2072 23.2348 23.1212 26.9041C25.3775 29.0193 26.281 30.6468 26.5677 32.1499C26.0091 32.6543 25.3986 33.1025 24.7362 33.4945C22.8582 34.571 20.7195 35.1093 18.3199 35.1093C15.9203 35.1093 13.7815 34.571 11.9036 33.4945C11.8051 33.4362 11.7078 33.3767 11.6115 33.3159Z" fill="url(#paint0_linear_177_184)"></path>
+              <defs>
+                <lineargradient id="paint0_linear_177_184" x1="24.8365" y1="1.23968" x2="12.4712" y2="37.3192" gradientunits="userSpaceOnUse">
+                  <stop stop-color="#FF0000"></stop>
+                  <stop offset="0.518642" stop-color="#FF3800"></stop>
+                  <stop offset="1" stop-color="#FFB800"></stop>
+                </lineargradient>
+              </defs>
+            </svg></div>
+          <div class="vertical-lh-flex-container small-left-margin">
+            <div class="copy-title _40px-height">Simplicity</div>
+            <p class="paragraph-regular">The generated output is as simple as possible, just code that relates to the task of communicating with an API endpoint.</p>
+          </div>
+        </div>
+        <div id="w-node-_47a3502c-9447-4929-c6dd-378f7f56973d-e90c4491" class="grid-container flex-horizontal">
+          <div class="large-icon w-embed"><svg width="37" height="41" viewbox="0 0 37 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.304 3.63159C12.4392 4.01796 10.6653 4.68256 8.98226 5.62539C6.16536 7.18813 3.92227 9.37597 2.253 12.1889C1.08387 14.201 0.332871 16.3996 0 18.7847H6.13569C6.38256 17.2945 6.82715 15.9294 7.46948 14.6893C8.54755 12.6751 10.0256 11.1297 11.9035 10.0532C12.3623 9.79015 12.8366 9.55927 13.3265 9.36052C13.6483 8.42427 13.8792 7.42592 14.0371 6.422C14.188 5.46337 14.2701 4.51429 14.304 3.63159ZM20.9673 8.67618C20.1232 8.51761 19.2407 8.43833 18.3198 8.43833C17.0523 8.43833 15.8577 8.5885 14.7358 8.88884C14.9488 8.13266 15.1092 7.3637 15.2279 6.60934C15.4011 5.50852 15.4883 4.42088 15.5171 3.42128C16.0562 3.34568 16.6026 3.2924 17.1563 3.26142C18.8632 5.07976 20.0944 6.93017 20.9673 8.67618ZM26.6592 11.4499C26.076 10.9194 25.4349 10.4538 24.736 10.0532C24.0216 9.6436 23.2694 9.31194 22.4795 9.05819C21.6538 7.19356 20.4538 5.20126 18.7533 3.23352C21.9923 3.29862 24.9603 4.0959 27.6573 5.62539C30.5089 7.18813 32.752 9.37597 34.3865 12.1889C35.5557 14.201 36.3067 16.3996 36.6395 18.7847H30.4961C30.241 17.2945 29.7816 15.9294 29.1179 14.6893C28.5089 13.5137 27.7578 12.4978 26.8646 11.6416C26.823 11.57 26.781 11.4984 26.7386 11.4267L26.6592 11.4499Z" fill="white"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M30.51 24.7108H36.6329C36.2967 27.0847 35.548 29.2833 34.3867 31.3066C32.7522 34.1196 30.5091 36.3248 27.6574 37.9222C24.8405 39.485 21.728 40.2664 18.3199 40.2664C14.9466 40.2664 11.8341 39.485 8.98238 37.9222C6.16548 36.3248 3.92239 34.1196 2.25312 31.3066C1.09179 29.2833 0.343029 27.0847 0.00683594 24.7108H5.83447C5.85027 19.4948 7.48938 17.7688 10.5331 14.5638C10.9518 14.1229 11.3971 13.654 11.8684 13.1442C14.9996 9.75714 15.1301 3.1477 14.8039 0.266357C22.5014 6.47594 23.7735 13.9086 23.4473 16.8488C25.7957 16.4254 26.2741 13.2618 26.2197 11.7329C29.1047 16.622 30.3062 20.9904 30.51 24.7108ZM11.6115 33.3159C11.2578 30.3782 11.6075 26.9246 14.8039 25.14C15.0214 26.2572 15.9129 28.8798 19.6964 29.7266C18.1743 27.6097 15.9129 22.7408 19.0441 18.0836C18.9897 19.7301 19.2072 23.2348 23.1212 26.9041C25.3775 29.0193 26.281 30.6468 26.5677 32.1499C26.0091 32.6543 25.3986 33.1025 24.7362 33.4945C22.8582 34.571 20.7195 35.1093 18.3199 35.1093C15.9203 35.1093 13.7815 34.571 11.9036 33.4945C11.8051 33.4362 11.7078 33.3767 11.6115 33.3159Z" fill="url(#paint0_linear_177_184)"></path>
+              <defs>
+                <lineargradient id="paint0_linear_177_184" x1="24.8365" y1="1.23968" x2="12.4712" y2="37.3192" gradientunits="userSpaceOnUse">
+                  <stop stop-color="#FF0000"></stop>
+                  <stop offset="0.518642" stop-color="#FF3800"></stop>
+                  <stop offset="1" stop-color="#FFB800"></stop>
+                </lineargradient>
+              </defs>
+            </svg></div>
+          <div class="vertical-lh-flex-container small-left-margin">
+            <div class="copy-title _40px-height">Opinionated</div>
+            <p class="paragraph-regular">We&#x27;ll support just one &#x27;official&#x27; generator per language.</p>
+          </div>
+        </div>
+        <div id="w-node-_47a3502c-9447-4929-c6dd-378f7f569744-e90c4491" class="grid-container flex-horizontal">
+          <div class="large-icon w-embed"><svg width="37" height="41" viewbox="0 0 37 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.304 3.63159C12.4392 4.01796 10.6653 4.68256 8.98226 5.62539C6.16536 7.18813 3.92227 9.37597 2.253 12.1889C1.08387 14.201 0.332871 16.3996 0 18.7847H6.13569C6.38256 17.2945 6.82715 15.9294 7.46948 14.6893C8.54755 12.6751 10.0256 11.1297 11.9035 10.0532C12.3623 9.79015 12.8366 9.55927 13.3265 9.36052C13.6483 8.42427 13.8792 7.42592 14.0371 6.422C14.188 5.46337 14.2701 4.51429 14.304 3.63159ZM20.9673 8.67618C20.1232 8.51761 19.2407 8.43833 18.3198 8.43833C17.0523 8.43833 15.8577 8.5885 14.7358 8.88884C14.9488 8.13266 15.1092 7.3637 15.2279 6.60934C15.4011 5.50852 15.4883 4.42088 15.5171 3.42128C16.0562 3.34568 16.6026 3.2924 17.1563 3.26142C18.8632 5.07976 20.0944 6.93017 20.9673 8.67618ZM26.6592 11.4499C26.076 10.9194 25.4349 10.4538 24.736 10.0532C24.0216 9.6436 23.2694 9.31194 22.4795 9.05819C21.6538 7.19356 20.4538 5.20126 18.7533 3.23352C21.9923 3.29862 24.9603 4.0959 27.6573 5.62539C30.5089 7.18813 32.752 9.37597 34.3865 12.1889C35.5557 14.201 36.3067 16.3996 36.6395 18.7847H30.4961C30.241 17.2945 29.7816 15.9294 29.1179 14.6893C28.5089 13.5137 27.7578 12.4978 26.8646 11.6416C26.823 11.57 26.781 11.4984 26.7386 11.4267L26.6592 11.4499Z" fill="white"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M30.51 24.7108H36.6329C36.2967 27.0847 35.548 29.2833 34.3867 31.3066C32.7522 34.1196 30.5091 36.3248 27.6574 37.9222C24.8405 39.485 21.728 40.2664 18.3199 40.2664C14.9466 40.2664 11.8341 39.485 8.98238 37.9222C6.16548 36.3248 3.92239 34.1196 2.25312 31.3066C1.09179 29.2833 0.343029 27.0847 0.00683594 24.7108H5.83447C5.85027 19.4948 7.48938 17.7688 10.5331 14.5638C10.9518 14.1229 11.3971 13.654 11.8684 13.1442C14.9996 9.75714 15.1301 3.1477 14.8039 0.266357C22.5014 6.47594 23.7735 13.9086 23.4473 16.8488C25.7957 16.4254 26.2741 13.2618 26.2197 11.7329C29.1047 16.622 30.3062 20.9904 30.51 24.7108ZM11.6115 33.3159C11.2578 30.3782 11.6075 26.9246 14.8039 25.14C15.0214 26.2572 15.9129 28.8798 19.6964 29.7266C18.1743 27.6097 15.9129 22.7408 19.0441 18.0836C18.9897 19.7301 19.2072 23.2348 23.1212 26.9041C25.3775 29.0193 26.281 30.6468 26.5677 32.1499C26.0091 32.6543 25.3986 33.1025 24.7362 33.4945C22.8582 34.571 20.7195 35.1093 18.3199 35.1093C15.9203 35.1093 13.7815 34.571 11.9036 33.4945C11.8051 33.4362 11.7078 33.3767 11.6115 33.3159Z" fill="url(#paint0_linear_177_184)"></path>
+              <defs>
+                <lineargradient id="paint0_linear_177_184" x1="24.8365" y1="1.23968" x2="12.4712" y2="37.3192" gradientunits="userSpaceOnUse">
+                  <stop stop-color="#FF0000"></stop>
+                  <stop offset="0.518642" stop-color="#FF3800"></stop>
+                  <stop offset="1" stop-color="#FFB800"></stop>
+                </lineargradient>
+              </defs>
+            </svg></div>
+          <div class="vertical-lh-flex-container small-left-margin">
+            <div class="copy-title _40px-height">Favour runtime configuration</div>
+            <p class="paragraph-regular">To keep the generation process as simple as possible, we favour runtime configuration, e.g. pluggable networking adaptors, logging etc.</p>
+          </div>
+        </div>
+        <div id="w-node-_47a3502c-9447-4929-c6dd-378f7f56974b-e90c4491" class="grid-container flex-horizontal">
+          <div class="large-icon w-embed"><svg width="37" height="41" viewbox="0 0 37 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.304 3.63159C12.4392 4.01796 10.6653 4.68256 8.98226 5.62539C6.16536 7.18813 3.92227 9.37597 2.253 12.1889C1.08387 14.201 0.332871 16.3996 0 18.7847H6.13569C6.38256 17.2945 6.82715 15.9294 7.46948 14.6893C8.54755 12.6751 10.0256 11.1297 11.9035 10.0532C12.3623 9.79015 12.8366 9.55927 13.3265 9.36052C13.6483 8.42427 13.8792 7.42592 14.0371 6.422C14.188 5.46337 14.2701 4.51429 14.304 3.63159ZM20.9673 8.67618C20.1232 8.51761 19.2407 8.43833 18.3198 8.43833C17.0523 8.43833 15.8577 8.5885 14.7358 8.88884C14.9488 8.13266 15.1092 7.3637 15.2279 6.60934C15.4011 5.50852 15.4883 4.42088 15.5171 3.42128C16.0562 3.34568 16.6026 3.2924 17.1563 3.26142C18.8632 5.07976 20.0944 6.93017 20.9673 8.67618ZM26.6592 11.4499C26.076 10.9194 25.4349 10.4538 24.736 10.0532C24.0216 9.6436 23.2694 9.31194 22.4795 9.05819C21.6538 7.19356 20.4538 5.20126 18.7533 3.23352C21.9923 3.29862 24.9603 4.0959 27.6573 5.62539C30.5089 7.18813 32.752 9.37597 34.3865 12.1889C35.5557 14.201 36.3067 16.3996 36.6395 18.7847H30.4961C30.241 17.2945 29.7816 15.9294 29.1179 14.6893C28.5089 13.5137 27.7578 12.4978 26.8646 11.6416C26.823 11.57 26.781 11.4984 26.7386 11.4267L26.6592 11.4499Z" fill="white"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M30.51 24.7108H36.6329C36.2967 27.0847 35.548 29.2833 34.3867 31.3066C32.7522 34.1196 30.5091 36.3248 27.6574 37.9222C24.8405 39.485 21.728 40.2664 18.3199 40.2664C14.9466 40.2664 11.8341 39.485 8.98238 37.9222C6.16548 36.3248 3.92239 34.1196 2.25312 31.3066C1.09179 29.2833 0.343029 27.0847 0.00683594 24.7108H5.83447C5.85027 19.4948 7.48938 17.7688 10.5331 14.5638C10.9518 14.1229 11.3971 13.654 11.8684 13.1442C14.9996 9.75714 15.1301 3.1477 14.8039 0.266357C22.5014 6.47594 23.7735 13.9086 23.4473 16.8488C25.7957 16.4254 26.2741 13.2618 26.2197 11.7329C29.1047 16.622 30.3062 20.9904 30.51 24.7108ZM11.6115 33.3159C11.2578 30.3782 11.6075 26.9246 14.8039 25.14C15.0214 26.2572 15.9129 28.8798 19.6964 29.7266C18.1743 27.6097 15.9129 22.7408 19.0441 18.0836C18.9897 19.7301 19.2072 23.2348 23.1212 26.9041C25.3775 29.0193 26.281 30.6468 26.5677 32.1499C26.0091 32.6543 25.3986 33.1025 24.7362 33.4945C22.8582 34.571 20.7195 35.1093 18.3199 35.1093C15.9203 35.1093 13.7815 34.571 11.9036 33.4945C11.8051 33.4362 11.7078 33.3767 11.6115 33.3159Z" fill="url(#paint0_linear_177_184)"></path>
+              <defs>
+                <lineargradient id="paint0_linear_177_184" x1="24.8365" y1="1.23968" x2="12.4712" y2="37.3192" gradientunits="userSpaceOnUse">
+                  <stop stop-color="#FF0000"></stop>
+                  <stop offset="0.518642" stop-color="#FF3800"></stop>
+                  <stop offset="1" stop-color="#FFB800"></stop>
+                </lineargradient>
+              </defs>
+            </svg></div>
+          <div class="vertical-lh-flex-container small-left-margin">
+            <div class="copy-title _40px-height">Extensively tested</div>
+            <p class="paragraph-regular">This repo contains a BDD test suite that is executed against each generator to ensure that it faithfully implements the OpenAPI specification.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="openapi-section wf-section">
+    <div class="openapi-inner standard-margin">
+      <div class="vertical-lh-flex-container">
+        <h2 class="heading-h2-regular bold">Quick start</h2>
+        <p class="paragraph-regular">Install <span class="paragraph-code">openapi-forge</span> as a global package, execute the forge command, providing an API specification, a language-specific generator and an output folder. Your endpoints and model objects will be forged from the fiery furnace.</p>
+      </div>
+      <div class="grid-container flex-horizontal code">
+        <div class="code-block-full-width border">
+          <div class="visual-code w-embed w-script">
+            <script>hljs.highlightAll();</script>
+            <pre style="margin-top: 0px; margin-bottom: 0px;">
+<code style="border-radius: 16px;padding-left: 16px;padding-right: 16px;">
+$ npm install openapi-forge --global
+$ openapi-forge forge
+\ https://petstore3.swagger.io/api/v3/openapi.json
+\ https://github.com/ScottLogic/openapi-forge-typescript.git
+\ -o api
+</code></pre>
+          </div>
+          <div fs-copyclip-element="click" data-w-id="9373bbd0-82fe-b922-8f4e-305aad56ea87" class="code-block-custom border square absolute">
+            <div class="code-block-inner square">
+              <div style="display:flex" class="icon w-embed"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 20H5C3.67441 19.9984 2.40356 19.4711 1.46622 18.5338C0.528882 17.5964 0.00158786 16.3256 0 15L0 5C0.00158786 3.67441 0.528882 2.40356 1.46622 1.46622C2.40356 0.528882 3.67441 0.00158786 5 0L15 0C16.3256 0.00158786 17.5964 0.528882 18.5338 1.46622C19.4711 2.40356 19.9984 3.67441 20 5V15C19.9984 16.3256 19.4711 17.5964 18.5338 18.5338C17.5964 19.4711 16.3256 19.9984 15 20ZM5 2C4.20435 2 3.44129 2.31607 2.87868 2.87868C2.31607 3.44129 2 4.20435 2 5V15C2 15.7956 2.31607 16.5587 2.87868 17.1213C3.44129 17.6839 4.20435 18 5 18H15C15.7956 18 16.5587 17.6839 17.1213 17.1213C17.6839 16.5587 18 15.7956 18 15V5C18 4.20435 17.6839 3.44129 17.1213 2.87868C16.5587 2.31607 15.7956 2 15 2H5ZM24 19V6C24 5.73478 23.8946 5.48043 23.7071 5.29289C23.5196 5.10536 23.2652 5 23 5C22.7348 5 22.4804 5.10536 22.2929 5.29289C22.1054 5.48043 22 5.73478 22 6V19C22 19.7956 21.6839 20.5587 21.1213 21.1213C20.5587 21.6839 19.7956 22 19 22H6C5.73478 22 5.48043 22.1054 5.29289 22.2929C5.10536 22.4804 5 22.7348 5 23C5 23.2652 5.10536 23.5196 5.29289 23.7071C5.48043 23.8946 5.73478 24 6 24H19C20.3256 23.9984 21.5964 23.4711 22.5338 22.5338C23.4711 21.5964 23.9984 20.3256 24 19Z" fill="white"></path>
+                </svg></div>
+              <div data-is-ix2-target="1" class="tick-animation" data-w-id="661771a8-ccca-fc9b-a8b6-fc5996db4975" data-animation-type="lottie" data-src="documents/tick.json" data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="2.14775002825178" data-duration="0" data-ix2-initial-state="0"></div>
+            </div>
+          </div>
+          <div fs-copyclip-element="copy-this" class="code-inside-block">$ npm install openapi-forge --global<br>$ openapi-forge forge<br>\ https://petstore3.swagger.io/api/v3/openapi.json<br>\ https://github.com/ScottLogic/openapi-forge-typescript.git<br>\ -o api</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="openapi-section hidden wf-section">
+    <div class="openapi-inner standard-margin">
+      <div class="vertical-lh-flex-container">
+        <h2 class="heading-h2-regular bold">Interactive example</h2>
+        <p class="paragraph-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat.</p>
+      </div>
+    </div>
+  </div>
+  <div class="openapi-section hidden wf-section">
+    <div class="openapi-inner standard-margin">
+      <div class="vertical-lh-flex-container">
+        <h2 class="heading-h2-regular bold">Generators</h2>
+        <p class="paragraph-regular">OpenAPI Forge supports a range of generators. While they are it different levels of maturity, each is extensively tested, using our canonical BDD test suite, as shown in the following table:</p>
+      </div>
+      <div class="w-layout-grid generator-grid">
+        <div id="w-node-_9b835eb0-a657-7fdc-e909-2167d8ab0dd1-e90c4491" class="header-row left">
+          <div class="header-row-text">Generator</div>
+        </div>
+        <div id="w-node-_76ac3083-07ab-a8c3-e421-ad4a8de01514-e90c4491" class="header-row">
+          <div class="header-row-text">Scenarios</div>
+        </div>
+        <div id="w-node-_21a429e7-7509-6062-fe9c-73e00880a5cd-e90c4491" class="header-row">
+          <div class="header-row-text">Passed</div>
+        </div>
+        <div id="w-node-_8b9c82e1-b2be-3200-7e85-302845d2c5e4-e90c4491" class="header-row">
+          <div class="header-row-text">Skipped</div>
+        </div>
+        <div id="w-node-_1bfde16c-d3c0-993b-7371-32549baf70e6-e90c4491" class="header-row">
+          <div class="header-row-text">Undefined</div>
+        </div>
+        <div id="w-node-_5fadd4eb-6ec0-e2bc-4339-644e69ae64b1-e90c4491" class="header-row">
+          <div class="header-row-text">Failed</div>
+        </div>
+        <div id="w-node-_6b9ab739-a189-137e-70ca-cdbbef1245b9-e90c4491" class="header-row right">
+          <div class="header-row-text">Time</div>
+        </div>
+        <div id="w-node-e3fb056e-b284-3d34-119d-fcb97d0d5bee-e90c4491" class="table-row">
+          <div class="paragraph-regular table">Typescript</div>
+        </div>
+        <div id="w-node-df99abe0-6dad-437a-8ada-4dfe5ed7f210-e90c4491" class="table-row">
+          <div class="paragraph-regular table">38</div>
+        </div>
+        <div id="w-node-b5313235-4600-2054-7dea-80de6e4816bd-e90c4491" class="table-row">
+          <div class="paragraph-regular table">38</div>
+        </div>
+        <div id="w-node-_0bf41a9e-fd81-0034-7f4a-e32776dc108c-e90c4491" class="table-row">
+          <div class="paragraph-regular table">0</div>
+        </div>
+        <div id="w-node-f561c77c-59ad-baaf-cc49-e4f69a73d3e5-e90c4491" class="table-row">
+          <div class="paragraph-regular table">0</div>
+        </div>
+        <div id="w-node-bb3d705e-1ea8-fd6e-394d-dfe684e71001-e90c4491" class="table-row">
+          <div class="paragraph-regular table">0</div>
+        </div>
+        <div id="w-node-f5c99674-62d8-d3d7-efa1-df2ffdef7d1c-e90c4491" class="table-row">
+          <div class="paragraph-regular table">2m41s</div>
+        </div>
+        <div id="w-node-e7564da6-b36a-7765-cebc-d0d1dc919dd5-e90c4491" class="table-row left">
+          <div class="paragraph-regular table">Typescript</div>
+        </div>
+        <div id="w-node-_57c24e4d-6797-c4ad-f09b-ee4754bc06c5-e90c4491" class="table-row">
+          <div class="paragraph-regular table">38</div>
+        </div>
+        <div id="w-node-e7ae8558-75fa-89a8-484c-0ecc0b39549c-e90c4491" class="table-row">
+          <div class="paragraph-regular table">38</div>
+        </div>
+        <div id="w-node-_5b286f4d-0525-682a-97f9-9d1b6eac88ed-e90c4491" class="table-row">
+          <div class="paragraph-regular table">0</div>
+        </div>
+        <div id="w-node-a8c2e141-58a2-8c55-7da6-d4de4ff94cae-e90c4491" class="table-row">
+          <div class="paragraph-regular table">0</div>
+        </div>
+        <div id="w-node-_935efc42-f1af-1835-3a29-41ff4ac3ba10-e90c4491" class="table-row">
+          <div class="paragraph-regular table">0</div>
+        </div>
+        <div id="w-node-_01154e5b-0258-c9ce-9e4a-2b8bcd348b34-e90c4491" class="table-row right">
+          <div class="paragraph-regular table">1m12s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="openapi-section wf-section">
+    <div class="openapi-inner footer">
+      <div class="footer-container">
+        <a href="index.html" id="w-node-_6336ceab-09af-c89c-0e1e-3b490babc7aa-0babc7a7" aria-current="page" class="footer-logo-link w-nav-brand w--current"><img src="images/OpenAPI-Logo.svg" loading="lazy" alt="OpenAPI Forge logo" class="logo"></a>
+        <div class="footer-links">
+          <a id="w-node-_6336ceab-09af-c89c-0e1e-3b490babc7ad-0babc7a7" href="#" class="footer-link hidden w-inline-block">
+            <div class="text-block">Generator</div>
+          </a>
+          <a href="getting-started.html" class="footer-link w-inline-block">
+            <div class="text-block">Getting started</div>
+          </a>
+          <a href="https://colineberhardt.github.io/openapi-forge-web/" target="_blank" class="footer-link w-inline-block">
+            <div class="text-block">Try it out</div>
+          </a>
+          <a href="https://github.com/ScottLogic/openapi-forge" target="_blank" class="footer-link w-inline-block">
+            <div class="text-block">Github</div>
+            <div class="icon-16px padding-left w-embed"><svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.97 0L13.6527 0C14.9491 0 16.0001 1.05097 16.0001 2.34739V5.03014C16.0001 5.58574 15.5497 6.03617 14.9941 6.03617C14.4385 6.03617 13.9881 5.58574 13.9881 5.03014V3.43458L8.80051 8.62213C8.4077 9.01495 7.77082 9.01495 7.378 8.62214C6.98519 8.22932 6.98519 7.59244 7.378 7.19963L12.5655 2.01207H10.97C10.4144 2.01207 9.96395 1.56164 9.96395 1.00603C9.96395 0.450425 10.4144 0 10.97 0Z" fill="currentColor"></path>
+                <path d="M3.66665 0H6.99996C7.55224 0 7.99995 0.447713 7.99995 0.999994V0.999994C7.99995 1.55228 7.55224 1.99999 6.99996 1.99999H3.66665C3.22462 1.99999 2.8007 2.17558 2.48814 2.48814C2.17558 2.8007 1.99999 3.22462 1.99999 3.66665V12.3333C1.99999 12.7753 2.17558 13.1992 2.48814 13.5118C2.8007 13.8243 3.22462 13.9999 3.66665 13.9999H12.3333C12.7753 13.9999 13.1992 13.8243 13.5118 13.5118C13.8243 13.1992 13.9999 12.7753 13.9999 12.3333V8.99995C13.9999 8.44767 14.4476 7.99995 14.9999 7.99995V7.99995C15.5522 7.99995 15.9999 8.44767 15.9999 8.99995V12.3333C15.9988 13.3054 15.6122 14.2374 14.9248 14.9248C14.2374 15.6122 13.3054 15.9988 12.3333 15.9999H3.66665C2.69452 15.9988 1.7625 15.6122 1.0751 14.9248C0.387705 14.2374 0.00105877 13.3054 0 12.3333V3.66665C0.00105877 2.69452 0.387705 1.7625 1.0751 1.0751C1.7625 0.387705 2.69452 0.00105877 3.66665 0Z" fill="currentColor"></path>
+              </svg></div>
+          </a>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="paragraph-regular small centred">2022 Scott Logic. All rights reserved.</div>
+    </div>
+  </div>
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6380845d37ad3111e00c4490" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="js/webflow.js" type="text/javascript"></script>
+  <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+</body>
+</html>
