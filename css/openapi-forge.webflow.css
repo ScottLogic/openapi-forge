@@ -10,6 +10,11 @@
   grid-column-gap: 16px;
 }
 
+code {
+  border-radius: 16px;
+  padding: 16px !important
+}
+
 body {
   font-family: Manrope, sans-serif;
   color: #fff;

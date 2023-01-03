@@ -172,8 +172,7 @@ font-variant-ligatures: none;
           <div class="visual-code w-embed w-script">
             <script>hljs.highlightAll();</script>
             <pre style="margin-top: 0px; margin-bottom: 0px;">
-<code style="border-radius: 16px;padding-left: 16px;padding-right: 16px;">
-$ npm install openapi-forge --global
+<code>$ npm install openapi-forge --global
 </code></pre>
           </div>
           <div fs-copyclip-element="click-2" data-w-id="141e4b6d-6cd2-2cb7-1c11-75dca9aec2a7" class="code-block-custom border square absolute">
@@ -199,8 +198,7 @@ $ npm install openapi-forge --global
           <div class="visual-code w-embed w-script">
             <script>hljs.highlightAll();</script>
             <pre style="margin-top: 0px; margin-bottom: 0px;">
-<code style="border-radius: 16px;padding-left: 16px;padding-right: 16px;">
-% openapi-forge forge  https://petstore3.swagger.io/api/v3/openapi.json openapi-forge-typescript -o api
+<code>% openapi-forge forge  https://petstore3.swagger.io/api/v3/openapi.json openapi-forge-typescript -o api
 </code></pre>
           </div>
           <div fs-copyclip-element="click-3" data-w-id="aa9a7dd9-f701-12b3-71a1-10f8d6aabb95" class="code-block-custom border square absolute">
@@ -220,8 +218,7 @@ $ npm install openapi-forge --global
           <div class="visual-code w-embed w-script">
             <script>hljs.highlightAll();</script>
             <pre style="margin-top: 0px; margin-bottom: 0px;">
-<code style="border-radius: 16px;padding-left: 16px;padding-right: 16px;">
-% ls api
+<code>% ls api
 README.md		configuration.ts	parameterBuilder.ts
 apiPet.ts		info.ts			request.ts
 apiStore.ts		model.ts		serializer.ts
@@ -242,13 +239,13 @@ apiUser.ts		nodeFetch.ts
       <p class="paragraph-regular">The generators all create a README.md file which provides language specific usage instructions. Some of the more notable generated files are:</p>
       <ul role="list" class="paragraph-list">
         <li class="paragraph-list-item">
-          <p class="paragraph-regular"><span>apiPet.ts</span> / apiStore.ts / apiUser.ts - these are the API endpoints, grouped by <a href="https://swagger.io/docs/specification/grouping-operations-with-tags/" class="paragraph-link">tags</a>, each file contains a class with methods that relate to the API schema</p>
+          <p class="paragraph-regular"><span class="paragraph-code">apiPet.ts</span> / <span class="paragraph-code">apiStore.ts</span> / <span class="paragraph-code">apiUser.ts</span> - these are the API endpoints, grouped by <a href="https://swagger.io/docs/specification/grouping-operations-with-tags/" class="paragraph-link">tags</a>, each file contains a class with methods that relate to the API schema</p>
         </li>
         <li class="paragraph-list-item">
-          <p class="paragraph-regular">model.ts - this file contains the models used by the API, for example Pet or Order<br></p>
+          <p class="paragraph-regular"><span class="paragraph-code">model.ts</span> - this file contains the models used by the API, for example Pet or Order<br></p>
         </li>
         <li class="paragraph-list-item">
-          <p class="paragraph-regular">configuration.ts - configures the API, for example, allows you to specify the base path or bearer token.</p>
+          <p class="paragraph-regular"><span class="paragraph-code">configuration.ts</span> - configures the API, for example, allows you to specify the base path or bearer token.</p>
         </li>
       </ul>
     </div>
@@ -262,14 +259,15 @@ apiUser.ts		nodeFetch.ts
           <div class="visual-code w-embed w-script">
             <script>hljs.highlightAll();</script>
             <pre style="margin-top: 0px; margin-bottom: 0px;">
-<code style="border-radius: 16px;padding-left: 16px;padding-right: 16px;">
-import ApiPet from "./api/apiPet";
+<code>import ApiPet from "./api/apiPet";
 import Configuration from "./api/configuration";
 import { transport } from "./api/nodeFetch"
+
 // create API client
 const config = new Configuration(transport);
 config.basePath = "https://petstore3.swagger.io";
 const api = new ApiPet(config);
+
 // use it!
 (async () => {
  await api.addPet({
@@ -277,6 +275,7 @@ const api = new ApiPet(config);
    name: "Fido",
    photoUrls: []
  });
+
  const pet = await api.getPetById(1);
  console.log(pet.name);
 })();
