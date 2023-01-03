@@ -80,7 +80,8 @@ api.findPetsByStatus("available").then((data: Pet[]) => {
 The Forge currently provides the following generators. Each provide documentation regarding the API they generate and its usage:
 
 - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
-- C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp (in development)
+- C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
+- JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
 
 ## User Guide
 
@@ -109,7 +110,7 @@ Options:
 
 If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder at the same level as the forge with the same name of the generator and finally if no local generator is found it will look for an npm package and install it if it does not exist.
 
-## Developer guide
+## Developer guide [WIP]
 
 The following is a very high-level overview of the generation process:
 
@@ -117,4 +118,3 @@ The following is a very high-level overview of the generation process:
 - transform - the schema undergoes a number of transformations for the purposes of simplifying the generation process. By convention, any modified or new properties are prefixed with an underscore.
 - generate - the generators are implemented using the [Handlebars templating engine](https://handlebarsjs.com/).
 
-TODO: Elaborate etc ...
