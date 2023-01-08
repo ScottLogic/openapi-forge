@@ -1,91 +1,40 @@
-## OpenAPI Forge
+# OpenAPI Forge
 
 ⚒️🔥 Effortlessly create OpenAPI clients from the fiery furnace of our forge
+
+- [OpenAPI Forge](#openapi-forge)
+  - [Design principles](#design-principles)
+  - [Overview](#overview)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Client generation](#client-generation)
+  - [Usage example](#usage-example)
+  - [Language Generators](#language-generators)
 
 ## Design principles
 
 - **Simplicity** - the generated output is as simple as possible, just code that relates to the task of communicating with an API endpoint
 - **Favour runtime configuration** - to keep the generation process as simple as possible, we favour runtime configuration, e.g. pluggable networking adaptors, logging etc
-- **Generation configuration** - if you do need to configure the generation process, the goal is to make this as simple as possible
 - **Opinionated** - we'll support just one 'official' generator per language
-- **Multi-repo** - each generator has its own repository, reducing overall traffic
 - **Extensively tested** - this repo contains a BDD test suite that is executed against each generator to ensure that it faithfully implements the OpenAPI specification
 
-## Quick start
+## Overview
 
-This project is still in active development, these steps will be simplified and streamlined soon.
+The [Open API specification](https://www.openapis.org/) has become an industry standard for describing RESTful web APIs. The machine-readable specification makes it easy to generate API documentation and forms a common language for describing web services. However, most people who consume APIs still hand-craft the code that interacts with them, creating their own HTTP requests, serializing and deserializing model objects and more.
 
-Clone this repository, and install locally then globally:
+The goal of Open API Forge is to generate high-quality, simple and effective client libraries directly from the Open API specification, in a range of languages. These simplifying the process of consuming REST APIs, providing strongly-typed interfaces, error handling and more.
 
-```
-$ npm install
-$ npm install --global
-```
+# Getting Started
 
-This will give you access to the `openapi-forge` command.
+## Installation
 
-Now you can forge your client API ...
+Install openapi-forge as a global package:
 
 ```
-$ openapi-forge forge
- \ https://petstore3.swagger.io/api/v3/openapi.json
- \ openapi-forge-typescript
- \ -o api
+$ npm install openapi-forge --global
 ```
 
-The above command forges a client API for the 'petstore' API, downloaded via the given URL creating a TypeScript API using the `openapi-forge-typescript` generator, with the results saves in a folder called `api`.
-
-If you take a look within the `api` folder you'll find that a number of files have been generated. The exact structure depends on the generator you use, with the detail available in the respective README file.
-
-```
-% cd api
-% ls
- README.md
- api.ts
- configuration.ts
- model.ts
- nodeFetch.ts
- request.ts
- serializer.ts
- util.ts
-```
-
-The two most interesting files in the above are `model.ts` which has a number of TypeScript classes generated from the various data types in the schema, and `api.ts` which provides a method for each path within the API.
-
-The following is a very simple example of how you might use this generated API:
-
-```
-import Api from "./api/api";
-import Configuration from "./api/configuration";
-import { Pet } from "./api/model";
-import { transport } from "./api/nodeFetch"
-
-// configure the API, in this instance we are using the node-fetch library for HTTP requests
-const config = new Configuration(transport);
-config.basePath = "https://petstore3.swagger.io";
-
-// create an API instance from this configuration
-const api = new Api(config);
-
-// make a request
-api.findPetsByStatus("available").then((data: Pet[]) => {
-  // note the typed response
-  console.log("Pet names...");
-  console.log(data.map(pet => pet.name));
-});
-```
-
-## Generators
-
-The Forge currently provides the following generators. Each provide documentation regarding the API they generate and its usage:
-
-- TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
-- C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
-- JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
-
-## User Guide
-
-The CLI tool provided by this repository is the primary interface for the Forge:
+This gives you access to the openapi-forge CLI tool, which performs a number of functions, including the generation of client APIs. The tool provides high-level usage instructions via the command line. For example, here is the documentation for the `forge` command:
 
 ```
 % openapi-forge help forge
@@ -106,14 +55,75 @@ Options:
   -h, --help              Display help for command
 ```
 
-**Generator Hierarchy**
+## Client generation
 
-If a URL is given than it assumes that you are giving it a git repository. Otherwise it searches for a local generator folder at the same level as the forge with the same name of the generator and finally if no local generator is found it will look for an npm package and install it if it does not exist.
+In order to generate a client you need a suitable API specification, this can be supplied as a URL or a local file and can be in JSON or YML format. For this tutorial, we’ll use the Swagger Petstore API:
 
-## Developer guide [WIP]
+https://petstore3.swagger.io/api/v3/openapi.json
 
-The following is a very high-level overview of the generation process:
+To create the client API, run the forge command, providing the schema URL, together with a language-specific generator and an output folder:
 
-- load - the Forge generator loads the given OpenAPI schema
-- transform - the schema undergoes a number of transformations for the purposes of simplifying the generation process. By convention, any modified or new properties are prefixed with an underscore.
-- generate - the generators are implemented using the [Handlebars templating engine](https://handlebarsjs.com/).
+```
+% openapi-forge forge  https://petstore3.swagger.io/api/v3/openapi.json openapi-forge-typescript -o api
+```
+
+The above example uses [openapi-forge-typescript](https://github.com/ScottLogic/openapi-forge-typescript) which generates a TypeScript client API.
+
+Let’s take a look at the files this has generated:
+
+```
+% ls api
+README.md		configuration.ts	parameterBuilder.ts
+apiPet.ts		info.ts			request.ts
+apiStore.ts		model.ts		serializer.ts
+apiUser.ts		nodeFetch.ts
+```
+
+The generators all create a `README.md` file which provides language specific usage instructions. Some of the more notable generated files are:
+
+- `apiPet.ts` / `apiStore.ts` / `apiUser.ts` - these are the API endpoints, grouped by tags, each file contains a class with methods that relate to the API schema
+- `model.ts` - this file contains the models used by the API, for example Pet or Order
+- `configuration.ts` - configures the API, for example, allows you to specify the base path or bearer token.
+
+## Usage example
+
+Let’s take a look at a quick example that uses the generated client:
+
+```typescript
+import ApiPet from "./api/apiPet";
+import Configuration from "./api/configuration";
+import { transport } from "./api/nodeFetch";
+
+// create API client
+const config = new Configuration(transport);
+config.basePath = "https://petstore3.swagger.io";
+const api = new ApiPet(config);
+
+// use it!
+(async () => {
+  await api.addPet({
+    id: 1,
+    name: "Fido",
+    photoUrls: [],
+  });
+
+  const pet = await api.getPetById(1);
+  console.log(pet.name);
+})();
+```
+
+You can run the above code with either [ts-node](https://www.npmjs.com/package/ts-node), or a runtime with native TypeScript support such as deno.
+
+The first step is to configure and create a client API instance. In the above example we supply a ‘transport’ implementation, which in this case uses [node-fetch](https://github.com/node-fetch/node-fetch). If you want to use a different mechanism, for example Axios or XHR, it is very easy to provide a different implementation. You also need to supply a base path, which indicates where this API is hosted. This example uses the API methods grouped by the ‘pet’ tag, so an instance of ApiPet is required.
+
+To test the API, this example adds a Pet named “Fido” to the Pet Store, then retrieves it via its id, logging the name.
+
+And that’s it, you’ve successfully generated and used your first client library.
+
+## Language Generators
+
+OpenAPI Forge currently has the following language generators:
+
+- TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
+- C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
+- JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
