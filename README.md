@@ -10,6 +10,12 @@
   - [Client generation](#client-generation)
   - [Usage example](#usage-example)
   - [Language Generators](#language-generators)
+- [Generator Development](#generator-development)
+  - [A very simple generator](#a-very-simple-generator)
+  - [Schema transformation](#schema-transformation)
+  - [Tags and API structure](#tags-and-api-structure)
+  - [Testing](#testing)
+  - [Formatting](#formatting)
 
 ## Design principles
 
@@ -127,3 +133,121 @@ OpenAPI Forge currently has the following language generators:
 - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
 - C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
 - JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
+
+# Generator Development
+
+This section provides a brief guide for anyone wanting to create a new language generator, as a step-by-step guide.
+
+## A very simple generator
+
+Generators are JavaScript projects, which are typically distributed via npm, although you can use them locally. The first step is to create a new project:
+
+```
+% mkdir openapi-forge-generator
+% cd openapi-forge-generator
+% npm init -y --silent
+```
+
+Generators are a collection of templates, using the [Handlebars](https://handlebarsjs.com/) syntax, with the templates, and any handlebars 'helpers' located within standard folders. We'll get started by adding a single tenmplate.
+
+Create a folder named `templates` and add the following to a file named `api.js.handlebars` within that folder:
+
+```javascript
+/**
+ * {{info.title}}
+ * {{info.version}}
+ */
+```
+
+Any file with the `handlebars` suffix is processed via the handlebars templating engine. The context supplied to these templates is the OpenAPI specification that is being generated. You can also include files within the `handlebars` suffix, these are just copied into the output folder.
+
+Let's generate an API using this template.
+
+From the root of the `openapi-forge-generator` folder run the following command:
+
+```
+% openapi-forge forge \
+                https://petstore3.swagger.io/api/v3/openapi.json \
+                . \
+                -o api
+```
+
+This runs the `forge` command, using the schema downloaded from the petstore swagger repository. For the generator parameter, we are using the period symbol `.`, which indicates a filepath (rather than an npm package), which in this case is the current working directory.
+
+Executing the above command results in the following output:
+
+```
+Loading generator from '.'
+Validating generator
+Loading schema from 'https://petstore3.swagger.io/api/v3/openapi.json'
+Validating schema
+Iterating over 1 files
+No formatter found in /Users/foo/Projects/openapi-forge-testgen
+
+---------------------------------------------------
+
+            API generation  SUCCESSFUL
+
+---------------------------------------------------
+
+ Your API has been forged from the fiery furnace:
+ 8 models have been molded
+ 13 endpoints have been cast
+
+---------------------------------------------------
+```
+
+If you look in the `api` folder, you'll find a single file with the following contents:
+
+```
+/**
+ * Swagger Petstore - OpenAPI 3.0
+ * 1.0.17
+ */
+```
+
+You can also add any partial templates withing a `partials` folder, and helper functions in a `helpers` folder. These will be loaded automatically alongside your templates.
+
+## Schema transformation
+
+The OpenAPI schema is supplied as the context for each generator template, allowing you to access the various schema properties, e.g. iterate over arrays, and generate suitable client code. However, there are some instances where the structure of the OpenAPI specification is not ideal for template generation.
+
+In order to keep the templates simple, the schema undergoes a number of transformations, which you can find in the `[blob/master/src/transformers.js](transformers.js)` file. In each case, the original schema structure is left untouched, with the transformed content being added via new properties prefixed with an underscore.
+
+For example, the OpenAPI schema describes the model objects used by the API (e.g. names, properties and their types). The logic required to determine whether a model object property is optional is relatively complex and would result in a complicated template. One of the transformation steps adds a `_required` property to each property, resulting in clean and simple templates:
+
+```
+{{#each components.schemas}}
+export class {{@key}} {
+ {{#each properties}}
+ {{#unless _required}}// this is an optional property{{/unless}}
+ {{@key}};
+ {{/each}}
+}
+{{/each}}
+```
+
+## Tags and API structure
+
+The OpenAPI specification allows you to add tags to API methods as a way to provide additional structure. The generation processes groups methods based on tag, these can be written to separate files by specifying template files that are enumerated by tag.
+
+You can specify such files by adding the following to `package.json`
+
+```
+"apiTemplates": [
+  // include the name of any file that should be generated on a per-tag basis
+],
+```
+
+## Testing
+
+A primary goal of OpenAPI Forge is to provide robust and extensively tested client libraries. This project uses a BDD-style testing approach, with the various test scenarios found in the `[tree/master/features](features)` folder of this repository. These tests use the standard Gherkin format, which is supported by most programming languages.
+
+In order to test your generator you'll need to choose a suitable test runner (e.g. [Cucumber](https://www.npmjs.com/package/@cucumber/cucumber) for JavaScript). The standard pattern for each test is that it generates a client API using a schema snippet, then validates the generated output.
+
+## Formatting
+
+Ideally the generated output should be 'neatly' formatted in an idiomatic way for the target language. There are a couple of ways to achieve this:
+
+1.  Write the handlebars templates in such a way that they produce nicely formatted code. This can result in templates which are a little convoluted, however, [whitespace control](https://handlebarsjs.com/guide/expressions.html#whitespace-control) is your friend.
+2.  You can format the files as a post-processing step. To achieve this, add a `formatting.js` file to the root of your generator project. This will be executed as the final step of the generation process. How this is implemented is of course language-dependent.
