@@ -1,16 +1,16 @@
 # OpenAPI Forge
 
-⚒️🔥 Effortlessly create OpenAPI clients from the fiery furnace of our forge
+⚒️🔥 Effortlessly create OpenAPI clients from the fiery furnace of our forge - supporting OpenAPI spec v2 and v3
 
 - [OpenAPI Forge](#openapi-forge)
   - [Design principles](#design-principles)
   - [Overview](#overview)
-- [Getting Started](#getting-started)
+- [Getting started](#getting-started)
   - [Installation](#installation)
   - [Client generation](#client-generation)
   - [Usage example](#usage-example)
-  - [Language Generators](#language-generators)
-- [Generator Development](#generator-development)
+  - [Language generators](#language-generators)
+- [Generator development](#generator-development)
   - [A very simple generator](#a-very-simple-generator)
   - [Schema transformation](#schema-transformation)
   - [Tags and API structure](#tags-and-api-structure)
@@ -30,7 +30,7 @@ The [Open API specification](https://www.openapis.org/) has become an industry s
 
 The goal of Open API Forge is to generate high-quality, simple and effective client libraries directly from the Open API specification, in a range of languages. These simplifying the process of consuming REST APIs, providing strongly-typed interfaces, error handling and more.
 
-# Getting Started
+# Getting started
 
 ## Installation
 
@@ -70,7 +70,10 @@ https://petstore3.swagger.io/api/v3/openapi.json
 To create the client API, run the forge command, providing the schema URL, together with a language-specific generator and an output folder:
 
 ```
-% openapi-forge forge  https://petstore3.swagger.io/api/v3/openapi.json openapi-forge-typescript -o api
+% openapi-forge forge \
+                https://petstore3.swagger.io/api/v3/openapi.json \
+                openapi-forge-typescript \
+                -o api
 ```
 
 The above example uses [openapi-forge-typescript](https://github.com/ScottLogic/openapi-forge-typescript) which generates a TypeScript client API.
@@ -126,7 +129,7 @@ To test the API, this example adds a Pet named “Fido” to the Pet Store, then
 
 And that’s it, you’ve successfully generated and used your first client library.
 
-## Language Generators
+## Language generators
 
 OpenAPI Forge currently has the following language generators:
 
@@ -134,7 +137,7 @@ OpenAPI Forge currently has the following language generators:
 - C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
 - JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
 
-# Generator Development
+# Generator development
 
 This section provides a brief guide for anyone wanting to create a new language generator, as a step-by-step guide.
 
@@ -212,7 +215,7 @@ You can also add any partial templates withing a `partials` folder, and helper f
 
 The OpenAPI schema is supplied as the context for each generator template, allowing you to access the various schema properties, e.g. iterate over arrays, and generate suitable client code. However, there are some instances where the structure of the OpenAPI specification is not ideal for template generation.
 
-In order to keep the templates simple, the schema undergoes a number of transformations, which you can find in the `[blob/master/src/transformers.js](transformers.js)` file. In each case, the original schema structure is left untouched, with the transformed content being added via new properties prefixed with an underscore.
+In order to keep the templates simple, the schema undergoes a number of transformations, which you can find in the [`transformers.js`](blob/master/src/transformers.js) file. In each case, the original schema structure is left untouched, with the transformed content being added via new properties prefixed with an underscore.
 
 For example, the OpenAPI schema describes the model objects used by the API (e.g. names, properties and their types). The logic required to determine whether a model object property is optional is relatively complex and would result in a complicated template. One of the transformation steps adds a `_required` property to each property, resulting in clean and simple templates:
 
@@ -241,7 +244,7 @@ You can specify such files by adding the following to `package.json`
 
 ## Testing
 
-A primary goal of OpenAPI Forge is to provide robust and extensively tested client libraries. This project uses a BDD-style testing approach, with the various test scenarios found in the `[tree/master/features](features)` folder of this repository. These tests use the standard Gherkin format, which is supported by most programming languages.
+A primary goal of OpenAPI Forge is to provide robust and extensively tested client libraries. This project uses a BDD-style testing approach, with the various test scenarios found in the [`features`](features) folder of this repository. These tests use the standard Gherkin format, which is supported by most programming languages.
 
 In order to test your generator you'll need to choose a suitable test runner (e.g. [Cucumber](https://www.npmjs.com/package/@cucumber/cucumber) for JavaScript). The standard pattern for each test is that it generates a client API using a schema snippet, then validates the generated output.
 
