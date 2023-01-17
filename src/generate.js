@@ -1,7 +1,5 @@
 const fs = require("fs");
-
 const path = require("path");
-
 const Handlebars = require("handlebars");
 const minimatch = require("minimatch");
 const fetch = require("node-fetch");
@@ -63,6 +61,7 @@ function validateGenerator(generatorPath) {
 }
 
 function getFileName(fileName, tagName = "") {
+  log.verbose(fileName);
   let newFileName = fileName.slice(0, fileName.indexOf("."));
   if (tagName !== "") newFileName += helpers.capitalizeFirst(tagName);
   newFileName += fileName.slice(fileName.indexOf("."));
@@ -72,10 +71,92 @@ function getFileName(fileName, tagName = "") {
 function templateAndWriteToFile(schema, template, file, outputFolder) {
   let result = template(schema);
   log.verbose("Writing to output location");
+  log.verbose(result);
+  log.verbose(`${outputFolder}/${getFileName(file, schema._tag?.name)}`);
+  try {
+    const pathParts = getFileName(file, schema._tag?.name).split("/");
+    pathParts.pop();
+    const path = pathParts.join("/");
+    fs.mkdirSync(`${outputFolder}/${path}`, { recursive: true });
+  } catch (err) {
+    log.verbose(err);
+  }
   fs.writeFileSync(
     `${outputFolder}/${getFileName(file, schema._tag?.name)}`,
     result
   );
+}
+
+function processTemplateFactory(
+  options,
+  generatorTemplatesPath,
+  generatorPackage,
+  schema,
+  outputFolder
+) {
+  return async function (file) {
+    if (options.exclude && minimatch(file, options.exclude)) {
+      return;
+    }
+    log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);
+    log.verbose("Reading");
+    // log.verbose(`${generatorTemplatesPath}/${file}`);
+    log.verbose(`${generatorTemplatesPath}/${file}`);
+    const source = fs.readFileSync(
+      `${generatorTemplatesPath}/${file}`,
+      "utf-8"
+    );
+
+    if (file.endsWith("handlebars")) {
+      // run the handlebars template
+      const template = Handlebars.compile(source);
+      log.verbose("Populating template");
+      if (
+        generatorPackage.apiTemplates &&
+        generatorPackage.apiTemplates.includes(file)
+      ) {
+        // Iterating tags to generate grouped paths
+        schema._tags.forEach((tag) => {
+          schema._tag = tag;
+          templateAndWriteToFile(schema, template, file, outputFolder);
+        });
+      } else {
+        schema._tag = null;
+        templateAndWriteToFile(schema, template, file, outputFolder);
+      }
+    } else {
+      log.verbose("Copying to output location");
+      // for other files, simply copy them to the output folder
+      log.verbose(`${outputFolder}/${file}`);
+      log.verbose(source);
+      try {
+        const pathParts = file.split("/");
+        pathParts.pop();
+        const path = pathParts.join("/");
+        fs.mkdirSync(`${outputFolder}/${path}`, { recursive: true });
+      } catch (err) {
+        log.verbose(err);
+      }
+      fs.writeFileSync(`${outputFolder}/${file}`, source);
+      // log.verbose(fs.writeFileSync.mock.calls);
+    }
+  };
+}
+
+function getFilesInFolders(basePath, partialPath = "") {
+  log.verbose("getFilesInFolders");
+  log.verbose(`${basePath}/${partialPath}`);
+  const topLevelTemplates = fs.readdirSync(`${basePath}/${partialPath}`, {
+    withFileTypes: true,
+  });
+  const templates = topLevelTemplates.flatMap((template) => {
+    log.verbose(template);
+    if (!template.isDirectory()) {
+      return [`${partialPath}/${template.name}`];
+    }
+    return getFilesInFolders(basePath, `${partialPath}/${template.name}`);
+  });
+  return templates;
 }
 
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
@@ -139,6 +220,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     const handlebarsLoader = (pathToLoad, registrationMethod) => {
       if (fs.existsSync(pathToLoad)) {
         const items = fs.readdirSync(pathToLoad);
+        log.verbose(items);
         items.forEach((item) => {
           const itemPath = path.join(pathToLoad, item);
           Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
@@ -161,51 +243,29 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     // iterate over all the files in the template folder
     const generatorTemplatesPath = generatorPath + "/template";
-    const templates = fs.readdirSync(generatorTemplatesPath);
+    // const topLevelTemplates = fs.readdirSync(generatorTemplatesPath, { withFileTypes: true });
+    // const templates = files(generatorTemplatesPath, { sync: true });
+    const templates = await getFilesInFolders(generatorTemplatesPath);
     log.verbose("");
     log.standard(
       `Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`
     );
 
+    log.verbose(path.resolve(generatorPath, "./package.json"));
     let generatorPackage = require(path.resolve(
       generatorPath,
       "./package.json"
     ));
 
-    templates.forEach((file) => {
-      if (options.exclude && minimatch(file, options.exclude)) {
-        return;
-      }
-      log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);
-      log.verbose("Reading");
-      const source = fs.readFileSync(
-        `${generatorTemplatesPath}/${file}`,
-        "utf-8"
-      );
-
-      if (file.endsWith("handlebars")) {
-        // run the handlebars template
-        const template = Handlebars.compile(source);
-        log.verbose("Populating template");
-        if (
-          generatorPackage.apiTemplates &&
-          generatorPackage.apiTemplates.includes(file)
-        ) {
-          // Iterating tags to generate grouped paths
-          schema._tags.forEach((tag) => {
-            schema._tag = tag;
-            templateAndWriteToFile(schema, template, file, outputFolder);
-          });
-        } else {
-          schema._tag = null;
-          templateAndWriteToFile(schema, template, file, outputFolder);
-        }
-      } else {
-        log.verbose("Copying to output location");
-        // for other files, simply copy them to the output folder
-        fs.writeFileSync(`${outputFolder}/${file}`, source);
-      }
-    });
+    log.verbose(templates);
+    const processTemplate = processTemplateFactory(
+      options,
+      generatorTemplatesPath,
+      generatorPackage,
+      schema,
+      outputFolder
+    );
+    templates.forEach(processTemplate);
     log.verbose("\nIteration complete\n");
 
     try {
