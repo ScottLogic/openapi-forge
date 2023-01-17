@@ -1,5 +1,7 @@
 const fs = require("fs");
+
 const path = require("path");
+
 const Handlebars = require("handlebars");
 const minimatch = require("minimatch");
 const fetch = require("node-fetch");
@@ -61,26 +63,29 @@ function validateGenerator(generatorPath) {
 }
 
 function getFileName(fileName, tagName = "") {
-  log.verbose(fileName);
   let newFileName = fileName.slice(0, fileName.indexOf("."));
   if (tagName !== "") newFileName += helpers.capitalizeFirst(tagName);
   newFileName += fileName.slice(fileName.indexOf("."));
   return newFileName.replace(".handlebars", "");
 }
 
-function templateAndWriteToFile(schema, template, file, outputFolder) {
-  let result = template(schema);
-  log.verbose("Writing to output location");
-  log.verbose(result);
-  log.verbose(`${outputFolder}/${getFileName(file, schema._tag?.name)}`);
+function createNestedDirectories(schema, file, outputFolder) {
   try {
+    // Strip out the file name and create the directory structure of
+    // the input folder in the output folder.
     const pathParts = getFileName(file, schema._tag?.name).split("/");
     pathParts.pop();
     const path = pathParts.join("/");
     fs.mkdirSync(`${outputFolder}/${path}`, { recursive: true });
-  } catch (err) {
-    log.verbose(err);
+  } catch (ignored) {
+    // If the directory already exists, we're all good.
   }
+}
+
+function templateAndWriteToFile(schema, template, file, outputFolder) {
+  let result = template(schema);
+  log.verbose("Writing to output location");
+  createNestedDirectories(schema, file, outputFolder);
   fs.writeFileSync(
     `${outputFolder}/${getFileName(file, schema._tag?.name)}`,
     result
@@ -127,36 +132,27 @@ function processTemplateFactory(
     } else {
       log.verbose("Copying to output location");
       // for other files, simply copy them to the output folder
-      log.verbose(`${outputFolder}/${file}`);
-      log.verbose(source);
-      try {
-        const pathParts = file.split("/");
-        pathParts.pop();
-        const path = pathParts.join("/");
-        fs.mkdirSync(`${outputFolder}/${path}`, { recursive: true });
-      } catch (err) {
-        log.verbose(err);
-      }
+      createNestedDirectories(schema, file, outputFolder);
       fs.writeFileSync(`${outputFolder}/${file}`, source);
-      // log.verbose(fs.writeFileSync.mock.calls);
     }
   };
 }
 
+// Synchronously get all files in a directory (recursively searching down into directories).
+// It maintains the paths of the inner files so that the file structure can be re-created.
 function getFilesInFolders(basePath, partialPath = "") {
-  log.verbose("getFilesInFolders");
-  log.verbose(`${basePath}/${partialPath}`);
-  const topLevelTemplates = fs.readdirSync(`${basePath}/${partialPath}`, {
+  const filesAndDirs = fs.readdirSync(`${basePath}/${partialPath}`, {
     withFileTypes: true,
   });
-  const templates = topLevelTemplates.flatMap((template) => {
-    log.verbose(template);
+  return filesAndDirs.flatMap((template) => {
+    const fileOrDirName = partialPath
+      ? `${partialPath}/${template.name}`
+      : template.name;
     if (!template.isDirectory()) {
-      return [`${partialPath}/${template.name}`];
+      return [fileOrDirName];
     }
-    return getFilesInFolders(basePath, `${partialPath}/${template.name}`);
+    return getFilesInFolders(basePath, fileOrDirName);
   });
-  return templates;
 }
 
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
@@ -220,7 +216,6 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     const handlebarsLoader = (pathToLoad, registrationMethod) => {
       if (fs.existsSync(pathToLoad)) {
         const items = fs.readdirSync(pathToLoad);
-        log.verbose(items);
         items.forEach((item) => {
           const itemPath = path.join(pathToLoad, item);
           Handlebars[registrationMethod](item.split(".")[0], require(itemPath));
@@ -243,21 +238,17 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     // iterate over all the files in the template folder
     const generatorTemplatesPath = generatorPath + "/template";
-    // const topLevelTemplates = fs.readdirSync(generatorTemplatesPath, { withFileTypes: true });
-    // const templates = files(generatorTemplatesPath, { sync: true });
-    const templates = await getFilesInFolders(generatorTemplatesPath);
+    const templates = getFilesInFolders(generatorTemplatesPath);
     log.verbose("");
     log.standard(
       `Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`
     );
 
-    log.verbose(path.resolve(generatorPath, "./package.json"));
     let generatorPackage = require(path.resolve(
       generatorPath,
       "./package.json"
     ));
 
-    log.verbose(templates);
     const processTemplate = processTemplateFactory(
       options,
       generatorTemplatesPath,

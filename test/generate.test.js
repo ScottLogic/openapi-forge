@@ -18,14 +18,12 @@ describe("generate", () => {
   });
   const outDir = "out";
   const outCode = "transformed content";
-  beforeEach(() => {
+  beforeAll(() => {
     // For these tests, we don't really care about the responses for these:
     path.resolve.mockImplementation((path) => path);
     generatorResolver.getGenerator.mockImplementation((path) => path);
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(fakeSchema);
-    // fs.readFileSync.mockReturnValue("file contents");
-    // fs.mkdirSync.
     generatorResolver.isUrl.mockReturnValue(false);
     Handlebars.compile.mockReturnValue(() => outCode);
 
@@ -35,7 +33,8 @@ describe("generate", () => {
     // Mock the dynamic "require" imports:
     require(generatorPath);
     jest.mock(generatorPath, () => generatorPackage, { virtual: true });
-
+  });
+  beforeEach(() => {
     // Clear mock calls
     jest.clearAllMocks();
   });
@@ -60,7 +59,6 @@ describe("generate", () => {
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
       output: outDir,
-      logLevel: "verbose",
     });
     console.error(fs.writeFileSync.mock.calls);
     expect(fs.writeFileSync).toHaveBeenCalledWith(
@@ -98,115 +96,63 @@ describe("generate", () => {
   });
 
   it("should copy files in directories", async () => {
-    const fileName = "src/main/java/com/example/ExampleFile";
-    const fileExtension = "java";
-    function getFilePath(path) {
-      if (path.includes("example")) {
-        return {
-          name: "ExampleFile.java",
-          isDirectory: () => false,
-        };
-      } else if (path.includes("com")) {
-        return {
-          name: "example",
-          isDirectory: () => true,
-        };
-      } else if (path.includes("java")) {
-        return {
-          name: "com",
-          isDirectory: () => true,
-        };
-      } else if (path.includes("main")) {
-        return {
-          name: "java",
-          isDirectory: () => true,
-        };
-      } else if (path.includes("src")) {
-        return {
-          name: "main",
-          isDirectory: () => true,
-        };
-      } else {
-        return {
-          name: "src",
-          isDirectory: () => true,
-        };
-      }
-    }
-    // TODO: Why does this test work?
-    // Am I implementing the mock correctly?
-    // There are no helper or partial files, but there is a template:
-    fs.readdirSync.mockImplementation((filePath, { withFileTypes } = {}) => {
-      console.error(filePath);
-      if (filePath.includes("helpers") || filePath.includes("partials")) {
-        return [];
-      } else {
-        return [getFilePath(filePath)];
-      }
-    });
+    const fileShortName = "ExampleFile";
+    const extension = "java";
+    const basePath = `somewhere/else`;
+
+    mockReaddirSync(fileShortName, extension);
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
       output: outDir,
     });
     expect(fs.writeFileSync).toHaveBeenCalledWith(
-      `${outDir}/${fileName}.${fileExtension}`,
+      `${outDir}/${basePath}/${fileShortName}.${extension}`,
       fakeSchema
     );
   });
   it("should change the filename of Handlebars files in directories", async () => {
-    const fileName = "src/main/java/com/example/ExampleFile";
-    const fileExtension = "java.handlebars";
-    function getFilePath(path) {
-      if (path.includes("example")) {
-        return {
-          name: "ExampleFile.java.handlebars",
-          isDirectory: () => false,
-        };
-      } else if (path.includes("com")) {
-        return {
-          name: "example",
-          isDirectory: () => true,
-        };
-      } else if (path.includes("java")) {
-        return {
-          name: "com",
-          isDirectory: () => true,
-        };
-      } else if (path.includes("main")) {
-        return {
-          name: "java",
-          isDirectory: () => true,
-        };
-      } else if (path.includes("src")) {
-        return {
-          name: "main",
-          isDirectory: () => true,
-        };
-      } else {
-        return {
-          name: "src",
-          isDirectory: () => true,
-        };
-      }
-    }
-    // TODO: Why does this test work?
-    // Am I implementing the mock correctly?
-    // There are no helper or partial files, but there is a template:
-    fs.readdirSync.mockImplementation((filePath, { withFileTypes } = {}) => {
-      console.error(filePath);
-      if (filePath.includes("helpers") || filePath.includes("partials")) {
-        return [];
-      } else {
-        return [getFilePath(filePath)];
-      }
-    });
+    const fileShortName = "ExampleFile";
+    const extension = "java.handlebars";
+    const basePath = `somewhere/else`;
+
+    mockReaddirSync(fileShortName, extension);
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
       output: outDir,
     });
     expect(fs.writeFileSync).toHaveBeenCalledWith(
-      `${outDir}/${fileName}.java`,
-      "transformed content"
+      `${outDir}/${basePath}/${fileShortName}.java`, // handlebars extension stripped out
+      outCode
     );
   });
 });
+
+function mockReaddirSync(fileShortName, extension) {
+  fs.readdirSync.mockImplementation((filePath) => {
+    // There are no helper or partial files, but there is a template:
+    if (filePath.includes("helpers") || filePath.includes("partials")) {
+      return [];
+    } else {
+      return [getFilePath(filePath, `${fileShortName}.${extension}`)];
+    }
+  });
+}
+
+function getFilePath(path, fileShortName) {
+  if (path.includes("else")) {
+    return {
+      name: fileShortName,
+      isDirectory: () => false,
+    };
+  } else if (path.includes("somewhere")) {
+    return {
+      name: "else",
+      isDirectory: () => true,
+    };
+  } else {
+    return {
+      name: "somewhere",
+      isDirectory: () => true,
+    };
+  }
+}
