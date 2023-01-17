@@ -5,3 +5,4 @@ node_modules
 .prettierrc.js
 .prettierignore
 .vscode
+test

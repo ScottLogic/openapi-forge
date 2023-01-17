@@ -69,13 +69,88 @@ function getFileName(fileName, tagName = "") {
   return newFileName.replace(".handlebars", "");
 }
 
+function createNestedDirectories(schema, file, outputFolder) {
+  try {
+    // Strip out the file name and create the directory structure of
+    // the input folder in the output folder.
+    const pathParts = getFileName(file, schema._tag?.name).split("/");
+    pathParts.pop();
+    const path = pathParts.join("/");
+    fs.mkdirSync(`${outputFolder}/${path}`, { recursive: true });
+  } catch (ignored) {
+    // If the directory already exists, we're all good.
+  }
+}
+
 function templateAndWriteToFile(schema, template, file, outputFolder) {
   let result = template(schema);
   log.verbose("Writing to output location");
+  createNestedDirectories(schema, file, outputFolder);
   fs.writeFileSync(
     `${outputFolder}/${getFileName(file, schema._tag?.name)}`,
     result
   );
+}
+
+function processTemplateFactory(
+  options,
+  generatorTemplatesPath,
+  generatorPackage,
+  schema,
+  outputFolder
+) {
+  return async function (file) {
+    if (options.exclude && minimatch(file, options.exclude)) {
+      return;
+    }
+    log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);
+    log.verbose("Reading");
+    const source = fs.readFileSync(
+      `${generatorTemplatesPath}/${file}`,
+      "utf-8"
+    );
+
+    if (file.endsWith("handlebars")) {
+      // run the handlebars template
+      const template = Handlebars.compile(source);
+      log.verbose("Populating template");
+      if (
+        generatorPackage.apiTemplates &&
+        generatorPackage.apiTemplates.includes(file)
+      ) {
+        // Iterating tags to generate grouped paths
+        schema._tags.forEach((tag) => {
+          schema._tag = tag;
+          templateAndWriteToFile(schema, template, file, outputFolder);
+        });
+      } else {
+        schema._tag = null;
+        templateAndWriteToFile(schema, template, file, outputFolder);
+      }
+    } else {
+      log.verbose("Copying to output location");
+      // for other files, simply copy them to the output folder
+      createNestedDirectories(schema, file, outputFolder);
+      fs.writeFileSync(`${outputFolder}/${file}`, source);
+    }
+  };
+}
+
+// Synchronously get all files in a directory (recursively searching down into directories).
+// It maintains the paths of the inner files so that the file structure can be re-created.
+function getFilesInFolders(basePath, partialPath = "") {
+  const filesAndDirs = fs.readdirSync(`${basePath}/${partialPath}`, {
+    withFileTypes: true,
+  });
+  return filesAndDirs.flatMap((template) => {
+    const fileOrDirName = partialPath
+      ? `${partialPath}/${template.name}`
+      : template.name;
+    if (!template.isDirectory()) {
+      return [fileOrDirName];
+    }
+    return getFilesInFolders(basePath, fileOrDirName);
+  });
 }
 
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
@@ -161,7 +236,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
 
     // iterate over all the files in the template folder
     const generatorTemplatesPath = generatorPath + "/template";
-    const templates = fs.readdirSync(generatorTemplatesPath);
+    const templates = getFilesInFolders(generatorTemplatesPath);
     log.verbose("");
     log.standard(
       `Iterating over ${log.brightCyanForeground}${templates.length}${log.resetStyling} files`
@@ -172,40 +247,14 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
       "./package.json"
     ));
 
-    templates.forEach((file) => {
-      if (options.exclude && minimatch(file, options.exclude)) {
-        return;
-      }
-      log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);
-      log.verbose("Reading");
-      const source = fs.readFileSync(
-        `${generatorTemplatesPath}/${file}`,
-        "utf-8"
-      );
-
-      if (file.endsWith("handlebars")) {
-        // run the handlebars template
-        const template = Handlebars.compile(source);
-        log.verbose("Populating template");
-        if (
-          generatorPackage.apiTemplates &&
-          generatorPackage.apiTemplates.includes(file)
-        ) {
-          // Iterating tags to generate grouped paths
-          schema._tags.forEach((tag) => {
-            schema._tag = tag;
-            templateAndWriteToFile(schema, template, file, outputFolder);
-          });
-        } else {
-          schema._tag = null;
-          templateAndWriteToFile(schema, template, file, outputFolder);
-        }
-      } else {
-        log.verbose("Copying to output location");
-        // for other files, simply copy them to the output folder
-        fs.writeFileSync(`${outputFolder}/${file}`, source);
-      }
-    });
+    const processTemplate = processTemplateFactory(
+      options,
+      generatorTemplatesPath,
+      generatorPackage,
+      schema,
+      outputFolder
+    );
+    templates.forEach(processTemplate);
     log.verbose("\nIteration complete\n");
 
     try {
