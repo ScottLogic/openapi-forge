@@ -125,6 +125,9 @@ describe("generate", () => {
       outCode
     );
   });
+  it("should fail to test our CI/CD!", () => {
+    throw "Your CI/CD should catch this...";
+  });
 });
 
 function mockReaddirSync(fileShortName, extension) {
