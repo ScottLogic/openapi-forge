@@ -41,20 +41,10 @@ describe("generate", () => {
   it("should copy non-Handlebars files", async () => {
     const fileName = "exampleFile";
     const fileExtension = "js";
-    // There are no helper or partial files, but there is a template:
-    fs.readdirSync.mockImplementation((filePath, { withFileTypes } = {}) => {
-      if (filePath.includes("helpers") || filePath.includes("partials")) {
-        return [];
-      } else if (withFileTypes) {
-        return [
-          {
-            name: `${fileName}.${fileExtension}`,
-            isDirectory: () => false,
-          },
-        ];
-      } else {
-        return [`${fileName}.${fileExtension}`];
-      }
+    mockReaddirSync({
+      helpers: [],
+      partials: [],
+      templates: [`${fileName}.${fileExtension}`],
     });
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
@@ -70,20 +60,10 @@ describe("generate", () => {
   it("should change the filename of Handlebars files", async () => {
     const fileName = "exampleFile";
     const fileExtension = "js.handlebars";
-    // There are no helper or partial files, but there is a template:
-    fs.readdirSync.mockImplementation((filePath, { withFileTypes } = {}) => {
-      if (filePath.includes("helpers") || filePath.includes("partials")) {
-        return [];
-      } else if (withFileTypes) {
-        return [
-          {
-            name: `${fileName}.${fileExtension}`,
-            isDirectory: () => false,
-          },
-        ];
-      } else {
-        return [`${fileName}.${fileExtension}`];
-      }
+    mockReaddirSync({
+      helpers: [],
+      partials: [],
+      templates: [`${fileName}.${fileExtension}`],
     });
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
@@ -100,7 +80,11 @@ describe("generate", () => {
     const extension = "java";
     const basePath = `somewhere/else`;
 
-    mockReaddirSync(fileShortName, extension);
+    mockReaddirSync({
+      helpers: [],
+      partials: [],
+      templates: [`somewhere/else/${fileShortName}.${extension}`],
+    });
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
       output: outDir,
@@ -115,7 +99,11 @@ describe("generate", () => {
     const extension = "java.handlebars";
     const basePath = `somewhere/else`;
 
-    mockReaddirSync(fileShortName, extension);
+    mockReaddirSync({
+      helpers: [],
+      partials: [],
+      templates: [`somewhere/else/${fileShortName}.${extension}`],
+    });
     await generate(schemaPathOrUrl, generatorPath, {
       skipValidation: true,
       output: outDir,
@@ -127,32 +115,28 @@ describe("generate", () => {
   });
 });
 
-function mockReaddirSync(fileShortName, extension) {
+function mockReaddirSync({ helpers, partials, templates }) {
   fs.readdirSync.mockImplementation((filePath) => {
-    // There are no helper or partial files, but there is a template:
-    if (filePath.includes("helpers") || filePath.includes("partials")) {
-      return [];
-    } else {
-      return [getFilePath(filePath, `${fileShortName}.${extension}`)];
+    if (filePath.includes("helpers")) {
+      return helpers;
     }
+    if (filePath.includes("partials")) {
+      return partials;
+    }
+    // If we have a file somewhere/else/ExampleFile.java we will call readdirSync with
+    // 1) "template" and return "somewhere"
+    // 2) "somewhere" and return "else"
+    // 3) "else" and return "ExampleFile.java"
+    return templates.map((template) => {
+      const fileParts = template.split("/");
+      const nextFileOrDirName = fileParts.find(
+        (pathPart) => !filePath.includes(pathPart)
+      );
+      return {
+        name: nextFileOrDirName,
+        // If it's a file we assume it will have a ".":
+        isDirectory: () => !nextFileOrDirName.includes("."),
+      };
+    });
   });
-}
-
-function getFilePath(path, fileShortName) {
-  if (path.includes("else")) {
-    return {
-      name: fileShortName,
-      isDirectory: () => false,
-    };
-  } else if (path.includes("somewhere")) {
-    return {
-      name: "else",
-      isDirectory: () => true,
-    };
-  } else {
-    return {
-      name: "somewhere",
-      isDirectory: () => true,
-    };
-  }
 }
