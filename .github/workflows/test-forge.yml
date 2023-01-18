@@ -11,7 +11,7 @@ on:
 jobs:
   test-forge:
     name: Test Forge
-    runs-on: windows-latest 
+    runs-on: ubuntu-latest
 
     steps:
       - name: Use Node.js
@@ -19,15 +19,10 @@ jobs:
         with:
           node-version: 16.x
 
-        # Must change shell because this workflow uses the windows-latest image 
-      - name: Set npm shell
-        run: npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
-
       - name: Install openapi-forge dependencies locally
         run: |
           npm install
-
       - name: Test Forge
         run: |
-          npm run test:javascript
+          npm run test
         continue-on-error: true
