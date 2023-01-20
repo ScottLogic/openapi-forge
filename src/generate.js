@@ -164,7 +164,6 @@ async function generate(schemaPathOrUrl, generatorPath, options) {
   let numberOfDiscoveredModels = 0;
   let numberOfDiscoveredEndpoints = 0;
   try {
-
     log.standard("Validating generator");
     validateGenerator(generatorPath);
 

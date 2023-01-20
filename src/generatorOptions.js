@@ -32,7 +32,7 @@ async function generatorOptions(generatorPathOrUrl) {
       "This generator has a number of additional options which can be supplied when executing the 'forge' command.\n\n";
     optionsHelp += lines.join("\n");
   }
-  
+
   generatorResolver.cleanup();
 
   return optionsHelp;
@@ -43,7 +43,9 @@ async function generatorOptions(generatorPathOrUrl) {
 function configToCommanderOptions(config) {
   return Object.keys(config).map((optionName) => {
     const option = config[optionName];
-    const commanderOption = new Option(`--${generatorOptionsPrefix}${optionName} <value>`);
+    const commanderOption = new Option(
+      `--${generatorOptionsPrefix}${optionName} <value>`
+    );
     if (option.description) {
       commanderOption.description = option.description;
     }
@@ -58,5 +60,5 @@ function configToCommanderOptions(config) {
 module.exports = {
   generatorOptions,
   configToCommanderOptions,
-  generatorOptionsPrefix
+  generatorOptionsPrefix,
 };
