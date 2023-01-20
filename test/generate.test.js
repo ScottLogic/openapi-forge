@@ -21,7 +21,6 @@ describe("generate", () => {
   beforeAll(() => {
     // For these tests, we don't really care about the responses for these:
     path.resolve.mockImplementation((path) => path);
-    generatorResolver.getGenerator.mockImplementation((path) => path);
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(fakeSchema);
     generatorResolver.isUrl.mockReturnValue(false);

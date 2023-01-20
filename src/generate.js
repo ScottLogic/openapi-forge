@@ -153,16 +153,13 @@ function getFilesInFolders(basePath, partialPath = "") {
   });
 }
 
-async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
+async function generate(schemaPathOrUrl, generatorPath, options) {
   log.setLogLevel(options.logLevel);
   log.logTitle();
   let exception = null;
   let numberOfDiscoveredModels = 0;
   let numberOfDiscoveredEndpoints = 0;
   try {
-    log.standard(`Loading generator from '${generatorPathOrUrl}'`);
-
-    let generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
 
     log.standard("Validating generator");
     validateGenerator(generatorPath);
@@ -265,8 +262,6 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     }
   } catch (e) {
     exception = e;
-  } finally {
-    generatorResolver.cleanup();
   }
 
   if (exception === null) {
