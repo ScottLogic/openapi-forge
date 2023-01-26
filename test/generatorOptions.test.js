@@ -31,8 +31,9 @@ describe("generate", () => {
     fs.readFileSync.mockReturnValue(JSON.stringify(config));
     const optionsHelp = await generatorOptions("some/path");
     expect(optionsHelp).toEqual(
+      // Not checking the full string because extra whitespace is created:
       expect.stringMatching(
-        /moduleFormat.*The module format to use for the generated code./
+        /moduleFormat.*The module format to use for the generated/
       )
     );
   });
