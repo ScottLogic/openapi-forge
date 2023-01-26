@@ -46,37 +46,34 @@ const forgeCommand = program
   )
   .allowUnknownOption()
   .action(async (schema, generatorPathOrUrl) => {
-    try {
-      const generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
-      const configFile = path.join(generatorPath, "config.json");
+    const generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
+    const configFile = path.join(generatorPath, "config.json");
 
-      // re-configure the command to generate the API
-      forgeCommand.allowUnknownOption(false).action(async (_, __, options) => {
-        // set the additional options as environment variables
-        const generatorOptions = Object.keys(options).filter((key) =>
-          key.startsWith(generatorOptionsPrefix)
-        );
-        generatorOptions.forEach((option) => {
-          const optionName = option.substring(generatorOptionsPrefix.length);
-          process.env[optionName] = options[option];
-        });
-
-        generate(schema, generatorPath, options);
+    // re-configure the command to generate the API
+    forgeCommand.allowUnknownOption(false).action(async (_, __, options) => {
+      // set the additional options as environment variables
+      const generatorOptions = Object.keys(options).filter((key) =>
+        key.startsWith(generatorOptionsPrefix)
+      );
+      generatorOptions.forEach((option) => {
+        const optionName = option.substring(generatorOptionsPrefix.length);
+        process.env[optionName] = options[option];
       });
 
-      // add the additional options from the generator's config.json file
-      if (fs.existsSync(configFile)) {
-        const config = JSON.parse(fs.readFileSync(configFile, "utf8"));
-        configToCommanderOptions(config).forEach((option) => {
-          forgeCommand.addOption(option);
-        });
-      }
-
-      // parse the command line arguments, and perform generation (on success)
-      forgeCommand.parse(process.argv);
-    } finally {
+      await generate(schema, generatorPath, options);
       generatorResolver.cleanup();
+    });
+
+    // add the additional options from the generator's config.json file
+    if (fs.existsSync(configFile)) {
+      const config = JSON.parse(fs.readFileSync(configFile, "utf8"));
+      configToCommanderOptions(config).forEach((option) => {
+        forgeCommand.addOption(option);
+      });
     }
+
+    // parse the command line arguments, and perform generation (on success)
+    forgeCommand.parse(process.argv);
   });
 
 program
