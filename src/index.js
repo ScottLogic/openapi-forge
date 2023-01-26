@@ -3,6 +3,7 @@
 const path = require("path");
 const fs = require("fs");
 const { Command, Option } = require("commander");
+const log = require("./log");
 const generate = require("./generate");
 const generatorResolver = require("./generatorResolver");
 const {
@@ -86,7 +87,7 @@ program
     "Git URL, file path or npm package of a language-specific generator"
   )
   .action(async (generator) => {
-    console.log(await generatorOptions(generator));
+    log.standard(await generatorOptions(generator));
   });
 
 program
