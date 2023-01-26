@@ -1,10 +1,10 @@
 const fs = require("fs");
 
-const { generatorOptions } = require("../src/generatorOptions");
-const generatorResolver = require("../src/generatorResolver");
+const { generatorOptions } = require("../src/commands/generatorOptions");
+const generatorResolver = require("../src/commands/generatorResolver");
 
 jest.mock("fs");
-jest.mock("../src/generatorResolver");
+jest.mock("../src/commands/generatorResolver");
 
 describe("generate", () => {
   beforeAll(() => {
