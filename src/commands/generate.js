@@ -8,9 +8,9 @@ const fetch = require("node-fetch");
 const { parse } = require("yaml");
 
 const generatorResolver = require("./generatorResolver");
-const helpers = require("./helpers");
-const log = require("./log");
-const transformers = require("./transformers");
+const helpers = require("../helpers");
+const log = require("../log");
+const transformers = require("../transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
 const converter = require("swagger2openapi");
 
