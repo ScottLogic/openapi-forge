@@ -2,13 +2,13 @@ const fs = require("fs");
 const path = require("path");
 const Handlebars = require("handlebars");
 
-const generate = require("../src/commands/generate");
-const generatorResolver = require("../src/commands/generatorResolver");
+const generate = require("../src/forge/generate");
+const generatorResolver = require("../src/common/generatorResolver");
 
 jest.mock("fs");
 jest.mock("path");
 jest.mock("handlebars");
-jest.mock("../src/commands/generatorResolver");
+jest.mock("../src/common/generatorResolver");
 
 describe("generate", () => {
   const generatorPath = "generatorPath";

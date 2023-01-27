@@ -3,11 +3,9 @@
 const { Command } = require("commander");
 
 const packageJson = require("../package.json");
-const {
-  forgeCommand,
-  generatorOptionsCommand,
-  testGeneratorsCommand,
-} = require("./commands");
+const forgeCommand = require("./forge");
+const generatorOptionsCommand = require("./generatorOptions");
+const testGeneratorsCommand = require("./testGenerators");
 const program = new Command();
 
 program.name("openapi-forge");
