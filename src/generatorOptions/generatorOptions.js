@@ -3,7 +3,7 @@ const path = require("path");
 
 const { Option, Command } = require("commander");
 
-const generatorResolver = require("./generatorResolver");
+const generatorResolver = require("../common/generatorResolver");
 
 const generatorOptionsPrefix = "generator.";
 

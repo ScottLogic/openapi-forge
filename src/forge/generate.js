@@ -7,7 +7,7 @@ const minimatch = require("minimatch");
 const fetch = require("node-fetch");
 const { parse } = require("yaml");
 
-const generatorResolver = require("./generatorResolver");
+const generatorResolver = require("../common/generatorResolver");
 const helpers = require("../helpers");
 const log = require("../log");
 const transformers = require("../transformers");
