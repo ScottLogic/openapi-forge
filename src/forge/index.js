@@ -2,11 +2,11 @@ const path = require("path");
 const fs = require("fs");
 
 const generate = require("./generate");
-const generatorResolver = require("./generatorResolver");
+const generatorResolver = require("../common/generatorResolver");
 const {
   configToCommanderOptions,
   generatorOptionsPrefix,
-} = require("./generatorOptions");
+} = require("../generatorOptions/generatorOptions");
 
 const forgeCommand = function (program) {
   const command = program
