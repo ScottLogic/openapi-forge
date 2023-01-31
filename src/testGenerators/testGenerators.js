@@ -1,7 +1,7 @@
 const path = require("path");
 const shell = require("shelljs");
 
-const log = require("../log");
+const log = require("../common/log");
 
 function isJson(str) {
   try {
