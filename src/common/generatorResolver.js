@@ -4,7 +4,7 @@ const os = require("os");
 const shell = require("shelljs");
 const URL = require("url").URL;
 
-const log = require("../log");
+const log = require("./log");
 
 let npmPackage;
 let temporaryFolder;

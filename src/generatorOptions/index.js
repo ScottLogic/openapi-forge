@@ -1,4 +1,3 @@
-const log = require("../log");
 const { generatorOptions } = require("./generatorOptions");
 
 const generatorOptionsCommand = function (program) {
@@ -12,7 +11,7 @@ const generatorOptionsCommand = function (program) {
       "Git URL, file path or npm package of a language-specific generator"
     )
     .action(async (generator) => {
-      log.standard(await generatorOptions(generator));
+      console.log(await generatorOptions(generator));
     });
 };
 

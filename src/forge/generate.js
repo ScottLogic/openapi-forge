@@ -9,7 +9,7 @@ const { parse } = require("yaml");
 
 const generatorResolver = require("../common/generatorResolver");
 const helpers = require("../helpers");
-const log = require("../log");
+const log = require("../common/log");
 const transformers = require("../transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
 const converter = require("swagger2openapi");
