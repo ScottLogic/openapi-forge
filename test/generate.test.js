@@ -50,10 +50,10 @@ describe("generate", () => {
       skipValidation: true,
       output: outDir,
     });
-    console.error(fs.writeFileSync.mock.calls);
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
-      `${outDir}/${fileName}.${fileExtension}`,
-      fakeSchema
+    console.error(fs.copyFileSync.mock.calls);
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      `${generatorPath}/template/${fileName}.${fileExtension}`,
+      `${outDir}/${fileName}.${fileExtension}`
     );
   });
 
@@ -75,7 +75,7 @@ describe("generate", () => {
     );
   });
 
-  it("should copy files in directories", async () => {
+  it("should copy non-handlebars files in directories", async () => {
     const fileShortName = "ExampleFile";
     const extension = "java";
     const basePath = `somewhere/else`;
@@ -89,9 +89,9 @@ describe("generate", () => {
       skipValidation: true,
       output: outDir,
     });
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
-      `${outDir}/${basePath}/${fileShortName}.${extension}`,
-      fakeSchema
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      `${generatorPath}/template/${basePath}/${fileShortName}.${extension}`,
+      `${outDir}/${basePath}/${fileShortName}.${extension}`
     );
   });
   it("should change the filename of Handlebars files in directories", async () => {
