@@ -131,7 +131,10 @@ function processTemplateFactory(
       log.verbose("Copying to output location");
       // for other files, simply copy them to the output folder
       createNestedDirectories(schema, file, outputFolder);
-      fs.copyFileSync(`${generatorTemplatesPath}/${file}`, `${outputFolder}/${file}`);
+      fs.copyFileSync(
+        `${generatorTemplatesPath}/${file}`,
+        `${outputFolder}/${file}`
+      );
     }
   };
 }
