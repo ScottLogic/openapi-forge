@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 
-const generate = require("./generate");
+const generate = require("../generate");
 const generatorResolver = require("../common/generatorResolver");
 const {
   configToCommanderOptions,

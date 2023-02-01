@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const log = require("../src//common/log");
+const log = require("../src/common/log");
 
 log.setLogLevel(log.logLevels.verbose);
 

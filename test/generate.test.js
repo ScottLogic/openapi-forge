@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Handlebars = require("handlebars");
 
-const generate = require("../src/forge/generate");
+const generate = require("../src/generate");
 const generatorResolver = require("../src/common/generatorResolver");
 
 jest.mock("fs");
