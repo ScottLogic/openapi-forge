@@ -52,7 +52,18 @@ function testGenerators(options) {
   options.generators.forEach((generator) => {
     try {
       const generatorPath = path.resolve(
-        path.join(__dirname, "..", "..", generator)
+        // Assuming the file structure:
+        // - openapi-forge
+        //   |- src
+        //     |- testGenerators
+        //       |- testGenerators.js
+        // - openapi-forge-javascript
+        // - openapi-forge-...
+        //
+        // The generators must be in the above location, otherwise this test-generators command will not work.
+        // If you move this file, the test-generators command will not work unless you fix the line below.
+        // We need to go up three directories to get to the root of openapi-forge:
+        path.join(__dirname, "..", "..", "..", generator)
       );
 
       log.standard(`Starting tests for generator ${generator}`);
