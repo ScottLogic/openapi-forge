@@ -134,8 +134,8 @@ And that’s it, you’ve successfully generated and used your first client libr
 OpenAPI Forge currently has the following language generators:
 
 - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
-- C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
-- JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
+- C# - https://github.com/ScottLogic/openapi-forge-csharp
+- JavaScript - https://github.com/Scottlogic/openapi-forge-javascript
 
 # Generator development
 
