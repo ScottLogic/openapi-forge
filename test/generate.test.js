@@ -24,6 +24,7 @@ describe("generate", () => {
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(fakeSchema);
     generatorResolver.isUrl.mockReturnValue(false);
+    generatorResolver.getGenerator.mockImplementation((path) => path);
     Handlebars.compile.mockReturnValue(() => outCode);
 
     const generatorPackage = {
