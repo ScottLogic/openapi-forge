@@ -2,6 +2,7 @@ const fs = require("fs");
 
 const {
   generatorOptionsHelp,
+  configToCommanderOptions,
 } = require("../src/generatorOptions/generatorOptions");
 const generatorResolver = require("../src/common/generatorResolver");
 
@@ -83,5 +84,15 @@ describe("generate", () => {
         /moduleFormat.*(choices: "cjs", "esm", default: "cjs")/
       )
     );
+  });
+
+  it("should support default values", async () => {
+    const config = {
+      packageName: {
+        default: "my-package",
+      },
+    };
+    const options = configToCommanderOptions(config);
+    expect(options[0].defaultValue).toEqual("my-package");
   });
 });
