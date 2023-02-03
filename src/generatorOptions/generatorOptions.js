@@ -54,6 +54,9 @@ function configToCommanderOptions(config) {
       commanderOption.choices(option.choices);
       commanderOption.default(option.choices[0]);
     }
+    if (option.default) {
+      commanderOption.default(option.default);
+    }
     return commanderOption;
   });
 }
