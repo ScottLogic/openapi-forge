@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const {
-  generatorOptions,
+  generatorOptionsHelp,
 } = require("../src/generatorOptions/generatorOptions");
 const generatorResolver = require("../src/common/generatorResolver");
 
@@ -20,7 +20,7 @@ describe("generate", () => {
 
   it("should indicate if the generator doesn't have any additional options", async () => {
     fs.existsSync.mockReturnValue(false);
-    const optionsHelp = await generatorOptions("some/path");
+    const optionsHelp = await generatorOptionsHelp("some/path");
     expect(optionsHelp).toEqual("The generator has no additional options");
   });
 
@@ -31,7 +31,7 @@ describe("generate", () => {
       },
     };
     fs.readFileSync.mockReturnValue(JSON.stringify(config));
-    const optionsHelp = await generatorOptions("some/path");
+    const optionsHelp = await generatorOptionsHelp("some/path");
     expect(optionsHelp).toEqual(
       // Not checking the full string because extra whitespace is created:
       expect.stringMatching(
@@ -45,7 +45,7 @@ describe("generate", () => {
       moduleFormat: {},
     };
     fs.readFileSync.mockReturnValue(JSON.stringify(config));
-    const optionsHelp = await generatorOptions("some/path");
+    const optionsHelp = await generatorOptionsHelp("some/path");
     expect(optionsHelp).toEqual(expect.stringMatching(/moduleFormat/));
   });
 
@@ -60,7 +60,7 @@ describe("generate", () => {
     };
 
     fs.readFileSync.mockReturnValue(JSON.stringify(config));
-    const optionsHelp = await generatorOptions("some/path");
+    const optionsHelp = await generatorOptionsHelp("some/path");
 
     expect(optionsHelp).toEqual(
       expect.stringMatching(/optionOne.*description One./)
@@ -77,7 +77,7 @@ describe("generate", () => {
       },
     };
     fs.readFileSync.mockReturnValue(JSON.stringify(config));
-    const optionsHelp = await generatorOptions("some/path");
+    const optionsHelp = await generatorOptionsHelp("some/path");
     expect(optionsHelp).toEqual(
       expect.stringMatching(
         /moduleFormat.*(choices: "cjs", "esm", default: "cjs")/

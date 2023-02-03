@@ -7,7 +7,8 @@ const generatorResolver = require("../common/generatorResolver");
 
 const generatorOptionsPrefix = "generator.";
 
-async function generatorOptions(generatorPathOrUrl) {
+// generates the help text for the additional options that a generator supports
+async function generatorOptionsHelp(generatorPathOrUrl) {
   let optionsHelp = "";
   const generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
   const configFile = path.join(generatorPath, "config.json");
@@ -58,7 +59,7 @@ function configToCommanderOptions(config) {
 }
 
 module.exports = {
-  generatorOptions,
+  generatorOptionsHelp,
   configToCommanderOptions,
   generatorOptionsPrefix,
 };
