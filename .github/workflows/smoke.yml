@@ -1,0 +1,80 @@
+name: Smoke Tests
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+  
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: |
+          npm install
+
+      - name: Check out the openapi-forge-javascript generator
+        uses: actions/checkout@v3
+        with: 
+          repository: ScottLogic/openapi-forge-javascript
+          path: openapi-forge-javascript
+
+      - name: Install openapi-forge-javascript dependencies
+        run: |
+          cd openapi-forge-javascript
+          npm install
+
+      - name: Return to the main folder
+        run: |
+          cd ..
+
+      - name: Make script executable
+        run: |
+          chmod +x ./src/index.js
+
+      # - name: Test Generator Options Command
+      #   run: |
+      #     echo "generator-options=$(./src/index.js generator-options openapi-forge-javascript)" >> $GITHUB_OUTPUT
+      #   id: generator_options
+      - id: generator_options
+        name: Test Generator Options Command
+        run: |
+          echo "generator-options<<EOF" >> $GITHUB_OUTPUT
+          echo "$(./src/index.js generator-options openapi-forge-javascript)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Print
+        run: echo "${{ steps.generator_options.outputs.generator-options }}"
+
+      # - name: Check Output of Generator Options
+      #   if: contains("something with moduleFormat", "moduleFormat") # steps.generator_options.outputs.generator-options
+      #   run: |
+      #     echo "hooray!" 
+      #   if: "!contains("something with moduleFormat", "moduleFormat")"  # steps.generator_options.outputs.generator-options
+      #   run: |
+      #     echo "oh noes!"
+
+      # - name: Check Output of Generator Options
+      #   run: |
+      #     echo "Checking the output for moduleFormat"
+      #     if grep -q "moduleFormat" <${{join(steps.generator_options.outputs.*, '\n')}}; then
+      #       echo "Output includes moduleFormat"
+      #     else
+      #       echo "ERROR: Output does not include moduleFormat"
+      #       echo "Full Output: ${{join(steps.generator_options.outputs.*, '\n')}}"
+      #       exit 1
+      #     fi
