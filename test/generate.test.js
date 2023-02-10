@@ -5,9 +5,16 @@ const Handlebars = require("handlebars");
 const generate = require("../src/generate");
 const generatorResolver = require("../src/common/generatorResolver");
 
+const log = require("../src/common/log");
+const { convertObj } = require("swagger2openapi");
+const SwaggerParser = require("@apidevtools/swagger-parser");
+
 jest.mock("fs");
 jest.mock("path");
 jest.mock("handlebars");
+jest.mock("swagger2openapi");
+jest.mock("@apidevtools/swagger-parser");
+jest.mock("../src/common/log");
 jest.mock("../src/common/generatorResolver");
 
 describe("generate", () => {
@@ -112,6 +119,45 @@ describe("generate", () => {
       `${outDir}/${basePath}/${fileShortName}.java`, // handlebars extension stripped out
       outCode
     );
+  });
+  it("should call logFailedForge if validation of the generator fails", () => {
+    // Simulate generator path pointing to the wrong place:
+    fs.existsSync.mockReturnValueOnce(false);
+    generate("schemaPathOrUrl", "generatorPathOrUrl", {
+      setLogLevel: () => {},
+    });
+
+    expect(log.logFailedForge).toHaveBeenCalled();
+  });
+  it("should convert 2.0 schemas to 3.0 schemas", async () => {
+    const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      swagger: "2.0",
+    };
+    fs.readFileSync = jest.fn(() => JSON.stringify(schema));
+    convertObj.mockReturnValue({
+      /* v3.0 schema */
+    });
+    await generate("path/to/schema", "path/to/generator", {
+      setLogLevel: () => {},
+    });
+    expect(convertObj).toHaveBeenCalled();
+  });
+  it("should call logInvalidSchema if the schema is invalid", async () => {
+    const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      swagger: "2.0",
+    };
+    fs.readFileSync = jest.fn(() => JSON.stringify(schema));
+    SwaggerParser.validate.mockImplementation(() => {
+      throw new Error("Invalid schema");
+    });
+
+    await generate("path/to/schema", "path/to/generator", {
+      setLogLevel: () => {},
+    });
+
+    expect(log.logInvalidSchema).toHaveBeenCalled();
   });
 });
 
