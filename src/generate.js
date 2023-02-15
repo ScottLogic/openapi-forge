@@ -103,7 +103,10 @@ function processTemplateFactory(
   outputFolder
 ) {
   return async function (file) {
-    if (options.exclude && minimatch(file, options.exclude)) {
+    if (
+      options.exclude &&
+      options.exclude.some((excludeGlob) => minimatch(file, excludeGlob))
+    ) {
       return;
     }
     log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);

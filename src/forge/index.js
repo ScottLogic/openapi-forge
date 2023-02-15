@@ -20,9 +20,9 @@ const forgeCommand = function (program) {
       "Git URL, file path or npm package of a language-specific generator"
     )
     .option(
-      "-e, --exclude <glob>",
-      "A glob pattern that excludes files from the generator in the output",
-      ""
+      "-e, --exclude <glob...>",
+      "A glob pattern or patterns that exclude files from the generator in the output",
+      []
     )
     .option(
       "-o, --output <path>",
