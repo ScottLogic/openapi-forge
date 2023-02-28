@@ -61,6 +61,26 @@ Options:
   -h, --help              Display help for command
 ```
 
+Individual generators may have their own options. Try it out:
+
+```
+% openapi-forge generator-options https://github.com/ScottLogic/openapi-forge-javascript.git
+Usage: openapi-forge generator-options <generator>
+
+This generator has a number of additional options which can be supplied when executing the 'forge' command.
+
+Options:
+  --generator.moduleFormat <value>  The module format to use for the generated
+                                    code. (choices: "commonjs", "esmodule",
+                                    default: "commonjs")
+```
+
+and then
+
+```
+% openapi-forge forge https://petstore3.swagger.io/api/v3/openapi.json https://github.com/ScottLogic/openapi-forge-javascript.git --generator.moduleFormat "esmodule"
+```
+
 ## Client generation
 
 In order to generate a client you need a suitable API specification, this can be supplied as a URL or a local file and can be in JSON or YML format. For this tutorial, we’ll use the Swagger Petstore API:
@@ -134,8 +154,8 @@ And that’s it, you’ve successfully generated and used your first client libr
 OpenAPI Forge currently has the following language generators:
 
 - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
-- C# - https://github.com/murcikan-scottlogic/openapi-forge-csharp
-- JavaScript - https://github.com/murcikan-scottlogic/openapi-forge-javascript
+- C# - https://github.com/ScottLogic/openapi-forge-csharp
+- JavaScript - https://github.com/Scottlogic/openapi-forge-javascript
 
 # Generator development
 

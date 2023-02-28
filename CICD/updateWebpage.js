@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const log = require("../src/log.js");
+const log = require("../src/common/log");
 
 // This regex extracts the generator table from README.md.
 const tableRegex =

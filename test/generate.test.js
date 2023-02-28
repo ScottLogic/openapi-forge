@@ -3,12 +3,12 @@ const path = require("path");
 const Handlebars = require("handlebars");
 
 const generate = require("../src/generate");
-const generatorResolver = require("../src/generatorResolver");
+const generatorResolver = require("../src/common/generatorResolver");
 
 jest.mock("fs");
 jest.mock("path");
 jest.mock("handlebars");
-jest.mock("../src/generatorResolver");
+jest.mock("../src/common/generatorResolver");
 
 describe("generate", () => {
   const generatorPath = "generatorPath";
@@ -21,10 +21,10 @@ describe("generate", () => {
   beforeAll(() => {
     // For these tests, we don't really care about the responses for these:
     path.resolve.mockImplementation((path) => path);
-    generatorResolver.getGenerator.mockImplementation((path) => path);
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(fakeSchema);
     generatorResolver.isUrl.mockReturnValue(false);
+    generatorResolver.getGenerator.mockImplementation((path) => path);
     Handlebars.compile.mockReturnValue(() => outCode);
 
     const generatorPackage = {
@@ -50,10 +50,10 @@ describe("generate", () => {
       skipValidation: true,
       output: outDir,
     });
-    console.error(fs.writeFileSync.mock.calls);
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
-      `${outDir}/${fileName}.${fileExtension}`,
-      fakeSchema
+    console.error(fs.copyFileSync.mock.calls);
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      `${generatorPath}/template/${fileName}.${fileExtension}`,
+      `${outDir}/${fileName}.${fileExtension}`
     );
   });
 
@@ -75,7 +75,7 @@ describe("generate", () => {
     );
   });
 
-  it("should copy files in directories", async () => {
+  it("should copy non-handlebars files in directories", async () => {
     const fileShortName = "ExampleFile";
     const extension = "java";
     const basePath = `somewhere/else`;
@@ -89,9 +89,9 @@ describe("generate", () => {
       skipValidation: true,
       output: outDir,
     });
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
-      `${outDir}/${basePath}/${fileShortName}.${extension}`,
-      fakeSchema
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      `${generatorPath}/template/${basePath}/${fileShortName}.${extension}`,
+      `${outDir}/${basePath}/${fileShortName}.${extension}`
     );
   });
   it("should change the filename of Handlebars files in directories", async () => {

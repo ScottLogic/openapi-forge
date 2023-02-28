@@ -1,3 +1,6 @@
+// IMPORTANT: This file is used in the generators, so you will need to change them if this file is moved.
+// See issue https://github.com/ScottLogic/openapi-forge/issues/158
+
 const fs = require("fs");
 
 const path = require("path");
@@ -7,9 +10,9 @@ const minimatch = require("minimatch");
 const fetch = require("node-fetch");
 const { parse } = require("yaml");
 
-const generatorResolver = require("./generatorResolver");
+const generatorResolver = require("./common/generatorResolver");
 const helpers = require("./helpers");
-const log = require("./log");
+const log = require("./common/log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
 const converter = require("swagger2openapi");
@@ -131,7 +134,11 @@ function processTemplateFactory(
       log.verbose("Copying to output location");
       // for other files, simply copy them to the output folder
       createNestedDirectories(schema, file, outputFolder);
-      fs.writeFileSync(`${outputFolder}/${file}`, source);
+      // Copy instead of read/write to support copying of binary files.
+      fs.copyFileSync(
+        `${generatorTemplatesPath}/${file}`,
+        `${outputFolder}/${file}`
+      );
     }
   };
 }
@@ -153,6 +160,8 @@ function getFilesInFolders(basePath, partialPath = "") {
   });
 }
 
+// IMPORTANT: This function is used in the generators, so be careful when modifying!
+// See issue https://github.com/ScottLogic/openapi-forge/issues/158
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.setLogLevel(options.logLevel);
   log.logTitle();

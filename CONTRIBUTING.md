@@ -67,24 +67,69 @@ Options:
   -h, --help                         display help for command
 ```
 
-If the testing doesn't work you may be using the wrong script-shell configuration in npm. To keep scripts working in both Unix and Windows machines the shell expected in the project is git-bash. To change your shell type you can run the command below, changing the file location if you have your git-bash executable is in a different location:
+### OpenAPI Forge Package
+
+Install openapi-forge as a global package (this is required for running the tests even if you have it git-cloned locally):
 
 ```
-npm config set script-shell "C:\\Program Files\\Git\\bin\\bash.exe"
+$ npm install openapi-forge --global
 ```
+
+### Dependencies on the Forge Project
+
+The generators hardcode the relative path to the generate.js in order to run test-generators. Currently these must be changed manually if the path of generate.js is changed. See this issue: #158.
+
+### GitHub Workflows
+
+The Gherkin tests are run as part of Continuous Integration using `.github/workflows/test.yml`. It runs the tests on every generator, checking for the presence of a generated test results file. It does not check for passing/failing tests. See this issue: #157.
 
 <br>
 
 # Example directory structure for testing to work using default locations
 
-You can have the locations of the forge and generators in custom locations with custom names but you will need to input the relative file paths into the testing commands of the forge nad generators.
+You can have the locations of the forge and generators in custom locations with custom names but you will need to input the relative file paths into the testing commands of the forge and generators.
 Below is the file structure needed to use the testing commands with the default locations:
 
 ```
-|-openapi-forge
+openapi-forge
+|
 |-openapi-forge-typescript
 |-openapi-forge-csharp
 |-openapi-forge-...
+```
+
+For example, run:
+
+```
+$ openapi-forge test-generators --format json --generators openapi-forge-csharp
+```
+
+You should see an output that looks like this:
+
+```
+{
+  logLevel: '1',
+  format: 'json',
+  generators: [ 'openapi-forge-csharp' ]
+}
+<path>\openapi-forge-csharp
+Starting tests for generator openapi-forge-csharp
+[
+  { testRunStarted: { timestamp: [Object] } },
+  { testCaseStarted: {} },
+  { testCaseFinished: {} },
+  // ....
+  { testRunFinished: { timestamp: [Object] } }
+]
+{
+  "openapi-forge-csharp": {
+    "scenarios": 44,
+    "failed": 0,
+    "passed": 44,
+    "time": 47
+  }
+}
+
 ```
 
 <br>
