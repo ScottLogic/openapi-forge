@@ -267,6 +267,16 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.verbose("\nIteration complete\n");
 
     try {
+      const postProcess = require(path.resolve(
+        generatorPath,
+        "./postProcess.js"
+      ));
+      await postProcess(outputFolder, log.getLogLevel(), options);
+    } catch {
+      log.verbose(`No post-processing found in ${generatorPath}`);
+    }
+
+    try {
       const formatter = require(path.resolve(generatorPath, "./formatter.js"));
       await formatter(outputFolder, log.getLogLevel());
     } catch {
