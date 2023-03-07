@@ -4,10 +4,12 @@ const Handlebars = require("handlebars");
 
 const generate = require("../src/generate");
 const generatorResolver = require("../src/common/generatorResolver");
+const minimatch = require("minimatch");
 
 jest.mock("fs");
 jest.mock("path");
 jest.mock("handlebars");
+jest.mock("minimatch");
 jest.mock("../src/common/generatorResolver");
 
 describe("generate", () => {
@@ -50,7 +52,6 @@ describe("generate", () => {
       skipValidation: true,
       output: outDir,
     });
-    console.error(fs.copyFileSync.mock.calls);
     expect(fs.copyFileSync).toHaveBeenCalledWith(
       `${generatorPath}/template/${fileName}.${fileExtension}`,
       `${outDir}/${fileName}.${fileExtension}`
@@ -111,6 +112,27 @@ describe("generate", () => {
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       `${outDir}/${basePath}/${fileShortName}.java`, // handlebars extension stripped out
       outCode
+    );
+  });
+  it("should not copy excluded files", async () => {
+    const file = "exampleFile.js";
+    mockReaddirSync({
+      helpers: [],
+      partials: [],
+      templates: [file],
+    });
+    minimatch.mockImplementation(
+      (fileToMatch, excludedFiles) =>
+        fileToMatch === file && excludedFiles.includes(file)
+    );
+    await generate(schemaPathOrUrl, generatorPath, {
+      skipValidation: true,
+      output: outDir,
+      exclude: [file],
+    });
+    expect(fs.copyFileSync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).not.toHaveBeenCalledWith(
+      expect.stringContaining(file)
     );
   });
 });
