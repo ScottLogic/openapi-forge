@@ -229,6 +229,32 @@ Feature: API responses, including model object deserialization
     Then the response should have a property dateOne with value 2013-07-21T00:00:00.000Z
     And the response should have a property dateTwo with value 2012-07-21T00:00:00.000Z
   
+  Scenario: the API returns headers
+    Given an API with the following specification
+    """
+    {
+      "openapi":"3.0.2",
+      "info" : {"title": "test", "version": "0.0.0"},
+      "paths": {
+        "/test/get": {
+          "get": {
+            "operationId": "getResponse",
+            "responses": {
+              "200": {
+                "description": "successful operation"
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    When calling the method getResponse and the server responds with headers
+    """
+    {"foo": "bar"}
+    """
+    Then the response should have a header foo with value bar
+
   Scenario: a response that lacks content
     Given an API with the following specification
     """
