@@ -57,16 +57,19 @@ jobs:
           echo "$(./src/index.js generator-options openapi-forge-javascript)" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Print
+      - name: Print generator-options command STDOUT
         run: echo "${{ steps.generator_options.outputs.generator-options }}"
 
-      # - name: Check Output of Generator Options
-      #   if: contains("something with moduleFormat", "moduleFormat") # steps.generator_options.outputs.generator-options
-      #   run: |
-      #     echo "hooray!" 
-      #   if: "!contains("something with moduleFormat", "moduleFormat")"  # steps.generator_options.outputs.generator-options
-      #   run: |
-      #     echo "oh noes!"
+      - name: Check Output of Generator Options 1
+        if: ${{ contains(steps.generator_options.outputs.generator-options, 'moduleFormat') }}
+        run: |
+          echo "generator-options command succeeded!"
+
+      - name: Check Output of Generator Options 2
+        if: ${{ !contains(steps.generator_options.outputs.generator-options, 'moduleFormat') }}
+        run: |
+          echo "expected generator-options command to produce the moduleFormat option for the JavaScript generator"
+          exit 1
 
       # - name: Check Output of Generator Options
       #   run: |
