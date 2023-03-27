@@ -27,6 +27,7 @@ jobs:
         run: |
           npm install
 
+      # JavaScript Generator
       - name: Check out the openapi-forge-javascript generator
         uses: actions/checkout@v3
         with: 
@@ -46,10 +47,6 @@ jobs:
         run: |
           chmod +x ./src/index.js
 
-      # - name: Test Generator Options Command
-      #   run: |
-      #     echo "generator-options=$(./src/index.js generator-options openapi-forge-javascript)" >> $GITHUB_OUTPUT
-      #   id: generator_options
       - id: generator_options
         name: Test Generator Options Command
         run: |
@@ -71,13 +68,45 @@ jobs:
           echo "expected generator-options command to produce the moduleFormat option for the JavaScript generator"
           exit 1
 
-      # - name: Check Output of Generator Options
-      #   run: |
-      #     echo "Checking the output for moduleFormat"
-      #     if grep -q "moduleFormat" <${{join(steps.generator_options.outputs.*, '\n')}}; then
-      #       echo "Output includes moduleFormat"
-      #     else
-      #       echo "ERROR: Output does not include moduleFormat"
-      #       echo "Full Output: ${{join(steps.generator_options.outputs.*, '\n')}}"
-      #       exit 1
-      #     fi
+      # TypeScript Generator
+      - name: Go to the top level
+        run: |
+          cd ..
+          ls
+
+      - name: Check out the openapi-forge-typescript generator
+        uses: actions/checkout@v3
+        with: 
+          repository: ScottLogic/openapi-forge-typescript
+          path: openapi-forge-typescript
+
+      - name: Install openapi-forge-typescript dependencies
+        run: |
+          cd openapi-forge-typescript
+          npm install
+
+      - name: Return to the main folder
+        run: |
+          cd ../openapi-forge/
+          ls
+
+      - id: test_generators
+        name: Test Generator Options Command
+        run: |
+          echo "test-generators<<EOF" >> $GITHUB_OUTPUT
+          echo "$(./src/index.js test-generators --generators openapi-forge-typescript --format 'json' --logLevel 'quiet')" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Print test-generators command STDOUT
+        run: echo "${{ steps.test_generators.outputs.test-generators }}"
+
+      - name: Check Output of Test Generators 1
+        if: ${{ fromJson(steps.test_generators.outputs.test-generators).scenarios > 0 && fromJson(steps.generator_options.outputs.test-generators).scenarios == fromJson(steps.generator_options.outputs.test-generators).passed }}
+        run: |
+          echo "test-generators command succeeded!"
+
+      - name: Check Output of Test Generators 2
+        if: ${{ fromJson(steps.test_generators.outputs.test-generators).scenarios > 0 && fromJson(steps.generator_options.outputs.test-generators).scenarios == fromJson(steps.generator_options.outputs.test-generators).passed }}
+        run: |
+          echo "expected test-generators command to show that all tests for the TypeScript generator are passing"
+          exit 1
