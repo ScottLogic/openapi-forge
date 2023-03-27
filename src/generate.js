@@ -103,7 +103,10 @@ function processTemplateFactory(
   outputFolder
 ) {
   return async function (file) {
-    if (options.exclude && minimatch(file, options.exclude)) {
+    if (
+      options.exclude &&
+      options.exclude.some((excludeGlob) => minimatch(file, excludeGlob))
+    ) {
       return;
     }
     log.verbose(`\n${log.brightYellowForeground}${file}${log.resetStyling}`);
@@ -265,6 +268,16 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     );
     templates.forEach(processTemplate);
     log.verbose("\nIteration complete\n");
+
+    try {
+      const postProcess = require(path.resolve(
+        generatorPath,
+        "./postProcess.js"
+      ));
+      await postProcess(outputFolder, log.getLogLevel(), options);
+    } catch {
+      log.verbose(`No post-processing found in ${generatorPath}`);
+    }
 
     try {
       const formatter = require(path.resolve(generatorPath, "./formatter.js"));

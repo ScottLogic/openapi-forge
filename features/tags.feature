@@ -29,7 +29,7 @@ Feature: Grouping of paths by tags
     Then the api file with tag "" exists
     And the method "getResponse" should be present in the api file with tag ""
 
-    Scenario: Path with a tag = "" is present in a tagless API file
+  Scenario: Path with a tag = "" is present in a tagless API file
     Given an API with the following specification
     """
     {
@@ -58,7 +58,7 @@ Feature: Grouping of paths by tags
     Then the api file with tag "" exists
     And the method "getResponse" should be present in the api file with tag ""
 
-    Scenario: Path with no tag array is present in a tagless API file
+  Scenario: Path with no tag array is present in a tagless API file
     Given an API with the following specification
     """
     {
@@ -86,7 +86,7 @@ Feature: Grouping of paths by tags
     Then the api file with tag "" exists
     And the method "getResponse" should be present in the api file with tag ""
 
-    Scenario: Path with no tag is not present in a tagged API file
+  Scenario: Path with no tag is not present in a tagged API file
     Given an API with the following specification
     """
     {
@@ -170,7 +170,7 @@ Feature: Grouping of paths by tags
     And the method "doNotGetResponse3" should be present in the api file with tag ""
     And the method "doNotGetResponse3" should not be present in the api file with tag "tag"
    
-    Scenario: Path with multiple tags is present in first tag's API file
+  Scenario: Path with multiple tags is present in first tag's API file
     Given an API with the following specification
     """
     {
@@ -201,7 +201,7 @@ Feature: Grouping of paths by tags
     And the api file with tag "" does not exist
     Then the method "getResponse" should be present in the api file with tag "tag"
 
-    Scenario: Path with multiple tags is not present in second tag's API file
+  Scenario: Path with multiple tags is not present in second tag's API file
     Given an API with the following specification
     """
     {
