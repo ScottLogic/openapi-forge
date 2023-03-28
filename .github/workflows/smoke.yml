@@ -34,5 +34,6 @@ jobs:
 
       - id: show_full_log
         name: Show Full Log
+        if: success() || failure()
         run: |
           cat log.txt

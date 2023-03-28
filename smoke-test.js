@@ -11,10 +11,10 @@ const checkoutRepoToPath = (repoPath, destPath, returnPath) => {
   return cloneStdout + "\r\n" + installStdout;
 };
 
-// The different commands require the generators to be installed in different locations
 const jsGeneratorLocation = "smoke-js";
 const tsGeneratorLocation = "smoke-ts";
 
+// NOTE: The JS and TS generators are installed in different relative paths because generator-options and test-generators require different relative paths.
 const jsInstallStdout = checkoutRepoToPath(
   "https://github.com/ScottLogic/openapi-forge-javascript",
   jsGeneratorLocation,
@@ -72,6 +72,7 @@ if (forgeStdout.includes("SUCCESSFUL")) {
   process.exitCode = 1;
 }
 
+// Clean up
 shell.rm("-rf", jsGeneratorLocation, `../${tsGeneratorLocation}`, tempFolder);
 
 fs.writeFileSync(
