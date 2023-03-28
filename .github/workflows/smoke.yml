@@ -31,3 +31,8 @@ jobs:
         name: Smoke Test generator-options, test-generators and forge commands
         run: |
           npm run test:smoke
+
+      - id: show_full_log
+        name: Show Full Log
+        run: |
+          cat log.txt

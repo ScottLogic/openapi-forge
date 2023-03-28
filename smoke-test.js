@@ -1,22 +1,26 @@
 const shell = require("shelljs");
+const fs = require("fs");
 
 const checkoutRepoToPath = (repoPath, destPath, returnPath) => {
-  shell.exec(`git clone ${repoPath} ${destPath}`);
+  const cloneStdout = shell.exec(`git clone ${repoPath} ${destPath}`, {
+    silent: true,
+  }).stdout;
   shell.cd(destPath);
-  shell.exec("npm install");
+  const installStdout = shell.exec("npm install", { silent: true }).stdout;
   shell.cd(returnPath);
+  return cloneStdout + "\r\n" + installStdout;
 };
 
 // The different commands require the generators to be installed in different locations
 const jsGeneratorLocation = "smoke-js";
 const tsGeneratorLocation = "smoke-ts";
 
-checkoutRepoToPath(
+const jsInstallStdout = checkoutRepoToPath(
   "https://github.com/ScottLogic/openapi-forge-javascript",
   jsGeneratorLocation,
   ".."
 );
-checkoutRepoToPath(
+const tsInstallStdout = checkoutRepoToPath(
   "https://github.com/ScottLogic/openapi-forge-typescript",
   `../${tsGeneratorLocation}`,
   "../openapi-forge"
@@ -24,7 +28,8 @@ checkoutRepoToPath(
 
 // Smoke test generator-options command
 const generatorOptionsStdout = shell.exec(
-  `node ./src/index.js generator-options ${jsGeneratorLocation}`
+  `node ./src/index.js generator-options ${jsGeneratorLocation}`,
+  { silent: true }
 ).stdout;
 
 if (generatorOptionsStdout.includes("moduleFormat")) {
@@ -38,7 +43,8 @@ if (generatorOptionsStdout.includes("moduleFormat")) {
 
 // Smoke test test-generators command
 const testGeneratorsStdout = shell.exec(
-  `node ./src/index.js test-generators --generators ${tsGeneratorLocation} --format json --logLevel quiet`
+  `node ./src/index.js test-generators --generators ${tsGeneratorLocation} --format json --logLevel quiet`,
+  { silent: true }
 ).stdout;
 
 const { scenarios, passed } =
@@ -56,7 +62,8 @@ if (scenarios > 0 && scenarios === passed) {
 // Smoke test forge command
 const tempFolder = "temp-csharp";
 const forgeStdout = shell.exec(
-  `node ./src/index.js forge https://petstore3.swagger.io/api/v3/openapi.json https://github.com/ScottLogic/openapi-forge-csharp.git -o ${tempFolder}`
+  `node ./src/index.js forge https://petstore3.swagger.io/api/v3/openapi.json https://github.com/ScottLogic/openapi-forge-csharp.git -o ${tempFolder}`,
+  { silent: true }
 ).stdout;
 if (forgeStdout.includes("SUCCESSFUL")) {
   console.log("forge command succeeded");
@@ -66,3 +73,14 @@ if (forgeStdout.includes("SUCCESSFUL")) {
 }
 
 shell.rm("-rf", jsGeneratorLocation, `../${tsGeneratorLocation}`, tempFolder);
+
+fs.writeFileSync(
+  `log.txt`,
+  [
+    jsInstallStdout,
+    tsInstallStdout,
+    generatorOptionsStdout,
+    testGeneratorsStdout,
+    forgeStdout,
+  ].join("\r\n")
+);
