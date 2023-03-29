@@ -4,6 +4,7 @@
   "description": "Effortlessly create OpenAPI clients from the fiery furnace of our forge",
   "main": "src/generate.js",
   "scripts": {
+    "prepare": "husky install",
     "test:generators": "openapi-forge test-generators",
     "test": "jest",
     "test:smoke": "node smoke-test.js",
