@@ -7,9 +7,18 @@ const checkoutRepoToPath = (repoPath, destPath, returnPath) => {
   }).stdout;
   shell.cd(destPath);
   const installStdout = shell.exec("npm install", { silent: true }).stdout;
+  const latestVersion = getLatestGitVersionTag(repoPath);
   shell.cd(returnPath);
-  return cloneStdout + "\r\n" + installStdout;
+  return cloneStdout + "\r\n" + latestVersion + "\r\n" + installStdout;
 };
+
+const getLatestGitVersionTag = (repoPath) =>
+  "Version of " +
+  repoPath +
+  " installed: " +
+  shell.exec(`git tag --sort=committerdate | tail -1`, {
+    silent: true,
+  }).stdout;
 
 const jsGeneratorLocation = "smoke-js";
 const tsGeneratorLocation = "smoke-ts";
