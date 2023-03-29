@@ -167,8 +167,8 @@ Feature: API responses, including model object deserialization
     { "id": 48, "date": "2013-07-21", "dateTime": "2017-07-21T17:32:28Z" }
     """
     Then the response should be of type DateResponse
-    And the response should have a property date with value 2013-07-21T00:00:00.000Z
-    And the response should have a property dateTime with value 2017-07-21T17:32:28.000Z
+    And the response should have a property date with value 2013-07-21
+    And the response should have a property dateTime with value 2017-07-21T17:32:28Z
 
   Scenario: the API returns an Object with additionalProperties
     Given an API with the following specification
@@ -205,7 +205,7 @@ Feature: API responses, including model object deserialization
                   "application/json": {
                     "schema": {
                       "type": "object",
-                      "additionalProperties": { "type": "string", "format": "date-time" }
+                      "additionalProperties": { "type": "string", "format": "date" }
                     }
                   }
                 }
@@ -226,8 +226,8 @@ Feature: API responses, including model object deserialization
     """
     { "dateOne": "2013-07-21", "dateTwo": "2012-07-21" }
     """
-    Then the response should have a property dateOne with value 2013-07-21T00:00:00.000Z
-    And the response should have a property dateTwo with value 2012-07-21T00:00:00.000Z
+    Then the response should have a property dateOne with value 2013-07-21
+    And the response should have a property dateTwo with value 2012-07-21
   
   Scenario: the API returns headers
     Given an API with the following specification
