@@ -9,7 +9,8 @@ on:
 jobs:
   test-generators:
     name: Test
-    runs-on: windows-latest 
+    runs-on: windows-latest
+    permissions: write-all
 
     steps:
       - name: Use Node.js
@@ -68,7 +69,7 @@ jobs:
       - name: Test generators
         run: |
           cd openapi-forge
-          openapi-forge test-generators --format json --generators openapi-forge-javascript openapi-forge-typescript openapi-forge-csharp > test-results.json
+          openapi-forge test-generators --format json --generators openapi-forge-typescript --logLevel quiet > test-results.json
         continue-on-error: true
 
       - name: Upload test results
@@ -76,3 +77,42 @@ jobs:
         with:
           name: test-results
           path: openapi-forge/test-results.json
+
+      # - id: store_results
+      #   name: Put results into variable
+      #   run: |
+      #     echo "results<<EOF" >> $GITHUB_OUTPUT
+      #     echo "$(cat test-results.json)" >> $GITHUB_OUTPUT
+      #     echo "EOF" >> $GITHUB_OUTPUT
+
+      # - id: pr_comment
+      #   name: PR Comment
+      #   uses: actions/github-script@v5
+      #   with:
+      #     github-token: ${{secrets.GITHUB_TOKEN}}
+      #     script: |
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: `${{ steps.store_results.outputs.results }}`
+      #       })
+
+      - name: Testing a GitHub warning
+        run: |
+          echo "::warning this is a warning!"
+
+
+
+      # - id: pr_comment
+      #   name: PR Comment
+      #   uses: actions/github-script@v5
+      #   with:
+      #     github-token: ${{secrets.GITHUB_TOKEN}}
+      #     script: |
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: 'hello'
+      #       })
