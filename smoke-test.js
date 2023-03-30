@@ -1,7 +1,10 @@
 const shell = require("shelljs");
 const fs = require("fs");
 
-const checkoutRepoToPath = (repoPath, destPath, returnPath) => {
+const jsGeneratorLocation = "smoke-js";
+const tsGeneratorLocation = "smoke-ts";
+
+const cloneRepoToPath = (repoPath, destPath, returnPath) => {
   const cloneStdout = shell.exec(`git clone ${repoPath} ${destPath}`, {
     silent: true,
   }).stdout;
@@ -20,16 +23,24 @@ const getLatestGitVersionTag = (repoPath) =>
     silent: true,
   }).stdout;
 
-const jsGeneratorLocation = "smoke-js";
-const tsGeneratorLocation = "smoke-ts";
+const gitCheckout = (branch) =>
+  shell.exec(`git fetch && git checkout ${branch}`, { silent: true }).stdout;
+
+const runTestGenerators = () =>
+  JSON.parse(
+    shell.exec(
+      `node ./src/index.js test-generators --generators ${tsGeneratorLocation} --format json --logLevel quiet`,
+      { silent: true }
+    ).stdout
+  );
 
 // NOTE: The JS and TS generators are installed in different relative paths because generator-options and test-generators require different relative paths.
-const jsInstallStdout = checkoutRepoToPath(
+const jsInstallStdout = cloneRepoToPath(
   "https://github.com/ScottLogic/openapi-forge-javascript",
   jsGeneratorLocation,
   ".."
 );
-const tsInstallStdout = checkoutRepoToPath(
+const tsInstallStdout = cloneRepoToPath(
   "https://github.com/ScottLogic/openapi-forge-typescript",
   `../${tsGeneratorLocation}`,
   "../openapi-forge"
@@ -50,20 +61,27 @@ if (generatorOptionsStdout.includes("moduleFormat")) {
   process.exitCode = 1;
 }
 
-// Smoke test test-generators command
-const testGeneratorsStdout = shell.exec(
-  `node ./src/index.js test-generators --generators ${tsGeneratorLocation} --format json --logLevel quiet`,
-  { silent: true }
-).stdout;
+// Smoke test test-generators command by comparing the current number of passing tests in the TS generator to the number passing on this PR
+const currentCommitName = shell.exec("git rev-parse HEAD", { silent: true });
+const checkoutLogs1 = gitCheckout("master");
+const previousRun = runTestGenerators();
 
-const { scenarios, passed } =
-  JSON.parse(testGeneratorsStdout)[tsGeneratorLocation];
+const { passed: expectedPassed } = previousRun[tsGeneratorLocation];
 
-if (scenarios > 0 && scenarios === passed) {
+const checkoutLogs2 = gitCheckout(currentCommitName);
+const testGeneratorsStdout = runTestGenerators();
+
+const { scenarios, passed } = testGeneratorsStdout[tsGeneratorLocation];
+
+if (scenarios > 0 && passed >= expectedPassed) {
   console.log("test-generators command succeeded");
 } else {
   console.error(
-    "test-generators command failed. Expected a non-zero number of scenarios that all passed."
+    "test-generators command failed. Expected " +
+      expectedPassed +
+      " passes but there were only " +
+      passed +
+      " passes."
   );
   process.exitCode = 1;
 }
@@ -90,7 +108,12 @@ fs.writeFileSync(
     jsInstallStdout,
     tsInstallStdout,
     generatorOptionsStdout,
-    testGeneratorsStdout,
+    "run on master:",
+    checkoutLogs1,
+    JSON.stringify(previousRun),
+    "run on current branch:",
+    checkoutLogs2,
+    JSON.stringify(testGeneratorsStdout),
     forgeStdout,
   ].join("\r\n")
 );
