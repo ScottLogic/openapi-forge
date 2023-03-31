@@ -7,6 +7,7 @@ const {
   configToCommanderOptions,
   generatorOptionsPrefix,
 } = require("../generatorOptions/generatorOptions");
+const log = require("../common/log");
 
 const forgeCommand = function (program) {
   const command = program
@@ -36,7 +37,9 @@ const forgeCommand = function (program) {
       "1"
     )
     .allowUnknownOption()
-    .action(async (schema, generatorPathOrUrl) => {
+    .action(async (schema, generatorPathOrUrl, options) => {
+      log.setLogLevel(options.logLevel);
+
       const generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
       const configFile = path.join(generatorPath, "config.json");
 

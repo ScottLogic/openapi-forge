@@ -166,7 +166,6 @@ function getFilesInFolders(basePath, partialPath = "") {
 // IMPORTANT: This function is used in the generators, so be careful when modifying!
 // See issue https://github.com/ScottLogic/openapi-forge/issues/158
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
-  log.setLogLevel(options.logLevel);
   log.logTitle();
   let exception = null;
   let numberOfDiscoveredModels = 0;
