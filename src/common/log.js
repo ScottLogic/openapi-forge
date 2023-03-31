@@ -53,7 +53,7 @@ function isVerbose() {
 }
 
 function error(msg) {
-  console.log(msg);
+  console.log(`${redBackground}${blackForeground}ERROR:${resetStyling} ${msg}`);
 }
 
 function standard(msg) {
@@ -115,6 +115,9 @@ function logSuccessfulForge(
     ` ${brightCyanForeground}${numberOfDiscoveredEndpoints}${resetStyling} endpoints have been cast`
   );
   standard(`${divider}`);
+  if (isQuiet()) {
+    console.log("API generation SUCCESSFUL");
+  }
   return;
 }
 
