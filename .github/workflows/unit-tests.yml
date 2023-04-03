@@ -1,4 +1,4 @@
-name: Test Forge
+name: Unit Tests
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   test-forge:
-    name: Test Forge
+    name: Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,6 @@ jobs:
         run: |
           npm install
 
-      - name: Test Forge
+      - name: Unit Tests
         run: |
           npm test
