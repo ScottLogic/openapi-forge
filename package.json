@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "test:generators": "openapi-forge test-generators",
-    "test": "jest",
+    "test": "jest --silent",
     "test:smoke": "node smoke-test.js",
     "format:check:all": "prettier --check .",
     "format:write:all": "prettier --write .",
