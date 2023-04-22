@@ -1,6 +1,6 @@
 # OpenAPI Forge
 
-⚒️🔥 Effortlessly create OpenAPI clients from the fiery furnace of our forge - supporting OpenAPI spec v2 and v3
+⚒️🔥 Effortlessly create OpenAPI clients, in a range of languages, from the fiery furnace of our forge - supporting OpenAPI spec v2 and v3
 
 - [OpenAPI Forge](#openapi-forge)
   - [Design principles](#design-principles)
@@ -156,6 +156,7 @@ OpenAPI Forge currently has the following language generators:
 - TypeScript - https://github.com/ScottLogic/openapi-forge-typescript
 - C# - https://github.com/ScottLogic/openapi-forge-csharp
 - JavaScript - https://github.com/Scottlogic/openapi-forge-javascript
+- Java - https://github.com/ScottLogic/openapi-forge-java
 
 # Generator development
 
