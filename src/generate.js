@@ -51,20 +51,6 @@ function cloneSchema(schema) {
   return JSON.parse(JSON.stringify(schema));
 }
 
-function validateGenerator(generatorPath) {
-  if (!fs.existsSync(generatorPath)) {
-    throw new Error(
-      `Generator path ${generatorPath} does not exist, check that the path points to a valid generator`
-    );
-  }
-
-  if (!fs.existsSync(`${generatorPath}/template`)) {
-    throw new Error(
-      `Generator path ${generatorPath} does not contain a template folder, check that the path points to a valid generator`
-    );
-  }
-}
-
 function getFileName(fileName, tagName = "") {
   let newFileName = fileName.slice(0, fileName.indexOf("."));
   if (tagName !== "") newFileName += helpers.capitalizeFirst(tagName);
@@ -174,9 +160,6 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
 
     let generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
-
-    log.standard("Validating generator");
-    validateGenerator(generatorPath);
 
     // load the OpenAPI schema
     log.standard(`Loading schema from '${schemaPathOrUrl}'`);
