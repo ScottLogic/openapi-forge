@@ -11,7 +11,10 @@ jest.mock("../src/common/generatorResolver");
 
 describe("generate", () => {
   beforeAll(() => {
-    generatorResolver.getGenerator.mockImplementation((path) => path);
+    generatorResolver.getGenerator.mockImplementation((path) => ({
+      path,
+      dispose: () => {},
+    }));
   });
 
   beforeEach(() => {

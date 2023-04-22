@@ -41,7 +41,7 @@ const forgeCommand = function (program) {
       log.setLogLevel(options.logLevel);
 
       const generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
-      const configFile = path.join(generatorPath, "config.json");
+      const configFile = path.join(generatorPath.path, "config.json");
 
       // re-configure the command to generate the API
       command.allowUnknownOption(false).action(async (_, __, options) => {
