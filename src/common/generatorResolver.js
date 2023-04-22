@@ -27,7 +27,28 @@ function getGenerator(generatorPathOrUrl) {
       generatorPath = installGeneratorFromNPM(generatorPathOrUrl);
     }
   }
-  return generatorPath;
+  return {
+    path: generatorPath,
+    dispose: () => {
+      cleanup();
+    },
+  };
+}
+
+function cleanup() {
+  if (temporaryFolder) {
+    log.verbose(`Removing temporary folder ${temporaryFolder}`);
+    fs.rmSync(temporaryFolder, { recursive: true });
+    temporaryFolder = null;
+  }
+  if (npmPackage) {
+    const currentPath = process.cwd();
+    shell.cd(__dirname, log.shellOptions);
+    log.verbose(`Removing npm package ${npmPackage}`);
+    shell.exec(`npm uninstall ${npmPackage}`, log.shellOptions);
+    shell.cd(currentPath, log.shellOptions);
+    npmPackage = null;
+  }
 }
 
 function cloneGenerator(generatorPathOrUrl) {
@@ -92,24 +113,7 @@ function installGeneratorDependencies() {
   shell.exec(`npm install`, log.shellOptions);
 }
 
-function cleanup() {
-  if (temporaryFolder) {
-    log.verbose(`Removing temporary folder ${temporaryFolder}`);
-    fs.rmSync(temporaryFolder, { recursive: true });
-    temporaryFolder = null;
-  }
-  if (npmPackage) {
-    const currentPath = process.cwd();
-    shell.cd(__dirname, log.shellOptions);
-    log.verbose(`Removing npm package ${npmPackage}`);
-    shell.exec(`npm uninstall ${npmPackage}`, log.shellOptions);
-    shell.cd(currentPath, log.shellOptions);
-    npmPackage = null;
-  }
-}
-
 module.exports = {
   isUrl,
-  getGenerator,
-  cleanup,
+  getGenerator
 };

@@ -26,7 +26,10 @@ describe("generate", () => {
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(fakeSchema);
     generatorResolver.isUrl.mockReturnValue(false);
-    generatorResolver.getGenerator.mockImplementation((path) => path);
+    generatorResolver.getGenerator.mockImplementation((path) => ({
+      path,
+      dispose: () => {},
+    }));
     Handlebars.compile.mockReturnValue(() => outCode);
 
     const generatorPackage = {

@@ -3,14 +3,15 @@ const path = require("path");
 
 const { Option, Command } = require("commander");
 
-const generatorResolver = require("../common/generatorResolver");
+const { getGenerator } = require("../common/generatorResolver");
 
 const generatorOptionsPrefix = "generator.";
 
 // generates the help text for the additional options that a generator supports
 async function generatorOptionsHelp(generatorPathOrUrl) {
   let optionsHelp = "";
-  const generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
+  const generator = getGenerator(generatorPathOrUrl);
+  const generatorPath = generator.path;
   const configFile = path.join(generatorPath, "config.json");
 
   if (!fs.existsSync(configFile)) {
@@ -34,7 +35,7 @@ async function generatorOptionsHelp(generatorPathOrUrl) {
     optionsHelp += lines.join("\n");
   }
 
-  generatorResolver.cleanup();
+  generator.dispose();
 
   return optionsHelp;
 }

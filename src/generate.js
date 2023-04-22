@@ -154,12 +154,14 @@ function getFilesInFolders(basePath, partialPath = "") {
 async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   log.logTitle();
   let exception = null;
+  let generator = null;
   let numberOfDiscoveredModels = 0;
   let numberOfDiscoveredEndpoints = 0;
   try {
     log.standard(`Loading generator from '${generatorPathOrUrl}'`);
 
-    let generatorPath = generatorResolver.getGenerator(generatorPathOrUrl);
+    generator = generatorResolver.getGenerator(generatorPathOrUrl);
+    const generatorPath = generator.path;
 
     // load the OpenAPI schema
     log.standard(`Loading schema from '${schemaPathOrUrl}'`);
@@ -270,7 +272,7 @@ async function generate(schemaPathOrUrl, generatorPathOrUrl, options) {
   } catch (e) {
     exception = e;
   } finally {
-    generatorResolver.cleanup();
+    generator.dispose();
   }
 
   if (exception === null) {
