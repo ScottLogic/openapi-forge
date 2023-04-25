@@ -1,10 +1,15 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const shell = require("shelljs");
 const URL = require("url").URL;
-
 const log = require("./log");
+const {
+  gitClone,
+  listInstalledPackages,
+  installPackage,
+  installDependencies,
+  uninstallPackage,
+} = require("./shell").shellWithOptions(log.shellOptions);
 
 let npmPackage;
 let temporaryFolder;
@@ -42,11 +47,7 @@ function cleanup() {
     temporaryFolder = null;
   }
   if (npmPackage) {
-    const currentPath = process.cwd();
-    shell.cd(__dirname, log.shellOptions);
-    log.verbose(`Removing npm package ${npmPackage}`);
-    shell.exec(`npm uninstall ${npmPackage}`, log.shellOptions);
-    shell.cd(currentPath, log.shellOptions);
+    uninstallPackage(npmPackage, __dirname);
     npmPackage = null;
   }
 }
@@ -62,36 +63,25 @@ function cloneGenerator(generatorPathOrUrl) {
   log.verbose(
     `Cloning generator from ${generatorPathOrUrl} to ${temporaryFolder}`
   );
-  shell.exec(
-    `git clone ${generatorPathOrUrl} ${temporaryFolder}`,
-    log.shellOptions
-  );
-  const currentPath = process.cwd();
-  shell.cd(temporaryFolder, log.shellOptions);
-  installGeneratorDependencies();
-  shell.cd(currentPath, log.shellOptions);
+  gitClone(generatorPathOrUrl, temporaryFolder);
+
+  log.verbose("Installing generator dependencies");
+  installDependencies(temporaryFolder);
   return temporaryFolder;
 }
 
 function installGeneratorFromNPM(generatorPathOrUrl) {
   log.verbose(`Checking if npm package ${generatorPathOrUrl} is installed`);
-  const currentPath = process.cwd();
-  shell.cd(__dirname, log.shellOptions);
   if (
-    !shell
-      .exec(`npm list --depth=0`, log.shellOptions)
-      .stdout.match(
-        new RegExp(`^.*${generatorPathOrUrl}@\\d+\\.\\d+\\.\\d+$`, "m")
-      )
+    !listInstalledPackages(__dirname).stdout.match(
+      new RegExp(`^.*${generatorPathOrUrl}@\\d+\\.\\d+\\.\\d+$`, "m")
+    )
   ) {
     npmPackage = generatorPathOrUrl;
     log.verbose(
       `npm package ${generatorPathOrUrl} doesn't exist, installing package`
     );
-    if (
-      shell.exec(`npm install ${generatorPathOrUrl}`, log.shellOptions).code !==
-      0
-    ) {
+    if (installPackage(__dirname, generatorPathOrUrl).code !== 0) {
       throw new Error(
         `No local generator or npm package found using '${generatorPathOrUrl}', check that it points to a local generator or npm package`
       );
@@ -101,19 +91,12 @@ function installGeneratorFromNPM(generatorPathOrUrl) {
     __dirname,
     path.join("..", "node_modules", generatorPathOrUrl)
   );
-  shell.cd(generatorPath, log.shellOptions);
-  installGeneratorDependencies();
-  shell.cd(currentPath, log.shellOptions);
-  return generatorPath;
-}
-
-function installGeneratorDependencies() {
   log.verbose("Installing generator dependencies");
-  shell.exec(`npm pkg delete scripts.prepare`, log.shellOptions); // Do not run husky preparation script as it will cause unnecessary errors
-  shell.exec(`npm install`, log.shellOptions);
+  installDependencies(generatorPath);
+  return generatorPath;
 }
 
 module.exports = {
   isUrl,
-  getGenerator
+  getGenerator,
 };
