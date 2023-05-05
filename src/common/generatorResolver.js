@@ -3,16 +3,8 @@ const path = require("path");
 const os = require("os");
 const URL = require("url").URL;
 const log = require("./log");
-const {
-  gitClone,
-  listInstalledPackages,
-  installPackage,
-  installDependencies,
-  uninstallPackage,
-} = require("./shell").shellWithOptions(log.shellOptions);
-
-let npmPackage;
-let temporaryFolder;
+const { gitClone, installPackage, installDependencies } =
+  require("./shell").shellWithOptions(log.shellOptions);
 
 function isUrl(maybeUrl) {
   try {
@@ -23,80 +15,62 @@ function isUrl(maybeUrl) {
   }
 }
 
-function getGenerator(generatorPathOrUrl) {
-  let generatorPath = path.resolve(generatorPathOrUrl);
+function validateGenerator(generatorPath) {
   if (!fs.existsSync(generatorPath)) {
-    if (isUrl(generatorPathOrUrl)) {
-      generatorPath = cloneGenerator(generatorPathOrUrl);
-    } else {
-      generatorPath = installGeneratorFromNPM(generatorPathOrUrl);
-    }
+    throw new Error(
+      `Generator path ${generatorPath} does not exist, check that the path points to a valid generator`
+    );
   }
+  if (!fs.existsSync(`${generatorPath}/template`)) {
+    throw new Error(
+      `Generator path ${generatorPath} does not contain a template folder, check that the path points to a valid generator`
+    );
+  }
+}
+
+function getGenerator(generatorPathOrUrl) {
+  // if this is a folder, and contains a template sub-folder, assume that the generator
+  // has been supplied as a path
+  if (fs.existsSync(generatorPathOrUrl)) {
+    validateGenerator(generatorPathOrUrl);
+    return {
+      path: generatorPathOrUrl,
+      dispose: () => {},
+    };
+  }
+
+  // if the generator is specified as a git URL, clone it into a temporary directory
+  if (isUrl(generatorPathOrUrl)) {
+    const temporaryFolder = fs.mkdtempSync(path.join(os.tmpdir(), "generator"));
+    log.verbose(
+      `Cloning generator from ${generatorPathOrUrl} to ${temporaryFolder}`
+    );
+    gitClone(generatorPathOrUrl, temporaryFolder);
+
+    log.verbose("Installing generator dependencies");
+    installDependencies(temporaryFolder);
+    return {
+      path: temporaryFolder,
+      dispose: () => {
+        log.verbose(`Removing temporary folder ${temporaryFolder}`);
+        fs.rmSync(temporaryFolder, { recursive: true });
+      },
+    };
+  }
+
+  // assume that this must be an npm package, installing into a temporary directory
+  const temporaryFolder = fs.mkdtempSync(path.join(os.tmpdir(), "generator"));
+  log.verbose(`Installing generator from npm into ${temporaryFolder}`);
+  const code = installPackage(generatorPathOrUrl, temporaryFolder);
+
+  // NOTE, there is no need to install dependencies, these will automatically be installed
   return {
-    path: generatorPath,
+    path: path.join(temporaryFolder, "node_modules", generatorPathOrUrl),
     dispose: () => {
-      cleanup();
+      log.verbose(`Removing temporary folder ${temporaryFolder}`);
+      fs.rmSync(temporaryFolder, { recursive: true });
     },
   };
 }
 
-function cleanup() {
-  if (temporaryFolder) {
-    log.verbose(`Removing temporary folder ${temporaryFolder}`);
-    fs.rmSync(temporaryFolder, { recursive: true });
-    temporaryFolder = null;
-  }
-  if (npmPackage) {
-    uninstallPackage(npmPackage, __dirname);
-    npmPackage = null;
-  }
-}
-
-function cloneGenerator(generatorPathOrUrl) {
-  // if the generator is specified as a git URL, clone it into a temporary directory
-  if (!generatorPathOrUrl.endsWith(".git")) {
-    throw new Error(
-      `Generator URL ${generatorPathOrUrl} does not end with ".git", check that the URL points to a valid generator`
-    );
-  }
-  temporaryFolder = fs.mkdtempSync(path.join(os.tmpdir(), "generator"));
-  log.verbose(
-    `Cloning generator from ${generatorPathOrUrl} to ${temporaryFolder}`
-  );
-  gitClone(generatorPathOrUrl, temporaryFolder);
-
-  log.verbose("Installing generator dependencies");
-  installDependencies(temporaryFolder);
-  return temporaryFolder;
-}
-
-function installGeneratorFromNPM(generatorPathOrUrl) {
-  log.verbose(`Checking if npm package ${generatorPathOrUrl} is installed`);
-  if (
-    !listInstalledPackages(__dirname).stdout.match(
-      new RegExp(`^.*${generatorPathOrUrl}@\\d+\\.\\d+\\.\\d+$`, "m")
-    )
-  ) {
-    npmPackage = generatorPathOrUrl;
-    log.verbose(
-      `npm package ${generatorPathOrUrl} doesn't exist, installing package`
-    );
-    if (installPackage(__dirname, generatorPathOrUrl).code !== 0) {
-      throw new Error(
-        `No local generator or npm package found using '${generatorPathOrUrl}', check that it points to a local generator or npm package`
-      );
-    }
-  }
-  const generatorPath = path.resolve(
-    __dirname,
-    path.join("..", "node_modules", generatorPathOrUrl)
-  );
-  log.verbose("Installing generator dependencies");
-  installDependencies(generatorPath);
-  return generatorPath;
-}
-
-module.exports = {
-  isUrl,
-  getGenerator,
-};
+module.exports = { getGenerator, isUrl };
