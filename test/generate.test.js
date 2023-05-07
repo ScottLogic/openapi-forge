@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Handlebars = require("handlebars");
 
+const util = require("../src/common/util");
 const generate = require("../src/generate");
 const generatorResolver = require("../src/common/generatorResolver");
 const minimatch = require("minimatch");
@@ -10,6 +11,7 @@ jest.mock("fs");
 jest.mock("path");
 jest.mock("handlebars");
 jest.mock("minimatch");
+jest.mock("../src/common/util");
 jest.mock("../src/common/generatorResolver");
 
 describe("generate", () => {
@@ -25,7 +27,7 @@ describe("generate", () => {
     path.resolve.mockImplementation((path) => path);
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(fakeSchema);
-    generatorResolver.isUrl.mockReturnValue(false);
+    util.isUrl.mockReturnValue(false);
     generatorResolver.getGenerator.mockImplementation((path) => ({
       path,
       dispose: () => {},

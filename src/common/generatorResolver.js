@@ -1,19 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const URL = require("url").URL;
 const log = require("./log");
+const { isUrl } = require("./util");
 const { gitClone, installPackage, installDependencies } =
   require("./shell").shellWithOptions(log.shellOptions);
-
-function isUrl(maybeUrl) {
-  try {
-    new URL(maybeUrl);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
 
 function validateGenerator(generatorPath) {
   if (!fs.existsSync(generatorPath)) {
@@ -73,4 +64,4 @@ function getGenerator(generatorPathOrUrl) {
   };
 }
 
-module.exports = { getGenerator, isUrl };
+module.exports = { getGenerator };

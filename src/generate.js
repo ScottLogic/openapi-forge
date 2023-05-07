@@ -12,6 +12,7 @@ const { parse } = require("yaml");
 
 const generatorResolver = require("./common/generatorResolver");
 const helpers = require("./helpers");
+const { isUrl } = require("./common/util");
 const log = require("./common/log");
 const transformers = require("./transformers");
 const SwaggerParser = require("@apidevtools/swagger-parser");
@@ -25,7 +26,7 @@ Object.keys(helpers).forEach((helperName) => {
 async function loadSchema(schemaPathOrUrl) {
   const isYml =
     schemaPathOrUrl.endsWith(".yml") || schemaPathOrUrl.endsWith(".yaml");
-  const schema = generatorResolver.isUrl(schemaPathOrUrl)
+  const schema = isUrl(schemaPathOrUrl)
     ? await fetch(schemaPathOrUrl).then((d) => {
         if (d.status === 200) {
           return d.text();
