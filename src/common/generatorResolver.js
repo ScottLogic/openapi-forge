@@ -52,7 +52,7 @@ function getGenerator(generatorPathOrUrl) {
   // assume that this must be an npm package, installing into a temporary directory
   const temporaryFolder = fs.mkdtempSync(path.join(os.tmpdir(), "generator"));
   log.verbose(`Installing generator from npm into ${temporaryFolder}`);
-  const code = installPackage(generatorPathOrUrl, temporaryFolder);
+  installPackage(generatorPathOrUrl, temporaryFolder);
 
   // NOTE, there is no need to install dependencies, these will automatically be installed
   return {
