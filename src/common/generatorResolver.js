@@ -64,4 +64,12 @@ function getGenerator(generatorPathOrUrl) {
   };
 }
 
-module.exports = { getGenerator };
+function resolveAndValidate(generatorPathOrUrl) {
+  const generator = getGenerator(generatorPathOrUrl);
+  // ensure paths are absolute, and validate contents
+  generator.path = path.resolve(generator.path);
+  validateGenerator(generator.path);
+  return generator;
+}
+
+module.exports = { getGenerator: resolveAndValidate };
