@@ -157,6 +157,7 @@ OpenAPI Forge currently has the following language generators:
 - C# - https://github.com/ScottLogic/openapi-forge-csharp
 - JavaScript - https://github.com/Scottlogic/openapi-forge-javascript
 - Java - https://github.com/ScottLogic/openapi-forge-java
+- Rust - https://github.com/ScottLogic/openapi-forge-rust
 
 # Generator development
 
