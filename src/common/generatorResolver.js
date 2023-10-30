@@ -33,7 +33,7 @@ function getGenerator(generatorPathOrUrl) {
   // if the generator is specified as a git URL, clone it into a temporary directory
   if (isUrl(generatorPathOrUrl)) {
     const temporaryFolder = fs.mkdtempSync(path.join(os.tmpdir(), "generator"));
-    log.verbose(
+    log.standard(
       `Cloning generator from ${generatorPathOrUrl} to ${temporaryFolder}`
     );
     gitClone(generatorPathOrUrl, temporaryFolder);
@@ -51,7 +51,7 @@ function getGenerator(generatorPathOrUrl) {
 
   // assume that this must be an npm package, installing into a temporary directory
   const temporaryFolder = fs.mkdtempSync(path.join(os.tmpdir(), "generator"));
-  log.verbose(`Installing generator from npm into ${temporaryFolder}`);
+  log.standard(`Installing generator from npm into ${temporaryFolder}`);
   installPackage(generatorPathOrUrl, temporaryFolder);
 
   // NOTE, there is no need to install dependencies, these will automatically be installed
