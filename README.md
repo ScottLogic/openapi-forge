@@ -15,7 +15,12 @@
   - [Schema transformation](#schema-transformation)
   - [Tags and API structure](#tags-and-api-structure)
   - [Testing](#testing)
+    - [Walkthrough for implementing the BDD tests for a new generator](#walkthrough-for-implementing-the-bdd-tests-for-a-new-generator)
   - [Formatting](#formatting)
+- [OpenAPI Forge (CLI) Development](#openapi-forge-cli-development)
+  - [Installation and Test](#installation-and-test)
+  - [Tests](#tests)
+    - [Testing the language generators](#testing-the-language-generators)
 
 ## Design principles
 
@@ -57,7 +62,8 @@ Options:
   -e, --exclude <glob>    A glob pattern that excludes files from the generator in the output (default: "")
   -o, --output <path>     The path where the generated client API will be written (default: ".")
   -s, --skipValidation    Skip schema validation
-  -l, --logLevel <level>  Sets the logging level, options are: quiet ('quiet', 'q' or '0'), standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')
+  -l, --logLevel <level>  Sets the logging level, options are: quiet ('quiet', 'q' or '0'),
+                          standard (default) ('standard', 's' or '1'), verbose ('verbose', 'v' or '2')
   -h, --help              Display help for command
 ```
 
@@ -78,7 +84,10 @@ Options:
 and then
 
 ```
-% openapi-forge forge https://petstore3.swagger.io/api/v3/openapi.json https://github.com/ScottLogic/openapi-forge-javascript.git --generator.moduleFormat "esmodule"
+% openapi-forge forge \
+                https://petstore3.swagger.io/api/v3/openapi.json \
+                https://github.com/ScottLogic/openapi-forge-javascript.git \
+                --generator.moduleFormat "esmodule"
 ```
 
 ## Client generation
@@ -304,3 +313,106 @@ Ideally the generated output should be 'neatly' formatted in an idiomatic way fo
 
 1.  Write the handlebars templates in such a way that they produce nicely formatted code. This can result in templates which are a little convoluted, however, [whitespace control](https://handlebarsjs.com/guide/expressions.html#whitespace-control) is your friend.
 2.  You can format the files as a post-processing step. To achieve this, add a `formatting.js` file to the root of your generator project. This will be executed as the final step of the generation process. How this is implemented is of course language-dependent.
+
+# OpenAPI Forge (CLI) Development
+
+This section describes the process for working on the CLI tool (this repo).
+
+## Installation and Test
+
+To get started, clone this repo, then follow the usual workflow:
+
+```
+% npm install
+% npm test
+ PASS  test/generatorOptions.test.js
+ PASS  test/generate.test.js
+ PASS  test/common/generatorResolver.test.js (21.788 s)
+
+Test Suites: 3 passed, 3 total
+Tests:       17 passed, 17 total
+Snapshots:   0 total
+Time:        22.14 s, estimated 24 s
+```
+
+In order to execute the OpenAPI Forge commands locally, run `node src/index.js`. Here's an example that uses your local copy o
+
+```
+% node src/index.js forge \
+                https://petstore3.swagger.io/api/v3/openapi.json \
+                openapi-forge-javascript \
+                -o api
+```
+
+Or alternatively install you changes globally, then run as follows:
+
+```
+% npm i --global
+% openapi-forge
+Usage: openapi-forge [options] [command]
+...
+```
+
+Global installation is a little slower, but ensure that filepaths are representative and is less error prone.
+
+## Tests
+
+The CLI (this repo) has several different types of test:
+
+1. Unit tests - these are found within the `test` folder and tests the CLI / generator functionality.
+2. Smoke tests - found within `smoke-test.js`, this ensures that there has not been a regression (i.e. reduced number of tests passing), between pull requests
+3. BDD Generator tests - found within the `features` folder, these are the BDD-style tests that ensure a language generator works correctly.
+
+### Testing the language generators
+
+You can test all of the language generators from one command, this is useful if you make changes to the CLI tool or add / amend the BDD tests.
+
+After globally installing the CLI, execute `test-generators` command for any of the language generators
+
+```
+% openapi-forge test-generators --format json --generators openapi-forge-csharp
+```
+
+You'll likely want to have the language generators checked out at the same folder location:
+
+```
+openapi-forge
+|
+|-openapi-forge-typescript
+|-openapi-forge-csharp
+|-openapi-forge-...
+```
+
+For example, run:
+
+```
+$ openapi-forge test-generators --format json --generators openapi-forge-csharp
+```
+
+You should see an output that looks like this:
+
+```
+{
+  logLevel: '1',
+  format: 'json',
+  generators: [ 'openapi-forge-csharp' ]
+}
+<path>\openapi-forge-csharp
+Starting tests for generator openapi-forge-csharp
+[
+  { testRunStarted: { timestamp: [Object] } },
+  { testCaseStarted: {} },
+  { testCaseFinished: {} },
+  // ....
+  { testRunFinished: { timestamp: [Object] } }
+]
+{
+  "openapi-forge-csharp": {
+    "scenarios": 44,
+    "failed": 0,
+    "passed": 44,
+    "time": 47
+  }
+}
+
+```
